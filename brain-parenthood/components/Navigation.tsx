@@ -7,53 +7,54 @@ export default function Navigation() {
   const pathname = usePathname();
 
   return (
-    <nav className="bg-white shadow-md border-b border-gray-200">
-      <div className="container mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-[#2D3E50]/95 shadow-lg backdrop-blur-md border-b border-white/10">
+      <div className="mx-auto" style={{ paddingLeft: '8vw', paddingRight: '8vw', maxWidth: '1600px' }}>
+        <div className="flex items-center justify-between h-20">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <span className="text-2xl">🧠</span>
-            <span className="font-bold text-xl text-gray-900">Brain Parenthood</span>
+          <Link href="/" className="flex items-center group focus:outline-none">
+            <span className="font-bold text-2xl text-white">
+              Brain Parenthood
+            </span>
           </Link>
 
           {/* Navigation Links */}
-          <div className="hidden md:flex items-center space-x-6">
+          <div className="hidden md:flex items-center space-x-2">
             <Link
               href="/"
-              className={`transition-colors ${
+              className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                 pathname === "/"
-                  ? "text-blue-600 font-semibold"
-                  : "text-gray-600 hover:text-blue-600"
+                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md"
+                  : "text-gray-300 hover:bg-white/10 hover:text-white"
               }`}
             >
               Home
             </Link>
             <Link
               href="/module/1"
-              className={`transition-colors ${
+              className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                 pathname === "/module/1"
-                  ? "text-blue-600 font-semibold"
-                  : "text-gray-600 hover:text-blue-600"
+                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md"
+                  : "text-gray-300 hover:bg-white/10 hover:text-white"
               }`}
             >
               Module 1
             </Link>
             <Link
               href="/modules"
-              className={`transition-colors ${
+              className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                 pathname === "/modules"
-                  ? "text-blue-600 font-semibold"
-                  : "text-gray-600 hover:text-blue-600"
+                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md"
+                  : "text-gray-300 hover:bg-white/10 hover:text-white"
               }`}
             >
               All Modules
             </Link>
             <Link
               href="/dashboard"
-              className={`transition-colors ${
+              className={`px-4 py-2 rounded-lg font-medium transition-all duration-200 ${
                 pathname === "/dashboard"
-                  ? "text-blue-600 font-semibold"
-                  : "text-gray-600 hover:text-blue-600"
+                  ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white shadow-md"
+                  : "text-gray-300 hover:bg-white/10 hover:text-white"
               }`}
             >
               Dashboard
@@ -62,7 +63,7 @@ export default function Navigation() {
 
           {/* Mobile Menu Button */}
           <div className="md:hidden">
-            <button className="text-gray-600 hover:text-blue-600">
+            <button className="text-gray-300 hover:text-white transition-colors">
               <svg
                 className="h-6 w-6"
                 fill="none"

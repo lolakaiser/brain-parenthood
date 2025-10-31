@@ -3,31 +3,226 @@
 @tailwind utilities;
 
 :root {
-  --foreground-rgb: 0, 0, 0;
+  --foreground-rgb: 15, 23, 42;
   --background-start-rgb: 255, 255, 255;
-  --background-end-rgb: 255, 255, 255;
+  --background-end-rgb: 248, 250, 252;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+    --foreground-rgb: 241, 245, 249;
+    --background-start-rgb: 15, 23, 42;
+    --background-end-rgb: 30, 41, 59;
   }
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+  color: #ffffff !important;
+  background: #2D3E50 !important;
+  min-height: 100vh;
+}
+
+* {
+  color: inherit;
+}
+
+h1, h2, h3, h4, h5, h6, p, span, div, a {
+  color: #ffffff !important;
+}
+
+a:hover {
+  color: #ffffff !important;
+}
+
+a {
+  text-decoration: none !important;
+}
+
+a:focus, a:focus-visible {
+  outline: none !important;
+}
+
+button:focus, button:focus-visible {
+  outline: none !important;
 }
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+  }
+
+  .glass-dark {
+    background: rgba(15, 23, 42, 0.7);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.6s ease-in;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.8s ease-out;
+  }
+
+  .animate-float {
+    animation: float 3s ease-in-out infinite;
+  }
+
+  .gradient-text {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .gradient-border {
+    border: 2px solid transparent;
+    background: linear-gradient(white, white) padding-box,
+                linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
+  }
+
+  .app-icon {
+    transform-style: preserve-3d;
+    transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    will-change: transform;
+  }
+
+  .app-icon:active {
+    transform: scale(0.95);
+  }
+
+  .app-shine {
+    background: linear-gradient(
+      135deg,
+      rgba(255, 255, 255, 0.5) 0%,
+      rgba(255, 255, 255, 0.1) 50%,
+      transparent 100%
+    );
+  }
+
+  /* iOS-style icon shadow */
+  .ios-icon-shadow {
+    box-shadow:
+      0 10px 20px rgba(0, 0, 0, 0.15),
+      0 3px 6px rgba(0, 0, 0, 0.1),
+      inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  }
+}
+
+/* Pulse animation for new badge */
+@keyframes pulse-badge {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.05);
+    opacity: 0.9;
+  }
+}
+
+.animate-pulse-badge {
+  animation: pulse-badge 2s ease-in-out infinite;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+/* Custom Range Slider Styling */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  background: transparent;
+  cursor: pointer;
+}
+
+/* Webkit browsers (Chrome, Safari) */
+input[type="range"]::-webkit-slider-track {
+  background: #e5e7eb;
+  height: 12px;
+  border-radius: 8px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -6px;
+  background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4);
+  transition: all 0.2s ease;
+}
+
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.6);
+}
+
+input[type="range"]::-webkit-slider-thumb:active {
+  transform: scale(1.1);
+}
+
+/* Firefox */
+input[type="range"]::-moz-range-track {
+  background: #e5e7eb;
+  height: 12px;
+  border-radius: 8px;
+}
+
+input[type="range"]::-moz-range-thumb {
+  background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+  height: 24px;
+  width: 24px;
+  border-radius: 50%;
+  border: none;
+  cursor: pointer;
+  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4);
+  transition: all 0.2s ease;
+}
+
+input[type="range"]::-moz-range-thumb:hover {
+  transform: scale(1.2);
+  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.6);
+}
+
+input[type="range"]::-moz-range-thumb:active {
+  transform: scale(1.1);
 }
