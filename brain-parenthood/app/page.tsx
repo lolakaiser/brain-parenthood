@@ -2,7 +2,7 @@ import Link from "next/link";
 
 export default function Home() {
   return (
-    <div className="min-h-screen pt-20 bg-[#2D3E50]">
+    <div className="min-h-screen pt-32 bg-[#2D3E50]">
       <div className="mx-auto py-16" style={{ paddingLeft: '8vw', paddingRight: '8vw', maxWidth: '1600px' }}>
         {/* Hero Section */}
         <div className="text-center mb-20 animate-slide-up">

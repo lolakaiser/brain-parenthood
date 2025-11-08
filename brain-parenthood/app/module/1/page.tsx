@@ -9,7 +9,7 @@ export default function Module1Page() {
   const [currentStep, setCurrentStep] = useState<StepType>('overview');
 
   return (
-    <div className="min-h-screen pt-20 bg-[#2D3E50]">
+    <div className="min-h-screen pt-32 bg-[#2D3E50]">
       <div className="container mx-auto px-4 py-8">
         {/* Header */}
         <div className="mb-8 animate-fade-in">
