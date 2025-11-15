@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
@@ -9,8 +9,14 @@ export default function LoginPage() {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
-  const { login } = useAuth();
+  const { login, isAuthenticated } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push('/dashboard');
+    }
+  }, [isAuthenticated, router]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -31,7 +37,8 @@ export default function LoginPage() {
 
   return (
     <div className="min-h-screen pt-32 bg-[#2D3E50] flex items-center justify-center">
-      <div className="w-full max-w-md mx-4">
+      <div className="w-full mx-auto" style={{ paddingLeft: '8vw', paddingRight: '8vw', maxWidth: '1600px' }}>
+        <div className="w-full max-w-md mx-auto">
         <div className="bg-[#3A4F63] rounded-2xl shadow-2xl p-8 border border-white/10">
           <h1 className="text-4xl font-bold text-white mb-2 text-center">Welcome Back</h1>
           <p className="text-gray-300 text-center mb-8">Login to continue your journey</p>
@@ -93,6 +100,7 @@ export default function LoginPage() {
               Demo credentials: <span className="text-purple-400">username: lola</span>, <span className="text-purple-400">password: 1234</span>
             </p>
           </div>
+        </div>
         </div>
       </div>
     </div>

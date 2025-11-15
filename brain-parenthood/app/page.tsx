@@ -1,6 +1,37 @@
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
+
+function getModuleClass(index: number): string {
+  const classes = [
+    'module-kickoff',
+    'module-mindfulness',
+    'module-resilience',
+    'module-communication',
+    'module-innovation',
+    'module-measurement',
+    'module-wrapup'
+  ];
+  return classes[index] || '';
+}
 
 export default function Home() {
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, router]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
   return (
     <div className="min-h-screen pt-32 bg-[#2D3E50]">
       <div className="mx-auto py-16" style={{ paddingLeft: '8vw', paddingRight: '8vw', maxWidth: '1600px' }}>
@@ -77,8 +108,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Program Overview - Card Grid with Dark Background */}
-        <div className="mb-16">
+        {/* Program Overview - Responsive Grid */}
+        <section className="modules-section mb-16">
           <h2 className="text-4xl md:text-5xl font-bold text-center mb-3 text-white">
             Your 12-Week Journey
           </h2>
@@ -87,51 +118,25 @@ export default function Home() {
           </p>
 
           {/* Module Cards Grid */}
-          <div className="max-w-7xl mx-auto">
-            <div className="flex flex-wrap justify-center gap-8">
-              {modules.map((module, index) => (
-                <Link
-                  key={module.week}
-                  href={module.week === "Week 1" ? "/module/1" : "#"}
-                  className={`group relative transform transition-all duration-300 no-underline w-[220px] m-3 ${
-                    module.week !== "Week 1" ? "opacity-60 cursor-not-allowed" : ""
-                  }`}
-                >
-                  {/* Card - Square Shape */}
-                  <div
-                    className={`relative rounded-[1.5rem] p-5 shadow-lg transition-all duration-300
-                                ${module.color}
-                                ${module.week === "Week 1" ? "hover:shadow-xl hover:scale-[1.03] active:scale-95" : ""}
-                                aspect-square flex flex-col items-center justify-center w-full`}
-                    style={{
-                      animationDelay: `${index * 0.05}s`,
-                    }}
-                  >
-                    {/* Three dots menu */}
-                    <div className={`absolute top-3 right-3 flex flex-col gap-1 ${module.textColor} opacity-70`}>
-                      <div className="w-1 h-1 rounded-full bg-current"></div>
-                      <div className="w-1 h-1 rounded-full bg-current"></div>
-                      <div className="w-1 h-1 rounded-full bg-current"></div>
-                    </div>
-
-                    {/* Text Content - Centered */}
-                    <div className="text-center px-3">
-                      <p className={`text-base font-semibold mb-2 ${module.textColor} opacity-70`}>
-                        {module.week}
-                      </p>
-                      <h3 className={`font-bold text-3xl mb-2 leading-tight ${module.textColor}`}>
-                        {module.title}
-                      </h3>
-                      <p className={`text-lg font-medium ${module.textColor} opacity-80`}>
-                        {module.subtitle}
-                      </p>
-                    </div>
-                  </div>
-                </Link>
-              ))}
-            </div>
+          <div className="module-grid">
+            {modules.map((module, index) => (
+              <Link
+                key={module.week}
+                href={module.week === "Week 1" ? "/module/1" : "#"}
+                className={`module-card ${getModuleClass(index)} ${
+                  module.week !== "Week 1" ? "opacity-60 cursor-not-allowed" : ""
+                }`}
+                style={{
+                  animationDelay: `${index * 0.05}s`,
+                }}
+              >
+                <h4 className="module-week">{module.week}</h4>
+                <h3 className="module-title">{module.title}</h3>
+                <p className="module-subtitle">{module.subtitle}</p>
+              </Link>
+            ))}
           </div>
-        </div>
+        </section>
       </div>
     </div>
   );

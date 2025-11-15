@@ -1,8 +1,25 @@
 "use client";
 
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function DashboardPage() {
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, router]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
+
   // TODO: Fetch this data from the backend API
   const dashboardData = {
     currentModule: 1,
@@ -24,7 +41,7 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-screen pt-32 bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="mx-auto py-8" style={{ paddingLeft: '8vw', paddingRight: '8vw', maxWidth: '1600px' }}>
         <h1 className="text-4xl font-bold text-gray-900 mb-8">Your Dashboard</h1>
 
         {/* Progress Overview */}

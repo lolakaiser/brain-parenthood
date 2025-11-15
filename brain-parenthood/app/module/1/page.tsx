@@ -1,16 +1,30 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 type StepType = 'overview' | 'baseline' | 'goals' | 'complete';
 
 export default function Module1Page() {
   const [currentStep, setCurrentStep] = useState<StepType>('overview');
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, router]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen pt-32 bg-[#2D3E50]">
-      <div className="container mx-auto px-4 py-8">
+      <div className="mx-auto py-8" style={{ paddingLeft: '8vw', paddingRight: '8vw', maxWidth: '1600px' }}>
         {/* Header */}
         <div className="mb-8 animate-fade-in">
           <Link

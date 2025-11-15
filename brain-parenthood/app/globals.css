@@ -226,3 +226,207 @@ input[type="range"]::-moz-range-thumb:hover {
 input[type="range"]::-moz-range-thumb:active {
   transform: scale(1.1);
 }
+
+/* Full-width top bar */
+.topbar {
+  width: 100%;
+  background: #242F3D;
+  padding: 16px 24px;
+  box-sizing: border-box;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Dynamic flexible nav */
+.topnav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Unified button style for ALL nav items */
+.nav-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 18px;
+  border-radius: 25px;
+  background: rgba(255, 255, 255, 0.08);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.95rem;
+  transition: background 0.2s, transform 0.1s;
+  border: none;
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.nav-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+/* Active state for navigation links */
+.nav-btn.active {
+  background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
+  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.4);
+}
+
+/* Buy Me a Coffee - keep unique gradient */
+.nav-btn.coffee-btn {
+  color: #000000;
+}
+
+/* Sign Up - purple pill */
+.nav-btn.primary-btn {
+  background: #846cff;
+  color: white;
+}
+
+.nav-btn.primary-btn:hover {
+  background: #9580ff;
+  box-shadow: 0 4px 12px rgba(132, 108, 255, 0.5);
+}
+
+/* Page content automatically moves down */
+.page-content {
+  margin-top: 0;
+}
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+  .topbar {
+    padding: 12px 16px;
+  }
+
+  .topnav {
+    gap: 10px;
+  }
+
+  .nav-btn {
+    padding: 7px 15px;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .topnav {
+    gap: 8px;
+  }
+
+  .nav-btn {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+  }
+}
+
+/* Module Grid Styles */
+.modules-section {
+  margin-top: clamp(24px, 4vw, 48px);
+}
+
+.module-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: clamp(16px, 2.5vw, 28px);
+  align-items: stretch;
+}
+
+.module-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+  padding: clamp(20px, 3vw, 32px);
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 2px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+  text-decoration: none;
+  color: inherit;
+  min-height: 190px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  cursor: pointer;
+}
+
+.module-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.25);
+}
+
+.module-card.opacity-60 {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.module-card.opacity-60:hover {
+  transform: none;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.18);
+}
+
+.module-week {
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 8px;
+  opacity: 0.85;
+}
+
+.module-title {
+  font-size: clamp(1.5rem, 3vw, 2rem);
+  font-weight: 800;
+  margin-bottom: 6px;
+  line-height: 1.2;
+}
+
+.module-subtitle {
+  font-size: clamp(0.875rem, 1.5vw, 1rem);
+  opacity: 0.8;
+  font-weight: 500;
+}
+
+/* Module-specific colors */
+.module-kickoff:hover {
+  border-color: #A78BFA;
+  box-shadow: 0 12px 32px rgba(167, 139, 250, 0.3);
+}
+
+.module-mindfulness:hover {
+  border-color: #FB8989;
+  box-shadow: 0 12px 32px rgba(251, 137, 137, 0.3);
+}
+
+.module-resilience:hover {
+  border-color: #FCD34D;
+  box-shadow: 0 12px 32px rgba(252, 211, 77, 0.3);
+}
+
+.module-communication:hover {
+  border-color: #7DD3FC;
+  box-shadow: 0 12px 32px rgba(125, 211, 252, 0.3);
+}
+
+.module-innovation:hover {
+  border-color: #6EE7B7;
+  box-shadow: 0 12px 32px rgba(110, 231, 183, 0.3);
+}
+
+.module-measurement:hover {
+  border-color: #67E8F9;
+  box-shadow: 0 12px 32px rgba(103, 232, 249, 0.3);
+}
+
+.module-wrapup:hover {
+  border-color: #818CF8;
+  box-shadow: 0 12px 32px rgba(129, 140, 248, 0.3);
+}

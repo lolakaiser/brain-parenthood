@@ -1,9 +1,28 @@
+"use client";
+
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 export default function ModulesPage() {
+  const { isAuthenticated } = useAuth();
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, router]);
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
+
   return (
     <div className="min-h-screen pt-32 bg-gray-50">
-      <div className="container mx-auto px-4 py-8">
+      <div className="mx-auto py-8" style={{ paddingLeft: '8vw', paddingRight: '8vw', maxWidth: '1600px' }}>
         <h1 className="text-4xl font-bold text-gray-900 mb-4">All Modules</h1>
         <p className="text-lg text-gray-600 mb-12">
           The complete 12-week Brain Parenthood journey
