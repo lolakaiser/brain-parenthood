@@ -4,11 +4,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
+import CoffeeModal from "./CoffeeModal";
 
 export default function Navigation() {
   const pathname = usePathname();
   const { user, logout, isAuthenticated } = useAuth();
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [showCoffeeModal, setShowCoffeeModal] = useState(false);
 
   return (
     <header className="topbar">
@@ -43,6 +45,7 @@ export default function Navigation() {
 
             {/* Buy Me a Coffee Button */}
             <button
+              onClick={() => setShowCoffeeModal(true)}
               className="nav-btn coffee-btn"
               style={{
                 background: 'linear-gradient(90deg, #A78BFA 0%, #FB8989 20%, #FCD34D 40%, #7DD3FC 60%, #6EE7B7 80%, #818CF8 100%)'
@@ -88,6 +91,12 @@ export default function Navigation() {
           </div>
         )}
       </nav>
+
+      {/* Coffee Modal */}
+      <CoffeeModal
+        isOpen={showCoffeeModal}
+        onClose={() => setShowCoffeeModal(false)}
+      />
     </header>
   );
 }
