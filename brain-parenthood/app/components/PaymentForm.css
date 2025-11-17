@@ -1,0 +1,269 @@
+/* Payment Form Container */
+.payment-form-container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+}
+
+.payment-form {
+  background: #ffffff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 30px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.payment-title {
+  margin: 0 0 24px 0;
+  font-size: 24px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+/* Form Groups */
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #555;
+}
+
+/* Amount Input */
+.amount-input {
+  width: 100%;
+  padding: 12px;
+  font-size: 16px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-sizing: border-box;
+  transition: border-color 0.3s;
+}
+
+.amount-input:focus {
+  outline: none;
+  border-color: #0066ff;
+}
+
+.amount-input:disabled {
+  background-color: #f5f5f5;
+  cursor: not-allowed;
+}
+
+/* Amount Display (Button Mode) */
+.amount-display {
+  padding: 12px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #0066ff;
+  background-color: #f0f7ff;
+  border-radius: 4px;
+  text-align: center;
+}
+
+/* Card Container */
+.card-container {
+  min-height: 80px;
+  padding: 12px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+}
+
+/* Buttons */
+.btn {
+  width: 100%;
+  padding: 14px;
+  font-size: 16px;
+  font-weight: 600;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s;
+  margin-top: 10px;
+}
+
+.btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.btn-primary {
+  background-color: #0066ff;
+  color: white;
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #0052cc;
+}
+
+.btn-secondary {
+  background-color: #f5f5f5;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.btn-secondary:hover:not(:disabled) {
+  background-color: #e0e0e0;
+}
+
+/* Error Message */
+.error-message {
+  padding: 12px;
+  margin: 16px 0;
+  background-color: #fff0f0;
+  border: 1px solid #ffcccc;
+  border-radius: 4px;
+  color: #cc0000;
+  font-size: 14px;
+}
+
+/* Success Message */
+.success-message {
+  text-align: center;
+  padding: 24px;
+}
+
+.success-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 16px;
+  background-color: #00cc66;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.success-text {
+  font-size: 20px;
+  font-weight: 600;
+  color: #00cc66;
+  margin-bottom: 8px;
+}
+
+.success-amount {
+  font-size: 28px;
+  font-weight: 700;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Error Status */
+.error-status {
+  text-align: center;
+  padding: 24px;
+}
+
+.error-icon {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 16px;
+  background-color: #cc0000;
+  color: white;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  font-weight: bold;
+}
+
+.error-text {
+  font-size: 20px;
+  font-weight: 600;
+  color: #cc0000;
+  margin-bottom: 20px;
+}
+
+/* Modal */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: white;
+  border-radius: 8px;
+  padding: 30px;
+  max-width: 400px;
+  width: 90%;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+}
+
+.modal-title {
+  margin: 0 0 24px 0;
+  font-size: 22px;
+  font-weight: 600;
+  color: #333;
+  text-align: center;
+}
+
+.modal-body {
+  margin-bottom: 24px;
+}
+
+.confirmation-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.confirmation-item:last-child {
+  border-bottom: none;
+}
+
+.confirmation-label {
+  font-weight: 500;
+  color: #555;
+}
+
+.confirmation-value {
+  font-weight: 600;
+  color: #333;
+}
+
+.modal-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-actions .btn {
+  flex: 1;
+  margin-top: 0;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .payment-form-container {
+    padding: 10px;
+  }
+
+  .payment-form {
+    padding: 20px;
+  }
+
+  .modal-content {
+    padding: 20px;
+  }
+}

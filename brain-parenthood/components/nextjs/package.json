@@ -1,0 +1,30 @@
+{
+  "name": "payment-form-nextjs",
+  "version": "1.0.0",
+  "description": "Reusable Next.js payment component with Square integration",
+  "main": "PaymentForm.tsx",
+  "peerDependencies": {
+    "next": "^14.0.0 || ^15.0.0",
+    "react": "^18.0.0 || ^19.0.0",
+    "react-dom": "^18.0.0 || ^19.0.0"
+  },
+  "scripts": {
+    "test": "echo \"No tests configured yet\""
+  },
+  "keywords": [
+    "nextjs",
+    "react",
+    "payment",
+    "square",
+    "payment-form",
+    "typescript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/node": "^24.10.1",
+    "@types/react": "^19.2.5",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3"
+  }
+}

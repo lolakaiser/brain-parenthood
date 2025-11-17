@@ -18,6 +18,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script src="https://web.squarecdn.com/v1/square.js" async></script>
+      </head>
       <body className={spaceGrotesk.className}>
         <AuthProvider>
           <Navigation />
