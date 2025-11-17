@@ -1,10 +1,10 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { Client } from 'square';
+import { SquareClient } from 'square';
 import { randomUUID } from 'crypto';
 
 // Initialize Square client
-const client = new Client({
-  accessToken: process.env.SQUARE_ACCESS_TOKEN!,
+const client = new SquareClient({
+  token: process.env.SQUARE_ACCESS_TOKEN!,
   environment: process.env.SQUARE_ENVIRONMENT === 'production'
     ? 'production'
     : 'sandbox',
@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     const amountInCents = Math.round(amount * 100);
 
     // Create payment
-    const response = await client.paymentsApi.createPayment({
+    const response = await client.payments.create({
       sourceId,
       amountMoney: {
         amount: BigInt(amountInCents),
@@ -55,10 +55,10 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({
       success: true,
       payment: {
-        id: response.result.payment?.id,
-        status: response.result.payment?.status,
+        id: response.payment?.id,
+        status: response.payment?.status,
         amount: amount,
-        createdAt: response.result.payment?.createdAt,
+        createdAt: response.payment?.createdAt,
       },
     });
   } catch (error: any) {
