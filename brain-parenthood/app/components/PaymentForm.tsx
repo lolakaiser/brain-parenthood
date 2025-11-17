@@ -73,8 +73,10 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
         return;
       }
 
-      if (!squareAppId || !squareLocationId) {
-        setErrorMessage('Square credentials not configured. Please check environment variables.');
+      if (!squareAppId || !squareLocationId ||
+          squareAppId.includes('YOUR_') ||
+          squareLocationId.includes('YOUR_')) {
+        setErrorMessage('⚠️ Square payment is not configured yet. Please contact support or set up Square credentials in .env.local');
         return;
       }
 
@@ -166,7 +168,10 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     try {
       const result = await card.tokenize();
       if (result.status === 'OK') {
-        const response = await fetch(`${apiUrl}/api/process-payment`, {
+        const endpoint = apiUrl ? `${apiUrl}/api/process-payment` : '/api/process-payment';
+        console.log('Sending payment to:', endpoint);
+
+        const response = await fetch(endpoint, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -176,6 +181,10 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
             amount: parseFloat(amount.toString()),
           }),
         });
+
+        if (!response.ok) {
+          throw new Error(`API responded with status: ${response.status}`);
+        }
 
         const data = await response.json();
 
@@ -204,7 +213,18 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     } catch (error) {
       console.error('Payment error:', error);
       setPaymentStatus('error');
-      setErrorMessage('Network error. Please check your connection and try again.');
+
+      // Provide more specific error message
+      let errorMsg = 'Network error. Please check your connection and try again.';
+      if (error instanceof Error) {
+        if (error.message.includes('API responded')) {
+          errorMsg = 'Payment service unavailable. Please try again later.';
+        } else if (error.message.includes('Failed to fetch')) {
+          errorMsg = 'Cannot connect to payment service. Make sure the server is running.';
+        }
+      }
+
+      setErrorMessage(errorMsg);
       if (onError) {
         onError(error as Error);
       }
