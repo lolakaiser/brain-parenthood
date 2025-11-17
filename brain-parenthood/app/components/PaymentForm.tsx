@@ -52,10 +52,10 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   const cardContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (mode === 'button' && propAmount) {
+    if (propAmount !== undefined) {
       setAmount(propAmount);
     }
-  }, [propAmount, mode]);
+  }, [propAmount]);
 
   useEffect(() => {
     let cardInstance: SquareCard | null = null;
