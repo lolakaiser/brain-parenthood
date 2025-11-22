@@ -1,26 +1,18 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect, useCallback, memo, useMemo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 
 type StepType = 'overview' | 'baseline' | 'goals' | 'complete';
 
-// Constants moved outside component for performance
 const STEPS = [
   { id: 'overview' as const, label: 'Overview' },
-  { id: 'baseline' as const, label: 'Baseline' },
+  { id: 'baseline' as const, label: 'Assessment' },
   { id: 'goals' as const, label: 'Goals' },
   { id: 'complete' as const, label: 'Complete' },
 ];
-
-const GRADIENT_STYLE = 'linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)';
-
-const ACTIVE_STEP_STYLE = {
-  filter: 'drop-shadow(0px 0px 2px #9333ea) drop-shadow(0px 0px 4px #3b82f6)',
-  fontWeight: '900' as const
-};
 
 export default function Module1Page() {
   const [currentStep, setCurrentStep] = useState<StepType>('overview');
@@ -41,93 +33,101 @@ export default function Module1Page() {
     return null;
   }
 
+  const currentStepIndex = STEPS.findIndex(s => s.id === currentStep);
+
   return (
-    <div className="min-h-screen pt-32 bg-[#2D3E50]">
-      <div className="mx-auto py-8" style={{ paddingLeft: '8vw', paddingRight: '8vw', maxWidth: '1600px' }}>
-        {/* Header */}
-        <div className="mb-8 animate-fade-in">
+    <div className="min-h-screen bg-gray-50">
+      {/* Header */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-5xl mx-auto px-6 py-8">
           <Link
             href="/"
-            className="inline-flex items-center gap-2 text-white hover:text-gray-300 font-medium mb-4 transition-colors group"
+            className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium mb-6 transition-colors"
           >
-            <span className="transform group-hover:-translate-x-1 transition-transform">←</span>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
             Back to Home
           </Link>
-          <div className="flex items-center gap-4 mb-2">
-            <h1 className="text-5xl font-extrabold text-white">
-              Module 1: Kick Off
+          <div>
+            <h1 className="text-4xl font-bold text-gray-900 mb-2">
+              Module 1: Foundation
             </h1>
+            <p className="text-lg text-gray-600">
+              Week 1 • Establish baseline and set goals
+            </p>
           </div>
-          <p className="text-xl text-white">
-            Week 1 - Establish Your Baseline and Set Goals
-          </p>
         </div>
+      </div>
 
-        {/* Progress Indicator */}
-        <div className="mb-8 animate-slide-up">
-          <div className="flex items-center justify-between mb-2 max-w-3xl mx-auto">
+      {/* Progress Bar */}
+      <div className="bg-white border-b border-gray-200">
+        <div className="max-w-5xl mx-auto px-6 py-6">
+          <div className="flex items-center justify-between">
             {STEPS.map((step, index) => (
               <div key={step.id} className="flex items-center flex-1">
-                <div className={`flex flex-col items-center w-full transition-all duration-300 ${
-                  currentStep === step.id ? 'scale-110' : ''
-                }`}>
-                  <div
-                    className={`w-12 h-12 rounded-full flex items-center justify-center font-extrabold text-lg
-                      transition-all duration-300 shadow-lg bg-[#3A4F63]
-                      ${currentStep === step.id
-                        ? 'text-white'
-                        : STEPS.findIndex(s => s.id === currentStep) > index
-                        ? 'text-white'
-                        : 'text-gray-400'
+                <div className="flex flex-col items-center flex-1">
+                  {/* Step Circle */}
+                  <div className="flex items-center justify-center mb-2">
+                    <div
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
+                        index < currentStepIndex
+                          ? 'bg-purple-600 text-white'
+                          : index === currentStepIndex
+                          ? 'bg-purple-600 text-white ring-4 ring-purple-100'
+                          : 'bg-gray-200 text-gray-500'
                       }`}
-                    style={currentStep === step.id ? ACTIVE_STEP_STYLE : undefined}
-                  >
-                    {index + 1}
+                    >
+                      {index < currentStepIndex ? (
+                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                        </svg>
+                      ) : (
+                        index + 1
+                      )}
+                    </div>
                   </div>
+                  {/* Step Label */}
                   <span
-                    className={`text-xs mt-2 text-center font-bold transition-all duration-300 ${
-                      currentStep === step.id
-                        ? 'text-white'
-                        : STEPS.findIndex(s => s.id === currentStep) > index
-                        ? 'text-white'
-                        : 'text-gray-400'
+                    className={`text-xs font-medium text-center transition-colors ${
+                      index <= currentStepIndex ? 'text-gray-900' : 'text-gray-500'
                     }`}
-                    style={currentStep === step.id ? ACTIVE_STEP_STYLE : undefined}
                   >
                     {step.label}
                   </span>
                 </div>
+                {/* Connector Line */}
                 {index < STEPS.length - 1 && (
-                  <div
-                    className={`h-1 flex-1 -mt-6 rounded transition-all duration-300 ${
-                      STEPS.findIndex(s => s.id === currentStep) > index
-                        ? 'bg-white/40'
-                        : 'bg-white/20'
-                    }`}
-                  />
+                  <div className="flex-1 h-0.5 -mt-8 mx-2">
+                    <div
+                      className={`h-full transition-all duration-500 ${
+                        index < currentStepIndex ? 'bg-purple-600' : 'bg-gray-200'
+                      }`}
+                    />
+                  </div>
                 )}
               </div>
             ))}
           </div>
         </div>
+      </div>
 
-        {/* Content */}
-        <div className="animate-fade-in">
-          {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('baseline')} />}
-          {currentStep === 'baseline' && (
-            <BaselineStep
-              onNext={() => handleSetStep('goals')}
-              onBack={() => handleSetStep('overview')}
-            />
-          )}
-          {currentStep === 'goals' && (
-            <GoalsStep
-              onNext={() => handleSetStep('complete')}
-              onBack={() => handleSetStep('baseline')}
-            />
-          )}
-          {currentStep === 'complete' && <CompleteStep />}
-        </div>
+      {/* Content */}
+      <div className="max-w-5xl mx-auto px-6 py-12">
+        {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('baseline')} />}
+        {currentStep === 'baseline' && (
+          <BaselineStep
+            onNext={() => handleSetStep('goals')}
+            onBack={() => handleSetStep('overview')}
+          />
+        )}
+        {currentStep === 'goals' && (
+          <GoalsStep
+            onNext={() => handleSetStep('complete')}
+            onBack={() => handleSetStep('baseline')}
+          />
+        )}
+        {currentStep === 'complete' && <CompleteStep />}
       </div>
     </div>
   );
@@ -135,82 +135,106 @@ export default function Module1Page() {
 
 const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void }) {
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-[#3A4F63] rounded-3xl shadow-2xl p-12 border border-white/10">
-        <div className="text-center mb-8">
-          <h2 className="text-4xl font-bold mb-6 text-white">
-            Welcome to Brain Parenthood!
+    <div className="max-w-3xl mx-auto">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-10">
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-900 mb-3">
+            Welcome to Brain Parenthood
           </h2>
+          <p className="text-lg text-gray-600">
+            A 12-week program to build team resilience and performance
+          </p>
         </div>
 
-        <div className="prose max-w-none mb-8 space-y-6">
-          <p className="text-xl text-white leading-relaxed">
+        <div className="prose prose-gray max-w-none mb-10">
+          <p className="text-gray-700 leading-relaxed">
             Just like raising a child, developing your team's collective intelligence requires
-            patience, structure, and care. This 12-week program will train your team's "brain"
+            patience, structure, and care. This program will train your team's "brain"
             through psychological resilience training.
           </p>
+        </div>
 
-          <div className="bg-[#2D3E50] rounded-2xl p-8 border border-white/20">
-            <h3 className="text-2xl font-bold mb-4 text-[#A78BFA]">What is Brain Parenthood?</h3>
-            <p className="text-white leading-relaxed">
-              Brain Parenthood is a comprehensive toolkit designed to reduce stress, improve mental
-              health, and boost productivity across your entire team. By treating your team's
-              development like nurturing a growing mind, you'll build lasting resilience and
-              performance improvements.
-            </p>
+        {/* Info Card */}
+        <div className="bg-purple-50 rounded-xl p-6 mb-8 border border-purple-100">
+          <h3 className="text-xl font-semibold text-gray-900 mb-3">What is Brain Parenthood?</h3>
+          <p className="text-gray-700 leading-relaxed">
+            A comprehensive toolkit designed to reduce stress, improve mental
+            health, and boost productivity across your entire team. Build lasting resilience and
+            performance improvements through structured development.
+          </p>
+        </div>
+
+        {/* Two Column Layout */}
+        <div className="grid md:grid-cols-2 gap-6 mb-10">
+          {/* Why This Matters */}
+          <div className="bg-white rounded-xl p-6 border border-gray-200">
+            <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <span className="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center text-purple-600">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 10V3L4 14h7v7l9-11h-7z" />
+                </svg>
+              </span>
+              Why This Matters
+            </h4>
+            <ul className="space-y-3">
+              <li className="flex items-start gap-3 text-gray-700">
+                <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span><strong className="font-medium text-gray-900">Reduce Stress:</strong> Lower stress levels lead to better mental health</span>
+              </li>
+              <li className="flex items-start gap-3 text-gray-700">
+                <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span><strong className="font-medium text-gray-900">Improve Performance:</strong> Resilient teams handle challenges effectively</span>
+              </li>
+              <li className="flex items-start gap-3 text-gray-700">
+                <svg className="w-5 h-5 text-green-500 mt-0.5 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                </svg>
+                <span><strong className="font-medium text-gray-900">Track Progress:</strong> Measure growth from beginning to end</span>
+              </li>
+            </ul>
           </div>
 
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-[#2D3E50] rounded-2xl p-6 shadow-lg border border-white/20">
-              <h4 className="font-bold text-lg mb-3 text-[#FB8989]">Why This Matters</h4>
-              <ul className="space-y-3 text-white">
-                <li className="flex items-start">
-                  <span className="text-[#FB8989] mr-2 text-xl">✓</span>
-                  <div>
-                    <strong>Reduce Stress:</strong> Lower stress levels lead to better mental health
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-[#FB8989] mr-2 text-xl">✓</span>
-                  <div>
-                    <strong>Improve Performance:</strong> A resilient team handles challenges effectively
-                  </div>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-[#FB8989] mr-2 text-xl">✓</span>
-                  <div>
-                    <strong>Track Progress:</strong> Easy to see growth from beginning to end
-                  </div>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-[#2D3E50] rounded-2xl p-6 shadow-lg border border-white/20">
-              <h4 className="font-bold text-lg mb-3 text-[#7DD3FC]">Module 1 Objectives</h4>
-              <ul className="space-y-3 text-white">
-                <li className="flex items-start">
-                  <span>Establish baseline of your team's current state</span>
-                </li>
-                <li className="flex items-start">
-                  <span>Set clear, achievable goals for 12 weeks</span>
-                </li>
-                <li className="flex items-start">
-                  <span>Understand Brain Parenthood concepts</span>
-                </li>
-              </ul>
-            </div>
+          {/* Module Objectives */}
+          <div className="bg-white rounded-xl p-6 border border-gray-200">
+            <h4 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+              <span className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center text-blue-600">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+                </svg>
+              </span>
+              Module 1 Objectives
+            </h4>
+            <ul className="space-y-3 text-gray-700">
+              <li className="flex items-start gap-3">
+                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
+                <span>Establish baseline of your team's current state</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
+                <span>Set clear, achievable goals for 12 weeks</span>
+              </li>
+              <li className="flex items-start gap-3">
+                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full mt-2 flex-shrink-0"></span>
+                <span>Understand Brain Parenthood concepts</span>
+              </li>
+            </ul>
           </div>
         </div>
 
-        <div className="text-center mt-10">
+        {/* CTA Button */}
+        <div className="flex justify-center">
           <button
             onClick={onNext}
-            className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-12 py-5 rounded-2xl font-bold text-lg
-                     hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95"
-            style={{ background: GRADIENT_STYLE }}
+            className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-8 py-3.5 rounded-lg font-semibold transition-colors shadow-sm"
           >
-            <span>Continue to Baseline Assessment</span>
-            <span className="text-2xl transform group-hover:translate-x-1 transition-transform">→</span>
+            Continue to Assessment
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
       </div>
@@ -235,7 +259,6 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
       id: 'teamStressLevel',
       title: 'Overall Team Stress Level',
       description: 'How would you rate the overall stress level across your team?',
-      icon: '😰',
       type: 'slider' as const,
       min: 1,
       max: 10,
@@ -246,7 +269,6 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
       id: 'individualStressLevel',
       title: 'Your Individual Stress Level',
       description: 'How stressed do you personally feel right now?',
-      icon: '🧘',
       type: 'slider' as const,
       min: 1,
       max: 10,
@@ -257,7 +279,6 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
       id: 'productivity',
       title: 'Team Productivity',
       description: 'How productive is your team currently?',
-      icon: '⚡',
       type: 'slider' as const,
       min: 1,
       max: 10,
@@ -268,7 +289,6 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
       id: 'communication',
       title: 'Team Communication Quality',
       description: 'How well does your team communicate?',
-      icon: '💬',
       type: 'slider' as const,
       min: 1,
       max: 10,
@@ -279,7 +299,6 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
       id: 'workLifeBalance',
       title: 'Work-Life Balance',
       description: 'How would you rate your team\'s work-life balance?',
-      icon: '⚖️',
       type: 'slider' as const,
       min: 1,
       max: 10,
@@ -290,17 +309,15 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
       id: 'teamSize',
       title: 'Team Size',
       description: 'How many people are on your team?',
-      icon: '👥',
       type: 'number' as const,
-      placeholder: 'Enter number of team members',
+      placeholder: 'Enter number',
     },
     {
       id: 'primaryChallenges',
       title: 'Primary Challenges',
       description: 'What are the main challenges your team is facing right now?',
-      icon: '🎯',
       type: 'textarea' as const,
-      placeholder: 'Describe your team\'s challenges in detail...',
+      placeholder: 'Describe your team\'s challenges...',
     },
   ];
 
@@ -331,113 +348,108 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      {/* Progress Bar */}
+    <div className="max-w-2xl mx-auto">
+      {/* Progress Header */}
       <div className="mb-8">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-semibold text-[#A78BFA]">Baseline Assessment</span>
-          <span className="text-sm font-semibold text-white">
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-sm font-medium text-purple-600">Baseline Assessment</span>
+          <span className="text-sm text-gray-500">
             Question {currentQuestion + 1} of {questions.length}
           </span>
         </div>
-        <div className="h-3 bg-white/20 rounded-full overflow-hidden shadow-inner">
+        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-purple-600 to-blue-600 rounded-full transition-all duration-500 ease-out"
+            className="h-full bg-purple-600 rounded-full transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
       </div>
 
       {/* Question Card */}
-      <div className="bg-[#3A4F63] rounded-3xl shadow-2xl p-10 border border-white/10 min-h-[500px] flex flex-col justify-between animate-slide-up">
-        <div>
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4 text-white">
-              {currentQ.title}
-            </h2>
-            <p className="text-lg text-gray-300">
-              {currentQ.description}
-            </p>
-          </div>
-
-          <div className="mt-8">
-            {currentQ.type === 'slider' && (
-              <div className="space-y-6">
-                <div className="text-center">
-                  <div className="inline-block bg-gradient-to-br from-purple-600 to-blue-600 text-white text-5xl font-bold px-8 py-4 rounded-3xl shadow-xl">
-                    {formData[currentQ.id as keyof typeof formData]}
-                  </div>
-                </div>
-                <div className="px-4">
-                  <input
-                    type="range"
-                    min={currentQ.min}
-                    max={currentQ.max}
-                    value={formData[currentQ.id as keyof typeof formData] as number}
-                    onChange={(e) => setFormData({ ...formData, [currentQ.id]: parseInt(e.target.value) })}
-                    className="w-full h-3 bg-white/20 rounded-lg appearance-none cursor-pointer slider-thumb"
-                  />
-                  <div className="flex justify-between mt-3">
-                    <span className="text-sm font-medium text-gray-300">{currentQ.minLabel}</span>
-                    <span className="text-sm font-medium text-gray-300">{currentQ.maxLabel}</span>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {currentQ.type === 'number' && (
-              <div className="flex justify-center">
-                <input
-                  type="number"
-                  min="1"
-                  value={formData[currentQ.id as keyof typeof formData]}
-                  onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })}
-                  className="w-48 px-6 py-4 text-2xl text-center bg-[#2D3E50] text-white border-2 border-white/20 rounded-2xl
-                           focus:ring-4 focus:ring-purple-500/50 focus:border-purple-500 transition-all shadow-lg placeholder-gray-400"
-                  placeholder={currentQ.placeholder}
-                />
-              </div>
-            )}
-
-            {currentQ.type === 'textarea' && (
-              <div className="max-w-2xl mx-auto">
-                <textarea
-                  value={formData[currentQ.id as keyof typeof formData]}
-                  onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })}
-                  className="w-full px-6 py-4 text-lg bg-[#2D3E50] text-white border-2 border-white/20 rounded-2xl
-                           focus:ring-4 focus:ring-purple-500/50 focus:border-purple-500 transition-all shadow-lg resize-none placeholder-gray-400"
-                  rows={6}
-                  placeholder={currentQ.placeholder}
-                />
-              </div>
-            )}
-          </div>
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            {currentQ.title}
+          </h2>
+          <p className="text-gray-600">
+            {currentQ.description}
+          </p>
         </div>
 
-        {/* Navigation Buttons */}
-        <div className="flex justify-between items-center mt-10 pt-8 border-t border-white/10">
+        <div className="mb-12">
+          {currentQ.type === 'slider' && (
+            <div className="space-y-8">
+              <div className="flex justify-center">
+                <div className="inline-flex items-center justify-center w-20 h-20 bg-purple-600 text-white text-3xl font-bold rounded-2xl">
+                  {formData[currentQ.id as keyof typeof formData]}
+                </div>
+              </div>
+              <div>
+                <input
+                  type="range"
+                  min={currentQ.min}
+                  max={currentQ.max}
+                  value={formData[currentQ.id as keyof typeof formData] as number}
+                  onChange={(e) => setFormData({ ...formData, [currentQ.id]: parseInt(e.target.value) })}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-purple-600"
+                  style={{
+                    background: `linear-gradient(to right, #9333ea 0%, #9333ea ${((formData[currentQ.id as keyof typeof formData] as number - currentQ.min) / (currentQ.max - currentQ.min)) * 100}%, #e5e7eb ${((formData[currentQ.id as keyof typeof formData] as number - currentQ.min) / (currentQ.max - currentQ.min)) * 100}%, #e5e7eb 100%)`
+                  }}
+                />
+                <div className="flex justify-between mt-2">
+                  <span className="text-sm text-gray-500">{currentQ.minLabel}</span>
+                  <span className="text-sm text-gray-500">{currentQ.maxLabel}</span>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {currentQ.type === 'number' && (
+            <input
+              type="number"
+              min="1"
+              value={formData[currentQ.id as keyof typeof formData]}
+              onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })}
+              className="w-full px-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+              placeholder={currentQ.placeholder}
+            />
+          )}
+
+          {currentQ.type === 'textarea' && (
+            <textarea
+              value={formData[currentQ.id as keyof typeof formData]}
+              onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })}
+              className="w-full px-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent resize-none"
+              rows={6}
+              placeholder={currentQ.placeholder}
+            />
+          )}
+        </div>
+
+        {/* Navigation */}
+        <div className="flex justify-between items-center pt-6 border-t border-gray-200">
           <button
             onClick={handlePrevious}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white
-                     transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 group bg-gradient-to-r from-purple-600 to-blue-600"
-            style={{ background: 'linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)' }}
+            className="inline-flex items-center gap-2 px-6 py-2.5 text-gray-700 hover:text-gray-900 font-medium transition-colors"
           >
-            <span className="transform group-hover:-translate-x-1 transition-transform">←</span>
-            <span>Back</span>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
           </button>
           <button
             onClick={handleNext}
             disabled={!isAnswered()}
-            className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white
-                     transition-all duration-200 shadow-lg group
-                     ${isAnswered()
-                       ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 hover:shadow-xl hover:scale-105 active:scale-95'
-                       : 'bg-white/10 cursor-not-allowed opacity-50'
-                     }`}
-            style={isAnswered() ? { background: 'linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)' } : undefined}
+            className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold transition-colors ${
+              isAnswered()
+                ? 'bg-purple-600 hover:bg-purple-700 text-white'
+                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+            }`}
           >
-            <span>{currentQuestion === questions.length - 1 ? 'Continue' : 'Next'}</span>
-            <span className="transform group-hover:translate-x-1 transition-transform">→</span>
+            {currentQuestion === questions.length - 1 ? 'Continue' : 'Next'}
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
       </div>
@@ -461,7 +473,6 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
       id: 'stressReduction',
       title: 'Stress Reduction Goal',
       description: 'What specific stress reduction goal do you want to achieve?',
-      icon: '🎯',
       type: 'text' as const,
       placeholder: 'e.g., Reduce team stress level from 7 to 4',
     },
@@ -469,7 +480,6 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
       id: 'productivityGoal',
       title: 'Productivity Goal',
       description: 'How do you want to improve your team\'s productivity?',
-      icon: '📈',
       type: 'text' as const,
       placeholder: 'e.g., Increase team productivity by 25%',
     },
@@ -477,15 +487,13 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
       id: 'communicationGoal',
       title: 'Communication Goal',
       description: 'What communication improvements do you want to see?',
-      icon: '💡',
       type: 'text' as const,
-      placeholder: 'e.g., Establish daily check-ins and weekly retrospectives',
+      placeholder: 'e.g., Daily check-ins and weekly retrospectives',
     },
     {
       id: 'personalGoal',
       title: 'Personal Development Goal',
       description: 'What do you personally want to achieve in the next 12 weeks?',
-      icon: '⭐',
       type: 'textarea' as const,
       placeholder: 'Describe your personal development goals...',
     },
@@ -493,7 +501,6 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
       id: 'teamGoal',
       title: 'Team Development Goal',
       description: 'What does your team want to achieve together?',
-      icon: '🤝',
       type: 'textarea' as const,
       placeholder: 'Describe your team\'s collective goals...',
     },
@@ -501,9 +508,8 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
       id: 'successMetrics',
       title: 'Success Metrics',
       description: 'How will you measure success at the end of 12 weeks?',
-      icon: '📊',
       type: 'textarea' as const,
-      placeholder: 'Define specific metrics or indicators of success...',
+      placeholder: 'Define specific metrics or indicators...',
     },
   ];
 
@@ -533,88 +539,80 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
-      {/* Progress Bar */}
+    <div className="max-w-2xl mx-auto">
+      {/* Progress Header */}
       <div className="mb-8">
-        <div className="flex justify-between items-center mb-2">
-          <span className="text-sm font-semibold text-[#7DD3FC]">Goal Setting</span>
-          <span className="text-sm font-semibold text-white">
+        <div className="flex justify-between items-center mb-3">
+          <span className="text-sm font-medium text-purple-600">Goal Setting</span>
+          <span className="text-sm text-gray-500">
             Question {currentQuestion + 1} of {questions.length}
           </span>
         </div>
-        <div className="h-3 bg-white/20 rounded-full overflow-hidden shadow-inner">
+        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-gradient-to-r from-purple-600 to-blue-600 rounded-full transition-all duration-500 ease-out"
+            className="h-full bg-purple-600 rounded-full transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
       </div>
 
       {/* Question Card */}
-      <div className="bg-[#3A4F63] rounded-3xl shadow-2xl p-10 border border-white/10 min-h-[500px] flex flex-col justify-between animate-slide-up">
-        <div>
-          <div className="text-center mb-8">
-            <h2 className="text-3xl font-bold mb-4 text-white">
-              {currentQ.title}
-            </h2>
-            <p className="text-lg text-gray-300">
-              {currentQ.description}
-            </p>
-          </div>
-
-          <div className="mt-8">
-            {currentQ.type === 'text' && (
-              <div className="max-w-2xl mx-auto">
-                <input
-                  type="text"
-                  value={goals[currentQ.id as keyof typeof goals]}
-                  onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })}
-                  className="w-full px-6 py-4 text-lg bg-[#2D3E50] text-white border-2 border-white/20 rounded-2xl
-                           focus:ring-4 focus:ring-purple-500/50 focus:border-purple-500 transition-all shadow-lg placeholder-gray-400"
-                  placeholder={currentQ.placeholder}
-                />
-              </div>
-            )}
-
-            {currentQ.type === 'textarea' && (
-              <div className="max-w-2xl mx-auto">
-                <textarea
-                  value={goals[currentQ.id as keyof typeof goals]}
-                  onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })}
-                  className="w-full px-6 py-4 text-lg bg-[#2D3E50] text-white border-2 border-white/20 rounded-2xl
-                           focus:ring-4 focus:ring-purple-500/50 focus:border-purple-500 transition-all shadow-lg resize-none placeholder-gray-400"
-                  rows={6}
-                  placeholder={currentQ.placeholder}
-                />
-              </div>
-            )}
-          </div>
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2">
+            {currentQ.title}
+          </h2>
+          <p className="text-gray-600">
+            {currentQ.description}
+          </p>
         </div>
 
-        {/* Navigation Buttons */}
-        <div className="flex justify-between items-center mt-10 pt-8 border-t border-white/10">
+        <div className="mb-12">
+          {currentQ.type === 'text' && (
+            <input
+              type="text"
+              value={goals[currentQ.id as keyof typeof goals]}
+              onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })}
+              className="w-full px-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+              placeholder={currentQ.placeholder}
+            />
+          )}
+
+          {currentQ.type === 'textarea' && (
+            <textarea
+              value={goals[currentQ.id as keyof typeof goals]}
+              onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })}
+              className="w-full px-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent resize-none"
+              rows={6}
+              placeholder={currentQ.placeholder}
+            />
+          )}
+        </div>
+
+        {/* Navigation */}
+        <div className="flex justify-between items-center pt-6 border-t border-gray-200">
           <button
             onClick={handlePrevious}
-            className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white
-                     transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 group bg-gradient-to-r from-purple-600 to-blue-600"
-            style={{ background: 'linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)' }}
+            className="inline-flex items-center gap-2 px-6 py-2.5 text-gray-700 hover:text-gray-900 font-medium transition-colors"
           >
-            <span className="transform group-hover:-translate-x-1 transition-transform">←</span>
-            <span>Back</span>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back
           </button>
           <button
             onClick={handleNext}
             disabled={!isAnswered()}
-            className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white
-                     transition-all duration-200 shadow-lg group
-                     ${isAnswered()
-                       ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 hover:shadow-xl hover:scale-105 active:scale-95'
-                       : 'bg-white/10 cursor-not-allowed opacity-50'
-                     }`}
-            style={isAnswered() ? { background: 'linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)' } : undefined}
+            className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold transition-colors ${
+              isAnswered()
+                ? 'bg-purple-600 hover:bg-purple-700 text-white'
+                : 'bg-gray-200 text-gray-400 cursor-not-allowed'
+            }`}
           >
-            <span>{currentQuestion === questions.length - 1 ? 'Complete' : 'Next'}</span>
-            <span className="transform group-hover:translate-x-1 transition-transform">→</span>
+            {currentQuestion === questions.length - 1 ? 'Complete' : 'Next'}
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </button>
         </div>
       </div>
@@ -624,61 +622,80 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
 
 function CompleteStep() {
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-[#3A4F63] rounded-3xl shadow-2xl p-12 border border-white/10 text-center animate-fade-in">
-        <h2 className="text-5xl font-bold mb-6 text-white">
-          Congratulations!
+    <div className="max-w-2xl mx-auto">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-10 text-center">
+        {/* Success Icon */}
+        <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6">
+          <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+          </svg>
+        </div>
+
+        <h2 className="text-3xl font-bold text-gray-900 mb-3">
+          Module 1 Complete!
         </h2>
-        <p className="text-xl text-white mb-10 max-w-2xl mx-auto leading-relaxed">
-          You've completed Module 1! You've established your baseline and set clear goals for
-          your Brain Parenthood journey. Your personalized plan is being generated based on your
-          inputs.
+        <p className="text-lg text-gray-600 mb-10 max-w-lg mx-auto">
+          You've established your baseline and set clear goals for your Brain Parenthood journey.
         </p>
 
-        <div className="bg-[#2D3E50] rounded-2xl p-8 mb-10 text-left max-w-2xl mx-auto border border-white/20">
-          <h3 className="font-bold text-2xl mb-6 text-[#6EE7B7] flex items-center gap-2">
-            <span>What's Next?</span>
+        {/* Next Steps */}
+        <div className="bg-gray-50 rounded-xl p-6 mb-10 text-left border border-gray-200">
+          <h3 className="font-semibold text-gray-900 mb-4 flex items-center gap-2">
+            <svg className="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+            </svg>
+            What's Next?
           </h3>
-          <ul className="space-y-4 text-white">
-            <li className="flex items-start gap-3 bg-[#3A4F63] rounded-xl p-4 shadow-md border border-white/10">
+          <ul className="space-y-3">
+            <li className="flex items-start gap-3">
+              <span className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-purple-600 text-sm font-semibold">1</span>
+              </span>
               <div>
-                <strong className="text-[#A78BFA]">Review your personalized plan</strong>
-                <p className="text-sm text-gray-300">Check your dashboard for detailed insights</p>
+                <p className="font-medium text-gray-900">Review your personalized plan</p>
+                <p className="text-sm text-gray-600">Check your dashboard for detailed insights</p>
               </div>
             </li>
-            <li className="flex items-start gap-3 bg-[#3A4F63] rounded-xl p-4 shadow-md border border-white/10">
+            <li className="flex items-start gap-3">
+              <span className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-purple-600 text-sm font-semibold">2</span>
+              </span>
               <div>
-                <strong className="text-[#FB8989]">Share your goals with your team</strong>
-                <p className="text-sm text-gray-300">Get everyone aligned on the journey ahead</p>
+                <p className="font-medium text-gray-900">Share goals with your team</p>
+                <p className="text-sm text-gray-600">Get everyone aligned on the journey ahead</p>
               </div>
             </li>
-            <li className="flex items-start gap-3 bg-[#3A4F63] rounded-xl p-4 shadow-md border border-white/10">
+            <li className="flex items-start gap-3">
+              <span className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-purple-600 text-sm font-semibold">3</span>
+              </span>
               <div>
-                <strong className="text-[#7DD3FC]">Prepare for Module 2</strong>
-                <p className="text-sm text-gray-300">Mindfulness Foundation (coming soon)</p>
+                <p className="font-medium text-gray-900">Prepare for Module 2</p>
+                <p className="text-sm text-gray-600">Mindfulness Foundation</p>
               </div>
             </li>
           </ul>
         </div>
 
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+        {/* Action Buttons */}
+        <div className="flex flex-col sm:flex-row gap-3 justify-center">
           <Link
             href="/dashboard"
-            className="group inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-10 py-5 rounded-2xl font-bold text-lg
-                     hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95"
-            style={{ background: 'linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)' }}
+            className="inline-flex items-center justify-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-6 py-3 rounded-lg font-semibold transition-colors"
           >
-            <span>View Dashboard</span>
-            <span className="transform group-hover:translate-x-1 transition-transform">→</span>
+            View Dashboard
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+            </svg>
           </Link>
           <Link
             href="/"
-            className="inline-flex items-center gap-3 px-10 py-5 rounded-2xl font-bold text-lg text-white
-                     transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 bg-gradient-to-r from-purple-600 to-blue-600"
-            style={{ background: 'linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)' }}
+            className="inline-flex items-center justify-center gap-2 px-6 py-3 text-gray-700 hover:text-gray-900 font-semibold transition-colors border border-gray-300 rounded-lg hover:border-gray-400"
           >
-            <span>←</span>
-            <span>Back to Home</span>
+            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Home
           </Link>
         </div>
       </div>
