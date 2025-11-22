@@ -12,7 +12,7 @@ export async function POST(request: Request) {
 
     if (!email || !password) {
       return NextResponse.json(
-        { error: 'Email and password are required' },
+        { detail: 'Email and password are required' },
         { status: 400 }
       );
     }
@@ -21,7 +21,7 @@ export async function POST(request: Request) {
 
     if (!user || user.password !== password) {
       return NextResponse.json(
-        { error: 'Invalid credentials' },
+        { detail: 'Invalid credentials' },
         { status: 401 }
       );
     }
@@ -30,7 +30,8 @@ export async function POST(request: Request) {
     const token = Buffer.from(`${user.id}:${user.email}:${Date.now()}`).toString('base64');
 
     return NextResponse.json({
-      token,
+      access_token: token,
+      token_type: "bearer",
       user: {
         id: user.id,
         email: user.email,
@@ -40,7 +41,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Login error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { detail: 'Internal server error' },
       { status: 500 }
     );
   }

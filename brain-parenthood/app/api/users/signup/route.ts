@@ -14,14 +14,14 @@ export async function POST(request: Request) {
 
     if (!email || !password || !name) {
       return NextResponse.json(
-        { error: 'Email, password, and name are required' },
+        { detail: 'Email, password, and name are required' },
         { status: 400 }
       );
     }
 
     if (users.has(email)) {
       return NextResponse.json(
-        { error: 'User already exists' },
+        { detail: 'User already exists' },
         { status: 409 }
       );
     }
@@ -39,7 +39,8 @@ export async function POST(request: Request) {
     const token = Buffer.from(`${newUser.id}:${newUser.email}:${Date.now()}`).toString('base64');
 
     return NextResponse.json({
-      token,
+      access_token: token,
+      token_type: "bearer",
       user: {
         id: newUser.id,
         email: newUser.email,
@@ -49,7 +50,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Signup error:', error);
     return NextResponse.json(
-      { error: 'Internal server error' },
+      { detail: 'Internal server error' },
       { status: 500 }
     );
   }

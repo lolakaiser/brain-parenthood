@@ -6,7 +6,7 @@ export async function GET(request: Request) {
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return NextResponse.json(
-        { error: 'Unauthorized' },
+        { detail: 'Unauthorized' },
         { status: 401 }
       );
     }
@@ -19,7 +19,7 @@ export async function GET(request: Request) {
 
     if (!id || !email) {
       return NextResponse.json(
-        { error: 'Invalid token' },
+        { detail: 'Invalid token' },
         { status: 401 }
       );
     }
@@ -33,7 +33,7 @@ export async function GET(request: Request) {
   } catch (error) {
     console.error('Auth error:', error);
     return NextResponse.json(
-      { error: 'Unauthorized' },
+      { detail: 'Unauthorized' },
       { status: 401 }
     );
   }
