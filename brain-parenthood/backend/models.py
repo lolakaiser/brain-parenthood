@@ -1,4 +1,4 @@
-from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float, DateTime, Text
+from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float, DateTime, Text, Index
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from database import Base
@@ -34,8 +34,8 @@ class TeamMember(Base):
     __tablename__ = "team_members"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
-    team_id = Column(Integer, ForeignKey("teams.id"))
+    user_id = Column(Integer, ForeignKey("users.id"), index=True)
+    team_id = Column(Integer, ForeignKey("teams.id"), index=True)
     role = Column(String, default="member")  # member, admin, owner
     joined_at = Column(DateTime, default=datetime.utcnow)
 
@@ -43,11 +43,16 @@ class TeamMember(Base):
     user = relationship("User", back_populates="team_memberships")
     team = relationship("Team", back_populates="members")
 
+    # Composite index for common queries
+    __table_args__ = (
+        Index('ix_team_member_user_team', 'user_id', 'team_id'),
+    )
+
 class BaselineAssessment(Base):
     __tablename__ = "baseline_assessments"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(Integer, ForeignKey("users.id"), index=True)
     module_number = Column(Integer, default=1)
 
     # Assessment scores (1-10)
@@ -61,10 +66,16 @@ class BaselineAssessment(Base):
     team_size = Column(Integer)
     primary_challenges = Column(Text)
 
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=datetime.utcnow, index=True)
 
     # Relationships
     user = relationship("User", back_populates="assessments")
+
+    # Composite indexes for common queries
+    __table_args__ = (
+        Index('ix_assessment_user_module', 'user_id', 'module_number'),
+        Index('ix_assessment_user_created', 'user_id', 'created_at'),
+    )
 
 class TeamAssessment(Base):
     __tablename__ = "team_assessments"
@@ -88,7 +99,7 @@ class Goal(Base):
     __tablename__ = "goals"
 
     id = Column(Integer, primary_key=True, index=True)
-    user_id = Column(Integer, ForeignKey("users.id"))
+    user_id = Column(Integer, ForeignKey("users.id"), index=True)
     module_number = Column(Integer, default=1)
 
     # Goals
@@ -100,7 +111,7 @@ class Goal(Base):
     success_metrics = Column(Text)
 
     # Status
-    is_achieved = Column(Boolean, default=False)
+    is_achieved = Column(Boolean, default=False, index=True)
     progress_percentage = Column(Integer, default=0)
 
     created_at = Column(DateTime, default=datetime.utcnow)
@@ -108,6 +119,12 @@ class Goal(Base):
 
     # Relationships
     user = relationship("User", back_populates="goals")
+
+    # Composite indexes for common queries
+    __table_args__ = (
+        Index('ix_goal_user_module', 'user_id', 'module_number'),
+        Index('ix_goal_user_achieved', 'user_id', 'is_achieved'),
+    )
 
 class ModuleProgress(Base):
     __tablename__ = "module_progress"

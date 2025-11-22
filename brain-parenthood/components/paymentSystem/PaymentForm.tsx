@@ -49,6 +49,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   const [showConfirmation, setShowConfirmation] = useState(false);
   const [cardBrand, setCardBrand] = useState('');
   const [lastFourDigits, setLastFourDigits] = useState('');
+  const [paymentToken, setPaymentToken] = useState<any>(null);
   const cardContainerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -59,48 +60,67 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
 
   useEffect(() => {
     let cardInstance: SquareCard | null = null;
-    let attempts = 0;
-    const maxAttempts = 50;
+    let isMounted = true;
+
+    const waitForSquare = () => {
+      return new Promise<void>((resolve, reject) => {
+        if (window.Square) {
+          resolve();
+          return;
+        }
+
+        const checkSquare = setInterval(() => {
+          if (window.Square) {
+            clearInterval(checkSquare);
+            clearTimeout(timeout);
+            resolve();
+          }
+        }, 100);
+
+        const timeout = setTimeout(() => {
+          clearInterval(checkSquare);
+          reject(new Error('Square SDK failed to load'));
+        }, 5000);
+      });
+    };
 
     const initializeSquare = async () => {
-      if (!window.Square) {
-        if (attempts < maxAttempts) {
-          attempts++;
-          setTimeout(initializeSquare, 100);
-        } else {
-          setErrorMessage('Failed to load Square SDK. Please refresh the page.');
-        }
-        return;
-      }
-
-      if (!squareAppId || !squareLocationId) {
-        setErrorMessage('Square credentials not configured. Please check environment variables.');
-        return;
-      }
-
       try {
+        await waitForSquare();
+
+        if (!isMounted) return;
+
+        if (!squareAppId || !squareLocationId) {
+          setErrorMessage('Square credentials not configured. Please check environment variables.');
+          return;
+        }
+
         const payments = window.Square.payments(squareAppId, squareLocationId);
         cardInstance = await payments.card();
-        if (cardContainerRef.current) {
-          await cardInstance.attach(cardContainerRef.current);
 
-          cardInstance.addEventListener('cardBrandChanged', (event: any) => {
-            if (event.cardBrand) {
-              setCardBrand(event.cardBrand);
-            }
-          });
+        if (!isMounted || !cardContainerRef.current) return;
 
-          setCard(cardInstance);
-        }
+        await cardInstance.attach(cardContainerRef.current);
+
+        cardInstance.addEventListener('cardBrandChanged', (event: any) => {
+          if (event.cardBrand) {
+            setCardBrand(event.cardBrand);
+          }
+        });
+
+        setCard(cardInstance);
       } catch (error) {
         console.error('Error initializing Square:', error);
-        setErrorMessage('Failed to initialize payment form. Please refresh the page.');
+        if (isMounted) {
+          setErrorMessage('Failed to initialize payment form. Please refresh the page.');
+        }
       }
     };
 
     initializeSquare();
 
     return () => {
+      isMounted = false;
       if (cardInstance) {
         cardInstance.destroy();
       }
@@ -135,6 +155,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     try {
       const result = await card.tokenize();
       if (result.status === 'OK') {
+        setPaymentToken(result.token);
         setLastFourDigits(result.token.details?.card?.last4 || '****');
         setCardBrand(result.token.details?.card?.brand || 'Card');
         setShowConfirmation(true);
@@ -157,48 +178,37 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     setErrorMessage('');
     setPaymentStatus(null);
 
-    if (!card) {
-      setErrorMessage('Payment form not ready.');
+    if (!paymentToken) {
+      setErrorMessage('Payment token not available. Please try again.');
       setIsProcessing(false);
       return;
     }
 
     try {
-      const result = await card.tokenize();
-      if (result.status === 'OK') {
-        const response = await fetch(`${apiUrl}/api/process-payment`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            sourceId: result.token,
-            amount: parseFloat(amount.toString()),
-          }),
-        });
+      const response = await fetch(`${apiUrl}/api/process-payment`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          sourceId: paymentToken,
+          amount: parseFloat(amount.toString()),
+        }),
+      });
 
-        const data = await response.json();
+      const data = await response.json();
 
-        if (data.success) {
-          setPaymentStatus('success');
-          if (onSuccess) {
-            onSuccess(data.payment);
-          }
-        } else {
-          setPaymentStatus('error');
-          setErrorMessage(data.error || 'Payment failed. Please try again.');
-          if (onError) {
-            onError(new Error(data.error || 'Payment failed'));
-          }
+      if (data.success) {
+        setPaymentStatus('success');
+        setPaymentToken(null);
+        if (onSuccess) {
+          onSuccess(data.payment);
         }
       } else {
         setPaymentStatus('error');
-        const errorMsg = result.errors
-          ? result.errors.map((e: any) => e.message).join(', ')
-          : 'Card validation failed';
-        setErrorMessage(errorMsg);
+        setErrorMessage(data.error || 'Payment failed. Please try again.');
         if (onError) {
-          onError(new Error(errorMsg));
+          onError(new Error(data.error || 'Payment failed'));
         }
       }
     } catch (error) {

@@ -3,81 +3,137 @@
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
 interface User {
-  username: string;
+  id: number;
+  email: string;
+  name: string;
 }
 
 interface AuthContextType {
   user: User | null;
-  login: (username: string, password: string) => boolean;
-  signup: (username: string, password: string) => boolean;
+  login: (email: string, password: string) => Promise<{success: boolean; error?: string}>;
+  signup: (email: string, password: string, name: string) => Promise<{success: boolean; error?: string}>;
   logout: () => void;
   isAuthenticated: boolean;
+  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-// Hardcoded users (in a real app, this would be in a database)
-const USERS = [
-  { username: 'lola', password: '1234' }
-];
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load user from localStorage on mount
+  // Load user and validate token on mount
   useEffect(() => {
-    try {
-      const storedUser = localStorage.getItem('user');
-      if (storedUser) {
-        setUser(JSON.parse(storedUser));
+    const loadUser = async () => {
+      try {
+        const token = localStorage.getItem('authToken');
+        if (token) {
+          // Validate token by fetching current user
+          const response = await fetch(`${API_URL}/api/users/me`, {
+            headers: {
+              'Authorization': `Bearer ${token}`
+            }
+          });
+
+          if (response.ok) {
+            const userData = await response.json();
+            setUser(userData);
+          } else {
+            // Token invalid, clear it
+            localStorage.removeItem('authToken');
+          }
+        }
+      } catch (error) {
+        console.error('Error loading user:', error);
+        localStorage.removeItem('authToken');
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error('Error loading user from localStorage:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    };
+
+    loadUser();
   }, []);
 
-  const login = (username: string, password: string): boolean => {
-    const foundUser = USERS.find(
-      u => u.username === username && u.password === password
-    );
+  const login = async (email: string, password: string): Promise<{success: boolean; error?: string}> => {
+    try {
+      const response = await fetch(`${API_URL}/api/users/login`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    if (foundUser) {
-      const userObj = { username: foundUser.username };
-      setUser(userObj);
-      localStorage.setItem('user', JSON.stringify(userObj));
-      return true;
+      const data = await response.json();
+
+      if (response.ok) {
+        // Store token
+        localStorage.setItem('authToken', data.access_token);
+
+        // Fetch user info
+        const userResponse = await fetch(`${API_URL}/api/users/me`, {
+          headers: {
+            'Authorization': `Bearer ${data.access_token}`
+          }
+        });
+
+        if (userResponse.ok) {
+          const userData = await userResponse.json();
+          setUser(userData);
+          return { success: true };
+        }
+      }
+
+      return {
+        success: false,
+        error: data.detail || 'Login failed. Please check your credentials.'
+      };
+    } catch (error) {
+      console.error('Login error:', error);
+      return {
+        success: false,
+        error: 'Network error. Please check your connection and try again.'
+      };
     }
-    return false;
   };
 
-  const signup = (username: string, password: string): boolean => {
-    // Check if user already exists
-    const existingUser = USERS.find(u => u.username === username);
-    if (existingUser) {
-      return false;
-    }
+  const signup = async (email: string, password: string, name: string): Promise<{success: boolean; error?: string}> => {
+    try {
+      const response = await fetch(`${API_URL}/api/users/signup`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password, name }),
+      });
 
-    // In a real app, you would save this to a database
-    // For now, we'll just add it to the array
-    USERS.push({ username, password });
-    const userObj = { username };
-    setUser(userObj);
-    localStorage.setItem('user', JSON.stringify(userObj));
-    return true;
+      const data = await response.json();
+
+      if (response.ok) {
+        // Auto-login after signup
+        return await login(email, password);
+      }
+
+      return {
+        success: false,
+        error: data.detail || 'Signup failed. Please try again.'
+      };
+    } catch (error) {
+      console.error('Signup error:', error);
+      return {
+        success: false,
+        error: 'Network error. Please check your connection and try again.'
+      };
+    }
   };
 
   const logout = () => {
     setUser(null);
-    localStorage.removeItem('user');
+    localStorage.removeItem('authToken');
   };
-
-  // Don't render until we've checked localStorage
-  if (isLoading) {
-    return null;
-  }
 
   return (
     <AuthContext.Provider value={{
@@ -85,9 +141,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       login,
       signup,
       logout,
-      isAuthenticated: !!user
+      isAuthenticated: !!user,
+      isLoading
     }}>
-      {children}
+      {!isLoading && children}
     </AuthContext.Provider>
   );
 }
@@ -98,4 +155,9 @@ export function useAuth() {
     throw new Error('useAuth must be used within an AuthProvider');
   }
   return context;
+}
+
+// Helper function to get auth token for API calls
+export function getAuthToken(): string | null {
+  return localStorage.getItem('authToken');
 }

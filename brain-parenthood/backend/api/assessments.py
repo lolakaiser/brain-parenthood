@@ -2,20 +2,21 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from typing import List
 from database import get_db
-from models import BaselineAssessment as AssessmentModel
+from models import BaselineAssessment as AssessmentModel, User
 from schemas import BaselineAssessment, BaselineAssessmentCreate
+from auth import get_current_active_user
 
 router = APIRouter()
 
 @router.post("/", response_model=BaselineAssessment, status_code=status.HTTP_201_CREATED)
 def create_assessment(
-    user_id: int,
     assessment: BaselineAssessmentCreate,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
 ):
-    """Create a new baseline assessment for a user"""
+    """Create a new baseline assessment for the current user"""
     db_assessment = AssessmentModel(
-        user_id=user_id,
+        user_id=current_user.id,
         module_number=assessment.module_number,
         team_stress_level=assessment.team_stress_level,
         individual_stress_level=assessment.individual_stress_level,
@@ -30,37 +31,50 @@ def create_assessment(
     db.refresh(db_assessment)
     return db_assessment
 
-@router.get("/user/{user_id}", response_model=List[BaselineAssessment])
-def get_user_assessments(user_id: int, db: Session = Depends(get_db)):
-    """Get all assessments for a specific user"""
+@router.get("/my-assessments", response_model=List[BaselineAssessment])
+def get_my_assessments(
+    skip: int = 0,
+    limit: int = 50,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """Get all assessments for the current user with pagination"""
     assessments = db.query(AssessmentModel).filter(
-        AssessmentModel.user_id == user_id
-    ).all()
+        AssessmentModel.user_id == current_user.id
+    ).order_by(AssessmentModel.created_at.desc()).offset(skip).limit(limit).all()
     return assessments
 
-@router.get("/{assessment_id}", response_model=BaselineAssessment)
-def get_assessment(assessment_id: int, db: Session = Depends(get_db)):
-    """Get a specific assessment by ID"""
+@router.get("/latest", response_model=BaselineAssessment)
+def get_latest_assessment(
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """Get the latest assessment for the current user"""
     assessment = db.query(AssessmentModel).filter(
-        AssessmentModel.id == assessment_id
-    ).first()
-    if not assessment:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail="Assessment not found"
-        )
-    return assessment
-
-@router.get("/user/{user_id}/latest", response_model=BaselineAssessment)
-def get_latest_assessment(user_id: int, db: Session = Depends(get_db)):
-    """Get the latest assessment for a user"""
-    assessment = db.query(AssessmentModel).filter(
-        AssessmentModel.user_id == user_id
+        AssessmentModel.user_id == current_user.id
     ).order_by(AssessmentModel.created_at.desc()).first()
 
     if not assessment:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="No assessment found for this user"
+            detail="No assessment found"
+        )
+    return assessment
+
+@router.get("/{assessment_id}", response_model=BaselineAssessment)
+def get_assessment(
+    assessment_id: int,
+    db: Session = Depends(get_db),
+    current_user: User = Depends(get_current_active_user)
+):
+    """Get a specific assessment by ID (must belong to current user)"""
+    assessment = db.query(AssessmentModel).filter(
+        AssessmentModel.id == assessment_id,
+        AssessmentModel.user_id == current_user.id
+    ).first()
+    if not assessment:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="Assessment not found"
         )
     return assessment

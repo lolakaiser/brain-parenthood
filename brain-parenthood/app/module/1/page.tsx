@@ -1,11 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, memo, useMemo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 
 type StepType = 'overview' | 'baseline' | 'goals' | 'complete';
+
+// Constants moved outside component for performance
+const STEPS = [
+  { id: 'overview' as const, label: 'Overview' },
+  { id: 'baseline' as const, label: 'Baseline' },
+  { id: 'goals' as const, label: 'Goals' },
+  { id: 'complete' as const, label: 'Complete' },
+];
+
+const GRADIENT_STYLE = 'linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)';
+
+const ACTIVE_STEP_STYLE = {
+  filter: 'drop-shadow(0px 0px 2px #9333ea) drop-shadow(0px 0px 4px #3b82f6)',
+  fontWeight: '900' as const
+};
 
 export default function Module1Page() {
   const [currentStep, setCurrentStep] = useState<StepType>('overview');
@@ -17,6 +32,10 @@ export default function Module1Page() {
       router.push('/login');
     }
   }, [isAuthenticated, router]);
+
+  const handleSetStep = useCallback((step: StepType) => {
+    setCurrentStep(step);
+  }, []);
 
   if (!isAuthenticated) {
     return null;
@@ -47,7 +66,7 @@ export default function Module1Page() {
         {/* Progress Indicator */}
         <div className="mb-8 animate-slide-up">
           <div className="flex items-center justify-between mb-2 max-w-3xl mx-auto">
-            {steps.map((step, index) => (
+            {STEPS.map((step, index) => (
               <div key={step.id} className="flex items-center flex-1">
                 <div className={`flex flex-col items-center w-full transition-all duration-300 ${
                   currentStep === step.id ? 'scale-110' : ''
@@ -57,14 +76,11 @@ export default function Module1Page() {
                       transition-all duration-300 shadow-lg bg-[#3A4F63]
                       ${currentStep === step.id
                         ? 'text-white'
-                        : steps.findIndex(s => s.id === currentStep) > index
+                        : STEPS.findIndex(s => s.id === currentStep) > index
                         ? 'text-white'
                         : 'text-gray-400'
                       }`}
-                    style={currentStep === step.id ? {
-                      filter: 'drop-shadow(0px 0px 2px #9333ea) drop-shadow(0px 0px 4px #3b82f6)',
-                      fontWeight: '900'
-                    } : undefined}
+                    style={currentStep === step.id ? ACTIVE_STEP_STYLE : undefined}
                   >
                     {index + 1}
                   </div>
@@ -72,22 +88,19 @@ export default function Module1Page() {
                     className={`text-xs mt-2 text-center font-bold transition-all duration-300 ${
                       currentStep === step.id
                         ? 'text-white'
-                        : steps.findIndex(s => s.id === currentStep) > index
+                        : STEPS.findIndex(s => s.id === currentStep) > index
                         ? 'text-white'
                         : 'text-gray-400'
                     }`}
-                    style={currentStep === step.id ? {
-                      filter: 'drop-shadow(0px 0px 2px #9333ea) drop-shadow(0px 0px 4px #3b82f6)',
-                      fontWeight: '700'
-                    } : undefined}
+                    style={currentStep === step.id ? ACTIVE_STEP_STYLE : undefined}
                   >
                     {step.label}
                   </span>
                 </div>
-                {index < steps.length - 1 && (
+                {index < STEPS.length - 1 && (
                   <div
                     className={`h-1 flex-1 -mt-6 rounded transition-all duration-300 ${
-                      steps.findIndex(s => s.id === currentStep) > index
+                      STEPS.findIndex(s => s.id === currentStep) > index
                         ? 'bg-white/40'
                         : 'bg-white/20'
                     }`}
@@ -100,17 +113,17 @@ export default function Module1Page() {
 
         {/* Content */}
         <div className="animate-fade-in">
-          {currentStep === 'overview' && <OverviewStep onNext={() => setCurrentStep('baseline')} />}
+          {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('baseline')} />}
           {currentStep === 'baseline' && (
             <BaselineStep
-              onNext={() => setCurrentStep('goals')}
-              onBack={() => setCurrentStep('overview')}
+              onNext={() => handleSetStep('goals')}
+              onBack={() => handleSetStep('overview')}
             />
           )}
           {currentStep === 'goals' && (
             <GoalsStep
-              onNext={() => setCurrentStep('complete')}
-              onBack={() => setCurrentStep('baseline')}
+              onNext={() => handleSetStep('complete')}
+              onBack={() => handleSetStep('baseline')}
             />
           )}
           {currentStep === 'complete' && <CompleteStep />}
@@ -120,14 +133,7 @@ export default function Module1Page() {
   );
 }
 
-const steps = [
-  { id: 'overview' as const, label: 'Overview' },
-  { id: 'baseline' as const, label: 'Baseline' },
-  { id: 'goals' as const, label: 'Goals' },
-  { id: 'complete' as const, label: 'Complete' },
-];
-
-function OverviewStep({ onNext }: { onNext: () => void }) {
+const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void }) {
   return (
     <div className="max-w-4xl mx-auto">
       <div className="bg-[#3A4F63] rounded-3xl shadow-2xl p-12 border border-white/10">
@@ -201,7 +207,7 @@ function OverviewStep({ onNext }: { onNext: () => void }) {
             onClick={onNext}
             className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-12 py-5 rounded-2xl font-bold text-lg
                      hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95"
-            style={{ background: 'linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)' }}
+            style={{ background: GRADIENT_STYLE }}
           >
             <span>Continue to Baseline Assessment</span>
             <span className="text-2xl transform group-hover:translate-x-1 transition-transform">→</span>
@@ -210,9 +216,9 @@ function OverviewStep({ onNext }: { onNext: () => void }) {
       </div>
     </div>
   );
-}
+});
 
-function BaselineStep({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
+const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [formData, setFormData] = useState({
     teamStressLevel: 5,
