@@ -39,7 +39,7 @@ export default function Module1Page() {
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-6 py-8">
+        <div className="max-w-5xl mx-auto px-8 py-8">
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium mb-6 transition-colors"
@@ -62,29 +62,23 @@ export default function Module1Page() {
 
       {/* Progress Bar */}
       <div className="bg-white border-b border-gray-200">
-        <div className="max-w-5xl mx-auto px-6 py-6">
-          <div className="flex items-center justify-between">
+        <div className="max-w-5xl mx-auto px-8 py-6">
+          <div className="flex items-center justify-between gap-4">
             {STEPS.map((step, index) => (
               <div key={step.id} className="flex items-center flex-1">
                 <div className="flex flex-col items-center flex-1">
                   {/* Step Circle */}
                   <div className="flex items-center justify-center mb-2">
                     <div
-                      className={`w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
-                        index < currentStepIndex
+                      className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 ${
+                        index === currentStepIndex
                           ? 'bg-purple-600 text-white'
-                          : index === currentStepIndex
-                          ? 'bg-purple-600 text-white ring-4 ring-purple-100'
-                          : 'bg-gray-200 text-gray-500'
+                          : index < currentStepIndex
+                          ? 'bg-purple-600 text-white'
+                          : 'bg-gray-200 text-gray-600'
                       }`}
                     >
-                      {index < currentStepIndex ? (
-                        <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                          <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                        </svg>
-                      ) : (
-                        index + 1
-                      )}
+                      {index + 1}
                     </div>
                   </div>
                   {/* Step Label */}
@@ -98,9 +92,9 @@ export default function Module1Page() {
                 </div>
                 {/* Connector Line */}
                 {index < STEPS.length - 1 && (
-                  <div className="flex-1 h-0.5 -mt-8 mx-2">
+                  <div className="flex-1 h-0.5 -mt-6 mx-2">
                     <div
-                      className={`h-full transition-all duration-500 ${
+                      className={`h-full transition-all duration-300 ${
                         index < currentStepIndex ? 'bg-purple-600' : 'bg-gray-200'
                       }`}
                     />
@@ -113,7 +107,7 @@ export default function Module1Page() {
       </div>
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-6 py-12">
+      <div className="max-w-5xl mx-auto px-8 py-12">
         {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('baseline')} />}
         {currentStep === 'baseline' && (
           <BaselineStep
@@ -626,9 +620,7 @@ function CompleteStep() {
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-10 text-center">
         {/* Success Icon */}
         <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-6">
-          <svg className="w-8 h-8 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-          </svg>
+          <span className="text-3xl">✓</span>
         </div>
 
         <h2 className="text-3xl font-bold text-gray-900 mb-3">
