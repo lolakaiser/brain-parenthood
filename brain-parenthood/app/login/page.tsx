@@ -18,7 +18,7 @@ export default function LoginPage() {
     }
   }, [isAuthenticated, router]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -27,11 +27,11 @@ export default function LoginPage() {
       return;
     }
 
-    const success = login(username, password);
-    if (success) {
+    const result = await login(username, password);
+    if (result.success) {
       router.push('/dashboard');
     } else {
-      setError('Invalid username or password');
+      setError(result.error || 'Invalid username or password');
     }
   };
 

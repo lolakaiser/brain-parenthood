@@ -443,7 +443,7 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
       </div>
     </div>
   );
-}
+});
 
 function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);

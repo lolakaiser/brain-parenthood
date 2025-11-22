@@ -19,7 +19,7 @@ export default function SignupPage() {
     }
   }, [isAuthenticated, router]);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError('');
 
@@ -38,11 +38,11 @@ export default function SignupPage() {
       return;
     }
 
-    const success = signup(username, password);
-    if (success) {
+    const result = await signup(username, password, username);
+    if (result.success) {
       router.push('/dashboard');
     } else {
-      setError('Username already exists');
+      setError(result.error || 'Username already exists');
     }
   };
 

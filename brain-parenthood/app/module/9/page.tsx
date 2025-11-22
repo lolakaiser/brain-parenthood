@@ -50,7 +50,7 @@ const Overview = memo(({ onNext }: { onNext: () => void }) => (
         <ul className="text-white space-y-2">
           <li>• Balance: 50/50 split (rigid)</li>
           <li>• Integration: Flexible flow</li>
-          <li>• Energy > Time</li>
+          <li>• Energy &gt; Time</li>
           <li>• Clear boundaries</li>
         </ul>
       </div>

@@ -95,6 +95,11 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           return;
         }
 
+        if (!window.Square) {
+          setErrorMessage('Square SDK failed to load.');
+          return;
+        }
+
         const payments = window.Square.payments(squareAppId, squareLocationId);
         cardInstance = await payments.card();
 
