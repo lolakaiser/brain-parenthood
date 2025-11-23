@@ -39,7 +39,7 @@ export default function Module1Page() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="bg-white border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-6 py-6">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-6">
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium mb-6 transition-colors"
@@ -62,7 +62,7 @@ export default function Module1Page() {
 
       {/* Progress Bar */}
       <div className="bg-white border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-6 py-5">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-5">
           <div className="flex items-center justify-between gap-4">
             {STEPS.map((step, index) => (
               <div key={step.id} className="flex items-center flex-1">
@@ -107,7 +107,7 @@ export default function Module1Page() {
       </div>
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-6 py-10">
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-10">
         {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('baseline')} />}
         {currentStep === 'baseline' && (
           <BaselineStep

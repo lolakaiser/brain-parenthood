@@ -36,7 +36,7 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center px-6 py-12">
+    <div className="min-h-screen bg-white flex items-center justify-center px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-12">
       <div className="w-full max-w-md mx-auto">
         {/* Logo or Brand Section */}
         <div className="text-center mb-8">
@@ -101,15 +101,6 @@ export default function LoginPage() {
             </p>
           </div>
 
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <div className="bg-purple-50 rounded-xl p-4">
-              <p className="text-gray-700 text-sm text-center">
-                <span className="font-semibold text-purple-700">Demo:</span>{' '}
-                <span className="text-gray-600">username:</span> <span className="font-mono text-purple-600">lola</span>
-                {' '}<span className="text-gray-600">password:</span> <span className="font-mono text-purple-600">1234</span>
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>

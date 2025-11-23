@@ -15,7 +15,8 @@ export default function Layout({ children, maxWidth = 'lg', className = '' }: La
 
   return (
     <div className="min-h-screen bg-white">
-      <div className={`${maxWidthClasses[maxWidth]} mx-auto px-6 py-8 ${className}`}>
+      {/* Responsive margins: none on mobile, moderate on tablet, ~1.5" on large screens */}
+      <div className={`${maxWidthClasses[maxWidth]} mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 ${className}`}>
         {children}
       </div>
     </div>
