@@ -222,7 +222,6 @@ const PracticeStep = memo(function PracticeStep({ onNext, onBack }: { onNext: ()
     {
       id: 'breath',
       title: 'Breath Awareness',
-      icon: '🌬️',
       description: 'Focus on your breath as an anchor to the present moment',
       steps: [
         'Find a comfortable seated position',
@@ -235,7 +234,6 @@ const PracticeStep = memo(function PracticeStep({ onNext, onBack }: { onNext: ()
     {
       id: 'body',
       title: 'Body Scan',
-      icon: '🧘',
       description: 'Systematically relax your body from head to toe',
       steps: [
         'Lie down or sit comfortably',
@@ -248,7 +246,6 @@ const PracticeStep = memo(function PracticeStep({ onNext, onBack }: { onNext: ()
     {
       id: 'observation',
       title: 'Mindful Observation',
-      icon: '👁️',
       description: 'Practice focused attention on a single object',
       steps: [
         'Choose an object (plant, art, your hand)',
@@ -281,8 +278,7 @@ const PracticeStep = memo(function PracticeStep({ onNext, onBack }: { onNext: ()
                   : 'border-white/20 hover:border-white/40 hover:scale-102'
                 }`}
             >
-              <div className="text-5xl mb-4 text-center">{technique.icon}</div>
-              <h3 className="font-bold text-xl mb-2 text-white text-center">{technique.title}</h3>
+              <h3 className="font-bold text-xl mb-4 text-white text-center">{technique.title}</h3>
               <p className="text-gray-300 text-sm text-center">{technique.description}</p>
             </div>
           ))}
@@ -305,7 +301,7 @@ const PracticeStep = memo(function PracticeStep({ onNext, onBack }: { onNext: ()
             </ol>
             <div className="mt-6 p-4 bg-purple-900/30 rounded-xl border border-purple-500/30">
               <p className="text-white text-sm">
-                <strong className="text-[#A78BFA]">💡 Pro Tip:</strong> Practice this technique for 5 minutes daily.
+                <strong className="text-[#A78BFA]">Pro Tip:</strong> Practice this technique for 5 minutes daily.
                 Set a timer and create a consistent time and place for your practice.
               </p>
             </div>
@@ -402,7 +398,7 @@ const ReflectionStep = memo(function ReflectionStep({ onNext, onBack }: { onNext
         </div>
 
         <div className="mt-8 p-6 bg-purple-900/20 rounded-2xl border border-purple-500/30">
-          <h4 className="font-bold text-lg mb-3 text-[#A78BFA]">🎯 Weekly Practice Goal</h4>
+          <h4 className="font-bold text-lg mb-3 text-[#A78BFA]">Weekly Practice Goal</h4>
           <p className="text-white">
             Commit to practicing your chosen mindfulness technique for at least 5 minutes daily.
             Consistency is more important than duration. Track your practice and notice the changes!

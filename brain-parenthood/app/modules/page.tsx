@@ -21,8 +21,8 @@ export default function ModulesPage() {
 
 
   return (
-    <div className="min-h-screen pt-32 bg-gray-50">
-      <div className="mx-auto py-8" style={{ paddingLeft: '8vw', paddingRight: '8vw', maxWidth: '1600px' }}>
+    <div className="min-h-screen bg-gray-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 pt-32">
         <h1 className="text-4xl font-bold text-gray-900 mb-4">All Modules</h1>
         <p className="text-lg text-gray-600 mb-12">
           The complete 12-week Brain Parenthood journey
@@ -39,12 +39,9 @@ export default function ModulesPage() {
               }`}
             >
               <div className="flex items-start justify-between mb-4">
-                <div className="flex items-center">
-                  <span className="text-3xl mr-3">{module.icon}</span>
-                  <div>
-                    <h2 className="text-2xl font-bold text-gray-900">{module.title}</h2>
-                    <p className="text-sm text-gray-600">{module.duration}</p>
-                  </div>
+                <div>
+                  <h2 className="text-2xl font-bold text-gray-900">{module.title}</h2>
+                  <p className="text-sm text-gray-600">{module.duration}</p>
                 </div>
                 {module.completed && (
                   <span className="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
@@ -109,7 +106,6 @@ const modules = [
     id: 1,
     title: "Module 1: Kick Off",
     duration: "Week 1",
-    icon: "🚀",
     description:
       "Establish your baseline, set goals, and get introduced to Brain Parenthood concepts.",
     activities: [
@@ -129,7 +125,6 @@ const modules = [
     id: 2,
     title: "Module 2: Mindfulness Foundation",
     duration: "Week 2",
-    icon: "🧘",
     description:
       "Build mindfulness skills to improve focus, creativity, and stress management.",
     activities: [
@@ -149,7 +144,6 @@ const modules = [
     id: 3,
     title: "Module 3: Cognitive Restructuring",
     duration: "Week 3",
-    icon: "🧠",
     description:
       "Master cognitive reframing to challenge distorted thinking patterns.",
     activities: [
@@ -169,7 +163,6 @@ const modules = [
     id: 4,
     title: "Module 4: Emotional Intelligence",
     duration: "Week 4",
-    icon: "💪",
     description:
       "Develop emotional awareness and regulation skills for better leadership.",
     activities: [
@@ -189,7 +182,6 @@ const modules = [
     id: 5,
     title: "Module 5: Team Dynamics",
     duration: "Week 5",
-    icon: "🤝",
     description:
       "Build psychological safety and collaboration within your team.",
     activities: [
@@ -209,7 +201,6 @@ const modules = [
     id: 6,
     title: "Module 6: Resilience Building",
     duration: "Week 6",
-    icon: "🌱",
     description:
       "Develop growth mindset and resilience to bounce back from setbacks.",
     activities: [
@@ -229,7 +220,6 @@ const modules = [
     id: 7,
     title: "Module 7: Communication Skills",
     duration: "Week 7",
-    icon: "🗣️",
     description:
       "Master active listening and constructive feedback delivery.",
     activities: [
@@ -249,7 +239,6 @@ const modules = [
     id: 8,
     title: "Module 8: Stress Management",
     duration: "Week 8",
-    icon: "🧘‍♀️",
     description:
       "Build a personalized stress management toolkit with proven techniques.",
     activities: [
@@ -269,7 +258,6 @@ const modules = [
     id: 9,
     title: "Module 9: Work-Life Integration",
     duration: "Week 9",
-    icon: "⚖️",
     description:
       "Design sustainable work-life integration with clear boundaries.",
     activities: [
@@ -289,7 +277,6 @@ const modules = [
     id: 10,
     title: "Module 10: Performance Optimization",
     duration: "Week 10",
-    icon: "🚀",
     description:
       "Access peak performance states and design rituals for consistent flow.",
     activities: [
@@ -309,7 +296,6 @@ const modules = [
     id: 11,
     title: "Module 11: Sustainability Planning",
     duration: "Week 11",
-    icon: "📅",
     description:
       "Build lasting habits and create a 90-day sustainability plan.",
     activities: [
@@ -329,7 +315,6 @@ const modules = [
     id: 12,
     title: "Module 12: Celebration & Reflection",
     duration: "Week 12",
-    icon: "🎉",
     description:
       "Celebrate your journey, assess final growth, and set your future vision.",
     activities: [

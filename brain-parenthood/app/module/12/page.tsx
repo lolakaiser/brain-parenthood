@@ -39,9 +39,8 @@ export default function Module12() {
 const Overview = memo(({ onNext }: { onNext: () => void }) => (
   <div className="bg-[#3A4F63] rounded-3xl p-12">
     <h2 className="text-4xl font-bold text-white mb-6">Journey Review</h2>
-    {/* 🤖 AI: Comprehensive progress report */}
     <div className="mb-6 p-4 bg-purple-900/30 rounded-xl">
-      <p className="text-white"><strong className="text-purple-300">🤖 AI:</strong> Incredible transformation! You've completed 12 modules and reduced stress by 45%</p>
+      <p className="text-white"><strong className="text-purple-300">AI Analysis:</strong> Incredible transformation! You've completed 12 modules and reduced stress by 45%</p>
     </div>
     <p className="text-xl text-white mb-6">You've completed a 12-week journey of growth. Time to celebrate your wins and plan your future.</p>
     <div className="grid md:grid-cols-2 gap-6 mb-8">
@@ -82,9 +81,8 @@ const Assessment = memo(({ onNext, onBack }: { onNext: () => void; onBack: () =>
             className="w-full h-3 bg-white/20 rounded-lg cursor-pointer" />
         </div>
       ))}
-      {/* 🤖 AI: Growth visualization */}
       <div className="p-4 bg-purple-900/20 rounded-xl mb-6">
-        <p className="text-white text-sm"><strong className="text-purple-300">🤖 AI Growth Report:</strong></p>
+        <p className="text-white text-sm"><strong className="text-purple-300">AI Growth Report:</strong></p>
         <ul className="text-white text-sm mt-2 space-y-1">
           <li>• Stress: 8→5 (37% improvement)</li>
           <li>• Confidence: 5→8 (60% improvement)</li>
@@ -126,10 +124,9 @@ const Celebration = memo(({ onNext, onBack }: { onNext: () => void; onBack: () =
             rows={3} placeholder="Where will you be 6 months from now?" />
         </div>
       </div>
-      {/* 🤖 AI: Future goal recommendations */}
       {data.vision && (
         <div className="mt-4 p-3 bg-purple-900/20 rounded-xl">
-          <p className="text-white text-sm"><strong className="text-purple-300">🤖 AI:</strong> Based on your vision, I recommend focusing on leadership development next</p>
+          <p className="text-white text-sm"><strong className="text-purple-300">AI Recommendation:</strong> Based on your vision, I recommend focusing on leadership development next</p>
         </div>
       )}
       <div className="flex justify-between mt-8">
@@ -143,11 +140,11 @@ const Celebration = memo(({ onNext, onBack }: { onNext: () => void; onBack: () =
 
 const Complete = memo(() => (
   <div className="bg-[#3A4F63] rounded-3xl p-12 text-center">
-    <h2 className="text-5xl font-bold text-white mb-6">🎉 Congratulations! 🎉</h2>
+    <h2 className="text-5xl font-bold text-white mb-6">Congratulations!</h2>
     <p className="text-2xl text-white mb-4">You've completed Brain Parenthood!</p>
     <p className="text-xl text-white mb-8">You've transformed yourself and your team. This is just the beginning.</p>
     <div className="mb-8 p-6 bg-purple-900/30 rounded-xl">
-      <p className="text-white text-lg"><strong className="text-purple-300">🤖 AI Personalized Maintenance Plan:</strong></p>
+      <p className="text-white text-lg"><strong className="text-purple-300">AI Personalized Maintenance Plan:</strong></p>
       <ul className="text-white mt-4 space-y-2 text-left max-w-2xl mx-auto">
         <li>• Continue daily mindfulness (5 min)</li>
         <li>• Weekly thought log & team check-ins</li>

@@ -76,7 +76,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
       if (!squareAppId || !squareLocationId ||
           squareAppId.includes('YOUR_') ||
           squareLocationId.includes('YOUR_')) {
-        setErrorMessage('⚠️ Square payment is not configured yet. Please contact support or set up Square credentials in .env.local');
+        setErrorMessage('Square payment is not configured yet. Please contact support or set up Square credentials in .env.local');
         return;
       }
 
