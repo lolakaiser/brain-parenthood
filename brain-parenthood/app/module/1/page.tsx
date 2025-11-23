@@ -39,7 +39,7 @@ export default function Module1Page() {
     <div className="min-h-screen bg-white">
       {/* Header */}
       <div className="bg-white border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-8 py-8">
+        <div className="max-w-4xl mx-auto px-6 py-8">
           <Link
             href="/"
             className="inline-flex items-center gap-2 text-gray-600 hover:text-gray-900 font-medium mb-6 transition-colors"
@@ -62,7 +62,7 @@ export default function Module1Page() {
 
       {/* Progress Bar */}
       <div className="bg-white border-b border-gray-100">
-        <div className="max-w-5xl mx-auto px-8 py-6">
+        <div className="max-w-4xl mx-auto px-6 py-6">
           <div className="flex items-center justify-between gap-4">
             {STEPS.map((step, index) => (
               <div key={step.id} className="flex items-center flex-1">
@@ -107,7 +107,7 @@ export default function Module1Page() {
       </div>
 
       {/* Content */}
-      <div className="max-w-5xl mx-auto px-8 py-12">
+      <div className="max-w-4xl mx-auto px-6 py-12">
         {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('baseline')} />}
         {currentStep === 'baseline' && (
           <BaselineStep
@@ -130,7 +130,7 @@ export default function Module1Page() {
 const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void }) {
   return (
     <div className="max-w-3xl mx-auto">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-10">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 md:p-12">
         <div className="mb-8">
           <h2 className="text-3xl font-bold text-gray-900 mb-3">
             Welcome to Brain Parenthood
@@ -217,10 +217,10 @@ const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void
         <div className="flex justify-center">
           <button
             onClick={onNext}
-            className="inline-flex items-center gap-2 bg-purple-600 hover:bg-purple-700 text-white px-8 py-3.5 rounded-lg font-semibold transition-colors shadow-sm"
+            className="inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white px-10 py-4 rounded-xl font-bold transition-all shadow-md hover:shadow-lg text-lg"
           >
             Continue to Assessment
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
@@ -340,21 +340,21 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
       {/* Progress Header */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-3">
-          <span className="text-sm font-medium text-purple-600">Baseline Assessment</span>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm font-semibold text-purple-600">Baseline Assessment</span>
+          <span className="text-sm font-medium text-gray-600">
             Question {currentQuestion + 1} of {questions.length}
           </span>
         </div>
-        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-purple-600 rounded-full transition-all duration-500"
+            className="h-full bg-gradient-to-r from-purple-600 to-blue-600 rounded-full transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
       </div>
 
       {/* Question Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 md:p-10">
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             {currentQ.title}
@@ -398,7 +398,7 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
               min="1"
               value={formData[currentQ.id as keyof typeof formData]}
               onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })}
-              className="w-full px-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+              className="w-full px-5 py-4 text-lg text-gray-900 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               placeholder={currentQ.placeholder}
             />
           )}
@@ -407,7 +407,7 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
             <textarea
               value={formData[currentQ.id as keyof typeof formData]}
               onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })}
-              className="w-full px-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent resize-none"
+              className="w-full px-5 py-4 text-lg text-gray-900 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
               rows={6}
               placeholder={currentQ.placeholder}
             />
@@ -415,10 +415,10 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+        <div className="flex justify-between items-center pt-8 border-t border-gray-200">
           <button
             onClick={handlePrevious}
-            className="inline-flex items-center gap-2 px-6 py-2.5 text-gray-700 hover:text-gray-900 font-medium transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 text-gray-700 hover:text-gray-900 font-semibold transition-colors hover:bg-gray-50 rounded-xl"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -428,14 +428,14 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
           <button
             onClick={handleNext}
             disabled={!isAnswered()}
-            className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold transition-colors ${
+            className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-lg transition-all ${
               isAnswered()
-                ? 'bg-purple-600 hover:bg-purple-700 text-white'
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-md hover:shadow-lg'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
           >
             {currentQuestion === questions.length - 1 ? 'Continue' : 'Next'}
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>
@@ -531,21 +531,21 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
       {/* Progress Header */}
       <div className="mb-8">
         <div className="flex justify-between items-center mb-3">
-          <span className="text-sm font-medium text-purple-600">Goal Setting</span>
-          <span className="text-sm text-gray-500">
+          <span className="text-sm font-semibold text-purple-600">Goal Setting</span>
+          <span className="text-sm font-medium text-gray-600">
             Question {currentQuestion + 1} of {questions.length}
           </span>
         </div>
-        <div className="h-2 bg-gray-200 rounded-full overflow-hidden">
+        <div className="h-3 bg-gray-200 rounded-full overflow-hidden">
           <div
-            className="h-full bg-purple-600 rounded-full transition-all duration-500"
+            className="h-full bg-gradient-to-r from-purple-600 to-blue-600 rounded-full transition-all duration-500"
             style={{ width: `${progress}%` }}
           />
         </div>
       </div>
 
       {/* Question Card */}
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+      <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 md:p-10">
         <div className="mb-8">
           <h2 className="text-2xl font-bold text-gray-900 mb-2">
             {currentQ.title}
@@ -561,7 +561,7 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
               type="text"
               value={goals[currentQ.id as keyof typeof goals]}
               onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })}
-              className="w-full px-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent"
+              className="w-full px-5 py-4 text-lg text-gray-900 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
               placeholder={currentQ.placeholder}
             />
           )}
@@ -570,7 +570,7 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
             <textarea
               value={goals[currentQ.id as keyof typeof goals]}
               onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })}
-              className="w-full px-4 py-3 text-gray-900 bg-white border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-600 focus:border-transparent resize-none"
+              className="w-full px-5 py-4 text-lg text-gray-900 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
               rows={6}
               placeholder={currentQ.placeholder}
             />
@@ -578,10 +578,10 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
         </div>
 
         {/* Navigation */}
-        <div className="flex justify-between items-center pt-6 border-t border-gray-200">
+        <div className="flex justify-between items-center pt-8 border-t border-gray-200">
           <button
             onClick={handlePrevious}
-            className="inline-flex items-center gap-2 px-6 py-2.5 text-gray-700 hover:text-gray-900 font-medium transition-colors"
+            className="inline-flex items-center gap-2 px-6 py-3 text-gray-700 hover:text-gray-900 font-semibold transition-colors hover:bg-gray-50 rounded-xl"
           >
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
@@ -591,14 +591,14 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
           <button
             onClick={handleNext}
             disabled={!isAnswered()}
-            className={`inline-flex items-center gap-2 px-6 py-2.5 rounded-lg font-semibold transition-colors ${
+            className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-bold text-lg transition-all ${
               isAnswered()
-                ? 'bg-purple-600 hover:bg-purple-700 text-white'
+                ? 'bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-md hover:shadow-lg'
                 : 'bg-gray-200 text-gray-400 cursor-not-allowed'
             }`}
           >
             {currentQuestion === questions.length - 1 ? 'Complete' : 'Next'}
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
           </button>

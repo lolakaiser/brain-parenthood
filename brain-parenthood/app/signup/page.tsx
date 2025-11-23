@@ -47,22 +47,28 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen pt-32 bg-[#2D3E50] flex items-center justify-center">
-      <div className="w-full mx-auto" style={{ paddingLeft: '8vw', paddingRight: '8vw', maxWidth: '1600px' }}>
-        <div className="w-full max-w-md mx-auto">
-        <div className="bg-[#3A4F63] rounded-2xl shadow-2xl p-8 border border-white/10">
-          <h1 className="text-4xl font-bold text-white mb-2 text-center">Create Account</h1>
-          <p className="text-gray-300 text-center mb-8">Join Brain Parenthood today</p>
+    <div className="min-h-screen bg-white flex items-center justify-center px-6 py-12">
+      <div className="w-full max-w-md mx-auto">
+        {/* Logo or Brand Section */}
+        <div className="text-center mb-8">
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Brain Parenthood</h1>
+          <p className="text-gray-600">Start your resilience journey today</p>
+        </div>
+
+        {/* Signup Card */}
+        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
+          <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Create Account</h2>
+          <p className="text-gray-600 text-center mb-8">Join thousands improving team resilience</p>
 
           {error && (
-            <div className="bg-red-500/20 border border-red-500 text-red-200 px-4 py-3 rounded-lg mb-6">
-              {error}
+            <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl mb-6">
+              <p className="text-sm font-medium">{error}</p>
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
-              <label htmlFor="username" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-2">
                 Username
               </label>
               <input
@@ -70,13 +76,13 @@ export default function SignupPage() {
                 id="username"
                 value={username}
                 onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3 bg-[#2D3E50] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
                 placeholder="Choose a username"
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
                 Password
               </label>
               <input
@@ -84,13 +90,13 @@ export default function SignupPage() {
                 id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-[#2D3E50] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                placeholder="Choose a password"
+                className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                placeholder="At least 4 characters"
               />
             </div>
 
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-300 mb-2">
+              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
                 Confirm Password
               </label>
               <input
@@ -98,28 +104,27 @@ export default function SignupPage() {
                 id="confirmPassword"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-[#2D3E50] border border-white/10 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                placeholder="Confirm your password"
+                className="w-full px-4 py-3.5 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                placeholder="Re-enter your password"
               />
             </div>
 
             <button
               type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-3 rounded-lg hover:from-purple-700 hover:to-blue-700 hover:scale-[1.02] active:scale-95 transition-all duration-300 shadow-lg"
+              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-4 rounded-xl hover:from-purple-700 hover:to-blue-700 hover:shadow-lg active:scale-98 transition-all duration-200 shadow-md mt-6"
             >
-              Sign Up
+              Create Account
             </button>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-300">
+            <p className="text-gray-600">
               Already have an account?{' '}
-              <Link href="/login" className="text-purple-400 hover:text-purple-300 font-semibold transition-colors">
-                Login
+              <Link href="/login" className="text-purple-600 hover:text-purple-700 font-semibold transition-colors">
+                Sign in
               </Link>
             </p>
           </div>
-        </div>
         </div>
       </div>
     </div>

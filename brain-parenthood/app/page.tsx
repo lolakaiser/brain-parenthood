@@ -33,8 +33,8 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen pt-32 bg-white">
-      <div className="mx-auto py-16" style={{ paddingLeft: '8vw', paddingRight: '8vw', maxWidth: '1600px' }}>
+    <div className="min-h-screen pt-24 bg-white">
+      <div className="mx-auto py-16 px-6 max-w-7xl">
         {/* Hero Section */}
         <div className="text-center mb-20 animate-slide-up">
           <h1 className="text-6xl md:text-7xl font-extrabold mb-6 text-gray-900">
