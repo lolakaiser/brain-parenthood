@@ -5,17 +5,17 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 
-function getModuleClass(index: number): string {
-  const classes = [
-    'module-kickoff',
-    'module-mindfulness',
-    'module-resilience',
-    'module-communication',
-    'module-innovation',
-    'module-measurement',
-    'module-wrapup'
-  ];
-  return classes[index] || '';
+function getModuleColorClass(colorClass: string): string {
+  const colors: Record<string, string> = {
+    purple: 'border-purple-200 hover:border-purple-400 hover:shadow-purple-100',
+    red: 'border-red-200 hover:border-red-400 hover:shadow-red-100',
+    yellow: 'border-yellow-200 hover:border-yellow-400 hover:shadow-yellow-100',
+    blue: 'border-blue-200 hover:border-blue-400 hover:shadow-blue-100',
+    green: 'border-green-200 hover:border-green-400 hover:shadow-green-100',
+    teal: 'border-cyan-200 hover:border-cyan-400 hover:shadow-cyan-100',
+    indigo: 'border-indigo-200 hover:border-indigo-400 hover:shadow-indigo-100',
+  };
+  return colors[colorClass] || colors.purple;
 }
 
 export default function Home() {
@@ -133,21 +133,45 @@ export default function Home() {
           </p>
 
           {/* Module Cards Grid */}
-          <div className="module-grid">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {modules.map((module, index) => (
               <Link
                 key={module.week}
                 href={module.week === "Week 1" ? "/module/1" : "#"}
-                className={`module-card ${getModuleClass(index)} ${
-                  module.week !== "Week 1" ? "opacity-60 cursor-not-allowed" : ""
+                className={`group bg-white rounded-2xl border-2 p-6 transition-all duration-300 ${
+                  getModuleColorClass(module.colorClass)
+                } ${
+                  module.week !== "Week 1"
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:shadow-lg hover:-translate-y-1 cursor-pointer"
                 }`}
-                style={{
-                  animationDelay: `${index * 0.05}s`,
-                }}
               >
-                <h4 className="module-week">{module.week}</h4>
-                <h3 className="module-title">{module.title}</h3>
-                <p className="module-subtitle">{module.subtitle}</p>
+                <div className="text-sm font-semibold text-gray-500 uppercase tracking-wider mb-2">
+                  {module.week}
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-1">
+                  {module.title}
+                </h3>
+                <p className="text-sm text-gray-600 mb-4">
+                  {module.subtitle}
+                </p>
+                <p className="text-sm text-gray-600 leading-relaxed">
+                  {module.description}
+                </p>
+                {module.week === "Week 1" && (
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <span className="text-sm font-semibold text-purple-600 group-hover:text-purple-700">
+                      Start Module →
+                    </span>
+                  </div>
+                )}
+                {module.week !== "Week 1" && (
+                  <div className="mt-4 pt-4 border-t border-gray-200">
+                    <span className="text-sm font-medium text-gray-400">
+                      Coming Soon
+                    </span>
+                  </div>
+                )}
               </Link>
             ))}
           </div>
@@ -160,65 +184,51 @@ export default function Home() {
 const modules = [
   {
     week: "Week 1",
-    icon: "🚀",
     title: "Kick Off",
     subtitle: "Start your journey",
     description: "Establish baseline, set goals, and introduction to Brain Parenthood concepts.",
-    color: "bg-[#A78BFA]",  // Purple
-    textColor: "text-[#5B21B6]"  // Dark Purple
+    colorClass: "purple",
   },
   {
     week: "Week 2-3",
-    icon: "🧘",
     title: "Mindfulness",
     subtitle: "2 times a day",
     description: "Focus on individuals and teams with mindfulness practices to improve creativity, focus, and attention.",
-    color: "bg-[#FB8989]",  // Coral/Salmon
-    textColor: "text-[#991B1B]"  // Dark Red
+    colorClass: "red",
   },
   {
     week: "Week 4-5",
-    icon: "💪",
     title: "Resilience",
     subtitle: "3 times a week",
     description: "Resilience workshop with cognitive reframing, breathing exercises, and personal/team resilience plans.",
-    color: "bg-[#FCD34D]",  // Yellow
-    textColor: "text-[#854D0E]"  // Dark Yellow/Brown
+    colorClass: "yellow",
   },
   {
     week: "Week 6-7",
-    icon: "🤝",
     title: "Communication",
     subtitle: "1 time a day",
     description: "Active communication training, psychological safety rituals, and team agreements.",
-    color: "bg-[#7DD3FC]",  // Light Blue
-    textColor: "text-[#075985]"  // Dark Blue
+    colorClass: "blue",
   },
   {
     week: "Week 8-9",
-    icon: "💡",
     title: "Innovation",
     subtitle: "3 times a day",
     description: "Apply new skills to real challenges with creative brainstorming and adaptability drills.",
-    color: "bg-[#6EE7B7]",  // Green
-    textColor: "text-[#065F46]"  // Dark Green
+    colorClass: "green",
   },
   {
     week: "Week 10-11",
-    icon: "📈",
     title: "Measurement",
     subtitle: "2 times a week",
     description: "Progress assessment, team retrospective, and personalized coaching.",
-    color: "bg-[#67E8F9]",  // Teal/Cyan
-    textColor: "text-[#164E63]"  // Dark Teal
+    colorClass: "teal",
   },
   {
     week: "Week 12",
-    icon: "🎉",
     title: "Wrap-up",
     subtitle: "Final celebration",
     description: "Final reflection, celebrate achievements, and plan for continuous brain parenting.",
-    color: "bg-[#818CF8]",  // Indigo
-    textColor: "text-[#3730A3]"  // Dark Indigo
+    colorClass: "indigo",
   }
 ];

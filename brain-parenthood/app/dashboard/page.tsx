@@ -113,25 +113,37 @@ export default function DashboardPage() {
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 mb-10">
           <h2 className="text-2xl font-bold text-gray-900 mb-6">Your Goals</h2>
           <div className="space-y-4">
-            <div className="flex items-start">
-              <span className="text-2xl mr-3">🎯</span>
-              <div>
-                <div className="font-semibold text-gray-900">Stress Reduction</div>
-                <div className="text-gray-600">{dashboardData.goals.stressReduction}</div>
+            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+              <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-gray-900 mb-1">Stress Reduction</div>
+                <div className="text-gray-600 text-sm">{dashboardData.goals.stressReduction}</div>
               </div>
             </div>
-            <div className="flex items-start">
-              <span className="text-2xl mr-3">📈</span>
-              <div>
-                <div className="font-semibold text-gray-900">Productivity</div>
-                <div className="text-gray-600">{dashboardData.goals.productivityGoal}</div>
+            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+              <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-gray-900 mb-1">Productivity</div>
+                <div className="text-gray-600 text-sm">{dashboardData.goals.productivityGoal}</div>
               </div>
             </div>
-            <div className="flex items-start">
-              <span className="text-2xl mr-3">💬</span>
-              <div>
-                <div className="font-semibold text-gray-900">Communication</div>
-                <div className="text-gray-600">{dashboardData.goals.communicationGoal}</div>
+            <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl">
+              <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                </svg>
+              </div>
+              <div className="flex-1">
+                <div className="font-semibold text-gray-900 mb-1">Communication</div>
+                <div className="text-gray-600 text-sm">{dashboardData.goals.communicationGoal}</div>
               </div>
             </div>
           </div>
@@ -140,34 +152,42 @@ export default function DashboardPage() {
         {/* AI Personalized Recommendations */}
         <div className="bg-gradient-to-br from-purple-50 to-blue-50 rounded-2xl shadow-sm border-2 border-purple-100 p-8 mb-10">
           <div className="flex items-center mb-4">
-            <div className="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center mr-3">
-              <span className="text-xl">🤖</span>
+            <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center mr-4">
+              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+              </svg>
             </div>
             <h2 className="text-2xl font-bold text-gray-900">AI-Powered Recommendations</h2>
           </div>
           <p className="text-gray-700 mb-4">
             Based on your baseline assessment and goals, here are personalized recommendations:
           </p>
-          <ul className="space-y-3">
-            <li className="flex items-start">
-              <span className="text-purple-600 mr-2">•</span>
-              <span>
+          <div className="space-y-3">
+            <div className="flex items-start gap-3 p-4 bg-white rounded-xl">
+              <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="w-2 h-2 bg-purple-600 rounded-full"></span>
+              </div>
+              <span className="text-gray-700">
                 Focus on stress reduction techniques in Module 2-3 (Mindfulness Foundation)
               </span>
-            </li>
-            <li className="flex items-start">
-              <span className="text-purple-600 mr-2">•</span>
-              <span>
+            </div>
+            <div className="flex items-start gap-3 p-4 bg-white rounded-xl">
+              <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="w-2 h-2 bg-purple-600 rounded-full"></span>
+              </div>
+              <span className="text-gray-700">
                 Schedule daily team check-ins to improve communication quality
               </span>
-            </li>
-            <li className="flex items-start">
-              <span className="text-purple-600 mr-2">•</span>
-              <span>
+            </div>
+            <div className="flex items-start gap-3 p-4 bg-white rounded-xl">
+              <div className="w-6 h-6 bg-purple-100 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="w-2 h-2 bg-purple-600 rounded-full"></span>
+              </div>
+              <span className="text-gray-700">
                 Consider implementing flexible work hours to improve work-life balance
               </span>
-            </li>
-          </ul>
+            </div>
+          </div>
           <p className="text-sm text-gray-600 mt-4 italic">
             Note: AI personalization features will be fully implemented in a future update.
           </p>
