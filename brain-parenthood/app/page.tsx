@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Layout from "@/components/Layout";
 
 function getModuleColorClass(colorClass: string): string {
   const colors: Record<string, string> = {
@@ -33,24 +34,22 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen pt-24 bg-white">
-      <div className="mx-auto py-16 px-6 max-w-7xl">
-        {/* Hero Section */}
-        <div className="text-center mb-20 animate-slide-up">
-          <h1 className="text-6xl md:text-7xl font-extrabold mb-6 text-gray-900">
-            Brain Parenthood
-          </h1>
-          <p className="text-2xl text-gray-700 mb-4 max-w-3xl mx-auto font-medium">
-            A 12-Week Resilience and Performance Toolkit for Early-Stage Startups
-          </p>
-          <p className="text-lg text-gray-600 max-w-2xl mx-auto leading-relaxed">
-            Train your team's "brain" with psychological resilience training to reduce stress,
-            improve mental health, and boost productivity.
-          </p>
-        </div>
+    <Layout maxWidth="xl" className="pt-16 pb-20">
+      {/* Hero Section */}
+      <div className="text-center mb-16">
+        <h1 className="text-5xl md:text-6xl font-bold mb-4 text-gray-900">
+          Brain Parenthood
+        </h1>
+        <p className="text-xl text-gray-600 mb-3 max-w-3xl mx-auto">
+          A 12-Week Resilience and Performance Toolkit
+        </p>
+        <p className="text-base text-gray-500 max-w-2xl mx-auto leading-relaxed">
+          Build team resilience through structured psychological training
+        </p>
+      </div>
 
-        {/* Key Benefits */}
-        <div className="flex flex-row gap-6 mb-20 animate-fade-in max-w-6xl mx-auto">
+      {/* Key Benefits */}
+      <div className="grid md:grid-cols-3 gap-6 mb-16 max-w-5xl mx-auto">
           <div className="flex-1 bg-white p-8 rounded-2xl shadow-sm transition-all duration-300 border-2 border-purple-100 hover:border-purple-300 hover:shadow-md">
             <div className="text-center">
               <div className="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center mx-auto mb-4">
@@ -102,8 +101,8 @@ export default function Home() {
           </div>
         </div>
 
-        {/* CTA Section */}
-        <div className="text-center relative overflow-hidden bg-gradient-to-br from-purple-50 to-blue-50 p-16 rounded-3xl shadow-sm mb-20 border-2 border-purple-100">
+      {/* CTA Section */}
+      <div className="text-center bg-gradient-to-br from-purple-50 to-blue-50 p-12 md:p-16 rounded-2xl border border-purple-100 mb-16 max-w-4xl mx-auto">
           <div className="relative z-10">
             <h2 className="text-5xl md:text-6xl font-extrabold mb-6 text-gray-900">
               Ready to Start Your Journey?
@@ -123,14 +122,14 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Program Overview - Responsive Grid */}
-        <section className="modules-section mb-16">
-          <h2 className="text-4xl md:text-5xl font-bold text-center mb-3 text-gray-900">
-            Your 12-Week Journey
-          </h2>
-          <p className="text-center text-gray-600 mb-12 text-lg max-w-2xl mx-auto">
-            Select any module to begin your resilience training
-          </p>
+      {/* Program Overview */}
+      <section className="mb-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-3 text-gray-900">
+          Your 12-Week Journey
+        </h2>
+        <p className="text-center text-gray-600 mb-10 text-base max-w-2xl mx-auto">
+          Select any module to begin your resilience training
+        </p>
 
           {/* Module Cards Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -174,10 +173,9 @@ export default function Home() {
                 )}
               </Link>
             ))}
-          </div>
-        </section>
-      </div>
-    </div>
+        </div>
+      </section>
+    </Layout>
   );
 }
 

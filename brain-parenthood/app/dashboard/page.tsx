@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Layout from "@/components/Layout";
 
 export default function DashboardPage() {
   const { isAuthenticated } = useAuth();
@@ -40,37 +41,60 @@ export default function DashboardPage() {
   };
 
   return (
-    <div className="min-h-screen pt-24 bg-white">
-      <div className="mx-auto py-12 px-6 max-w-6xl">
-        <h1 className="text-4xl font-bold text-gray-900 mb-3">Your Dashboard</h1>
-        <p className="text-gray-600 mb-10">Track your progress and stay on course</p>
+    <Layout maxWidth="lg" className="pt-12">
+      {/* Header */}
+      <div className="mb-10">
+        <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2">Dashboard</h1>
+        <p className="text-gray-600">Track your progress and insights</p>
+      </div>
 
-        {/* Progress Overview */}
-        <div className="grid md:grid-cols-3 gap-6 mb-10">
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-            <div className="text-sm font-semibold text-gray-600 mb-2">Current Module</div>
-            <div className="text-4xl font-bold text-blue-600 mb-1">
-              Module {dashboardData.currentModule}
+      {/* Stats Grid */}
+      <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+        <div className="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-blue-300 transition-colors">
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Current Module</div>
+            <div className="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+              </svg>
             </div>
-            <div className="text-sm text-gray-500">Kick Off</div>
           </div>
-
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-            <div className="text-sm font-semibold text-gray-600 mb-2">Progress</div>
-            <div className="text-4xl font-bold text-green-600 mb-1">
-              {dashboardData.completedModules.length}/12
-            </div>
-            <div className="text-sm text-gray-500">Modules Completed</div>
+          <div className="text-3xl font-bold text-gray-900 mb-1">
+            Module {dashboardData.currentModule}
           </div>
-
-          <div className="bg-white p-8 rounded-2xl shadow-sm border border-gray-200">
-            <div className="text-sm font-semibold text-gray-600 mb-2">Team Size</div>
-            <div className="text-4xl font-bold text-purple-600 mb-1">
-              {dashboardData.teamMembers}
-            </div>
-            <div className="text-sm text-gray-500">Team Members</div>
-          </div>
+          <div className="text-sm text-gray-600">Kick Off</div>
         </div>
+
+        <div className="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-green-300 transition-colors">
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Progress</div>
+            <div className="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-green-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+          </div>
+          <div className="text-3xl font-bold text-gray-900 mb-1">
+            {dashboardData.completedModules.length}/12
+          </div>
+          <div className="text-sm text-gray-600">Modules Completed</div>
+        </div>
+
+        <div className="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-purple-300 transition-colors sm:col-span-2 lg:col-span-1">
+          <div className="flex items-center justify-between mb-4">
+            <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide">Team Size</div>
+            <div className="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+              <svg className="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+              </svg>
+            </div>
+          </div>
+          <div className="text-3xl font-bold text-gray-900 mb-1">
+            {dashboardData.teamMembers}
+          </div>
+          <div className="text-sm text-gray-600">Team Members</div>
+        </div>
+      </div>
 
         {/* Baseline Metrics */}
         <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8 mb-10">
@@ -223,8 +247,7 @@ export default function DashboardPage() {
             </div>
           </div>
         </div>
-      </div>
-    </div>
+    </Layout>
   );
 }
 
