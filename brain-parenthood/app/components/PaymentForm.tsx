@@ -245,9 +245,18 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     }
   };
 
+  // Prevent body scroll when component is mounted
+  useEffect(() => {
+    document.body.style.overflow = 'hidden';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, []);
+
   return (
-    <div className="payment-form-container">
-      <div className="payment-form">
+    <div className="payment-modal-overlay">
+      <div className="payment-form-container">
+        <div className="payment-form">
         <h2 className="payment-title">Payment</h2>
 
         {mode === 'input' ? (
@@ -348,6 +357,8 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           </div>
         </div>
       )}
+      </div>
+    </div>
     </div>
   );
 };
