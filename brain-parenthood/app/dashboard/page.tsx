@@ -41,7 +41,7 @@ export default function DashboardPage() {
   };
 
   return (
-    <Layout maxWidth="7xl" className="pt-16 pb-24 px-6 md:px-8 lg:px-12">
+    <Layout maxWidth="xl" className="pt-16 pb-24 px-6 md:px-8 lg:px-12">
       {/* Header */}
       <div className="mb-12 max-w-6xl mx-auto">
         <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-3 tracking-tight">Dashboard</h1>
