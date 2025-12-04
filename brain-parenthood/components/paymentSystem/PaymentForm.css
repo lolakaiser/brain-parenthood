@@ -1,190 +1,225 @@
-/* Payment Form Container */
+/* Payment Form Container - Centered Layout */
 .payment-form-container {
-  max-width: 500px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 120px);
+  max-width: 480px;
   margin: 0 auto;
-  padding: 20px;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  padding: 16px;
+  font-family: inherit;
 }
 
 .payment-form {
   background: #ffffff;
-  border: 1px solid #e0e0e0;
-  border-radius: 8px;
-  padding: 30px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  border: 2px solid #e5e7eb;
+  border-radius: 16px;
+  padding: 28px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  width: 100%;
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.payment-form:hover {
+  box-shadow: 0 8px 24px rgba(147, 51, 234, 0.15);
+  transform: translateY(-2px);
 }
 
 .payment-title {
-  margin: 0 0 24px 0;
-  font-size: 24px;
-  font-weight: 600;
-  color: #333;
+  margin: 0 0 20px 0;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
   text-align: center;
 }
 
 /* Form Groups */
 .form-group {
-  margin-bottom: 20px;
+  margin-bottom: 18px;
 }
 
 .form-group label {
   display: block;
-  margin-bottom: 8px;
-  font-size: 14px;
-  font-weight: 500;
-  color: #555;
+  margin-bottom: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+  letter-spacing: 0.01em;
 }
 
 /* Amount Input */
 .amount-input {
   width: 100%;
-  padding: 12px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 15px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
   box-sizing: border-box;
-  transition: border-color 0.3s;
+  transition: all 0.2s ease;
+  color: #111827;
+  font-weight: 500;
 }
 
 .amount-input:focus {
   outline: none;
-  border-color: #0066ff;
+  border-color: #9333ea;
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
 }
 
 .amount-input:disabled {
-  background-color: #f5f5f5;
+  background-color: #f9fafb;
   cursor: not-allowed;
+  opacity: 0.6;
 }
 
 /* Amount Display (Button Mode) */
 .amount-display {
-  padding: 12px;
-  font-size: 24px;
-  font-weight: 600;
-  color: #0066ff;
-  background-color: #f0f7ff;
-  border-radius: 4px;
+  padding: 10px 14px;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111827;
+  background: linear-gradient(135deg, #f3e8ff 0%, #dbeafe 100%);
+  border-radius: 8px;
   text-align: center;
+  border: 2px solid #e5e7eb;
 }
 
 /* Card Container */
 .card-container {
-  min-height: 80px;
-  padding: 12px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  min-height: 70px;
+  padding: 10px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
   background-color: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.card-container:focus-within {
+  border-color: #9333ea;
+  box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.1);
 }
 
 /* Buttons */
 .btn {
   width: 100%;
-  padding: 14px;
-  font-size: 16px;
-  font-weight: 600;
+  padding: 12px 18px;
+  font-size: 15px;
+  font-weight: 700;
   border: none;
-  border-radius: 4px;
+  border-radius: 10px;
   cursor: pointer;
-  transition: all 0.3s;
-  margin-top: 10px;
+  transition: all 0.2s ease;
+  margin-top: 8px;
+  letter-spacing: 0.01em;
 }
 
 .btn:disabled {
-  opacity: 0.6;
+  opacity: 0.5;
   cursor: not-allowed;
+  transform: none !important;
 }
 
 .btn-primary {
-  background-color: #0066ff;
+  background: linear-gradient(135deg, #9333ea 0%, #3b82f6 100%);
   color: white;
+  box-shadow: 0 4px 12px rgba(147, 51, 234, 0.3);
 }
 
 .btn-primary:hover:not(:disabled) {
-  background-color: #0052cc;
+  box-shadow: 0 6px 20px rgba(147, 51, 234, 0.45);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
 }
 
 .btn-secondary {
-  background-color: #f5f5f5;
-  color: #333;
-  border: 1px solid #ccc;
+  background-color: #f3f4f6;
+  color: #374151;
+  border: 2px solid #e5e7eb;
 }
 
 .btn-secondary:hover:not(:disabled) {
-  background-color: #e0e0e0;
+  background-color: #e5e7eb;
+  border-color: #d1d5db;
+  transform: translateY(-1px);
 }
 
 /* Error Message */
 .error-message {
-  padding: 12px;
-  margin: 16px 0;
-  background-color: #fff0f0;
-  border: 1px solid #ffcccc;
-  border-radius: 4px;
-  color: #cc0000;
-  font-size: 14px;
+  padding: 10px 14px;
+  margin: 12px 0;
+  background-color: #fef2f2;
+  border: 2px solid #fecaca;
+  border-radius: 8px;
+  color: #dc2626;
+  font-size: 13px;
+  font-weight: 500;
+  line-height: 1.5;
 }
 
 /* Success Message */
 .success-message {
   text-align: center;
-  padding: 24px;
+  padding: 20px;
 }
 
 .success-icon {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 16px;
-  background-color: #00cc66;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 12px;
+  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36px;
+  font-size: 32px;
   font-weight: bold;
+  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
 }
 
 .success-text {
-  font-size: 20px;
-  font-weight: 600;
-  color: #00cc66;
-  margin-bottom: 8px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #059669;
+  margin-bottom: 6px;
 }
 
 .success-amount {
-  font-size: 28px;
-  font-weight: 700;
-  color: #333;
-  margin-bottom: 20px;
+  font-size: 24px;
+  font-weight: 800;
+  color: #111827;
+  margin-bottom: 16px;
 }
 
 /* Error Status */
 .error-status {
   text-align: center;
-  padding: 24px;
+  padding: 20px;
 }
 
 .error-icon {
-  width: 60px;
-  height: 60px;
-  margin: 0 auto 16px;
-  background-color: #cc0000;
+  width: 52px;
+  height: 52px;
+  margin: 0 auto 12px;
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
   color: white;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 36px;
+  font-size: 32px;
   font-weight: bold;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
 }
 
 .error-text {
-  font-size: 20px;
-  font-weight: 600;
-  color: #cc0000;
-  margin-bottom: 20px;
+  font-size: 18px;
+  font-weight: 700;
+  color: #dc2626;
+  margin-bottom: 16px;
 }
 
 /* Modal */
@@ -194,39 +229,58 @@
   left: 0;
   right: 0;
   bottom: 0;
-  background-color: rgba(0, 0, 0, 0.5);
+  background-color: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(4px);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1000;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 .modal-content {
   background: white;
-  border-radius: 8px;
-  padding: 30px;
-  max-width: 400px;
+  border-radius: 16px;
+  padding: 24px;
+  max-width: 380px;
   width: 90%;
-  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .modal-title {
-  margin: 0 0 24px 0;
-  font-size: 22px;
-  font-weight: 600;
-  color: #333;
+  margin: 0 0 18px 0;
+  font-size: 20px;
+  font-weight: 700;
+  color: #111827;
   text-align: center;
 }
 
 .modal-body {
-  margin-bottom: 24px;
+  margin-bottom: 20px;
 }
 
 .confirmation-item {
   display: flex;
   justify-content: space-between;
-  padding: 12px 0;
-  border-bottom: 1px solid #e0e0e0;
+  padding: 10px 0;
+  border-bottom: 1px solid #e5e7eb;
 }
 
 .confirmation-item:last-child {
@@ -234,18 +288,20 @@
 }
 
 .confirmation-label {
-  font-weight: 500;
-  color: #555;
+  font-weight: 600;
+  color: #6b7280;
+  font-size: 14px;
 }
 
 .confirmation-value {
-  font-weight: 600;
-  color: #333;
+  font-weight: 700;
+  color: #111827;
+  font-size: 14px;
 }
 
 .modal-actions {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 .modal-actions .btn {
@@ -256,14 +312,45 @@
 /* Responsive */
 @media (max-width: 600px) {
   .payment-form-container {
-    padding: 10px;
+    padding: 12px;
+    min-height: calc(100vh - 100px);
   }
 
   .payment-form {
-    padding: 20px;
+    padding: 22px;
+  }
+
+  .payment-title {
+    font-size: 20px;
   }
 
   .modal-content {
     padding: 20px;
+  }
+
+  .success-icon,
+  .error-icon {
+    width: 48px;
+    height: 48px;
+    font-size: 28px;
+  }
+
+  .success-text,
+  .error-text {
+    font-size: 16px;
+  }
+
+  .success-amount {
+    font-size: 22px;
+  }
+}
+
+@media (max-width: 400px) {
+  .payment-form {
+    padding: 18px;
+  }
+
+  .form-group {
+    margin-bottom: 16px;
   }
 }
