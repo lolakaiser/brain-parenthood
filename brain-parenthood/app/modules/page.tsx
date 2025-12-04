@@ -22,54 +22,56 @@ export default function ModulesPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16 py-8 pt-32">
-        <h1 className="text-4xl font-bold text-gray-900 mb-4">All Modules</h1>
-        <p className="text-lg text-gray-600 mb-12">
-          The complete 12-week Brain Parenthood journey
-        </p>
+      <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 py-16 pt-28">
+        <div className="mb-16 text-center max-w-3xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-5 tracking-tight">All Modules</h1>
+          <p className="text-lg md:text-xl text-gray-600">
+            The complete 12-week Brain Parenthood journey
+          </p>
+        </div>
 
-        <div className="grid md:grid-cols-2 gap-6">
+        <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
           {modules.map((module) => (
             <div
               key={module.id}
-              className={`bg-white rounded-lg shadow-md p-6 border-2 ${
+              className={`bg-white rounded-3xl p-8 border transition-all duration-300 ${
                 module.available
-                  ? "border-blue-300 hover:border-blue-500 transition-colors"
-                  : "border-gray-200"
+                  ? "border-purple-100 hover:border-purple-300 shadow-md hover:shadow-2xl hover:-translate-y-2 cursor-pointer"
+                  : "border-gray-200 opacity-55 shadow-sm"
               }`}
             >
-              <div className="flex items-start justify-between mb-4">
+              <div className="flex items-start justify-between mb-5">
                 <div>
-                  <h2 className="text-2xl font-bold text-gray-900">{module.title}</h2>
-                  <p className="text-sm text-gray-600">{module.duration}</p>
+                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">{module.duration}</p>
+                  <h2 className="text-2xl font-bold text-gray-900 leading-tight">{module.title}</h2>
                 </div>
                 {module.completed && (
-                  <span className="bg-green-100 text-green-800 text-xs font-semibold px-3 py-1 rounded-full">
+                  <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full">
                     Completed
                   </span>
                 )}
               </div>
 
-              <p className="text-gray-700 mb-4">{module.description}</p>
+              <p className="text-gray-600 mb-5 leading-relaxed">{module.description}</p>
 
-              <div className="mb-4">
-                <h3 className="font-semibold text-sm text-gray-900 mb-2">Key Activities:</h3>
-                <ul className="space-y-1">
+              <div className="mb-5">
+                <h3 className="font-bold text-sm text-gray-900 mb-3">Key Activities:</h3>
+                <ul className="space-y-2">
                   {module.activities.map((activity, index) => (
                     <li key={index} className="text-sm text-gray-600 flex items-start">
-                      <span className="text-blue-600 mr-2">•</span>
+                      <span className="text-purple-500 mr-2 mt-0.5">•</span>
                       <span>{activity}</span>
                     </li>
                   ))}
                 </ul>
               </div>
 
-              <div className="mb-4">
-                <h3 className="font-semibold text-sm text-gray-900 mb-2">Expected Outcomes:</h3>
-                <ul className="space-y-1">
+              <div className="mb-6">
+                <h3 className="font-bold text-sm text-gray-900 mb-3">Expected Outcomes:</h3>
+                <ul className="space-y-2">
                   {module.outcomes.map((outcome, index) => (
                     <li key={index} className="text-sm text-gray-600 flex items-start">
-                      <span className="text-green-600 mr-2">✓</span>
+                      <span className="text-green-500 mr-2 mt-0.5">✓</span>
                       <span>{outcome}</span>
                     </li>
                   ))}
@@ -79,15 +81,15 @@ export default function ModulesPage() {
               {module.available ? (
                 <Link
                   href={`/module/${module.id}`}
-                  className="block w-full text-center bg-blue-600 text-white py-3 rounded-lg
-                           font-semibold hover:bg-blue-700 transition-colors duration-200"
+                  className="block w-full text-center bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3.5 rounded-xl
+                           font-semibold hover:from-purple-700 hover:to-blue-700 hover:shadow-lg transition-all duration-200"
                 >
                   {module.completed ? "Review Module" : "Start Module"}
                 </Link>
               ) : (
                 <button
                   disabled
-                  className="w-full bg-gray-300 text-gray-500 py-3 rounded-lg font-semibold
+                  className="w-full bg-gray-200 text-gray-400 py-3.5 rounded-xl font-semibold
                            cursor-not-allowed"
                 >
                   Coming Soon

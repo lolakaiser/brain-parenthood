@@ -18,7 +18,7 @@
 
 body {
   color: #111827;
-  background: #fafafa;
+  background: #f9fafb;
   min-height: 100vh;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
@@ -31,13 +31,13 @@ body {
 .app-container {
   max-width: 1400px;
   margin: 0 auto;
-  padding: clamp(16px, 4vw, 32px);
+  padding: clamp(24px, 5vw, 48px) clamp(24px, 4vw, 48px);
 }
 
 /* Page Wrapper with Consistent Spacing */
 .page-wrapper {
   min-height: 100vh;
-  padding: clamp(20px, 5vw, 40px) clamp(16px, 4vw, 32px);
+  padding: clamp(24px, 5vw, 48px) clamp(24px, 4vw, 48px);
   max-width: 1400px;
   margin: 0 auto;
 }
@@ -375,17 +375,17 @@ input[type="range"]::-moz-range-thumb:active {
   flex-direction: column;
   justify-content: space-between;
   text-align: left;
-  padding: clamp(24px, 4vw, 28px);
-  border-radius: 20px;
+  padding: clamp(28px, 4vw, 32px);
+  border-radius: 24px;
   background: #ffffff;
   border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.06);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05), 0 2px 6px rgba(0, 0, 0, 0.03);
   text-decoration: none;
   color: inherit;
   min-height: 220px;
-  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1),
-              border-color 0.25s ease;
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+              border-color 0.3s ease;
   cursor: pointer;
   position: relative;
   overflow: hidden;
@@ -400,12 +400,12 @@ input[type="range"]::-moz-range-thumb:active {
   height: 4px;
   background: linear-gradient(90deg, #9333ea, #3b82f6);
   opacity: 0;
-  transition: opacity 0.25s ease;
+  transition: opacity 0.3s ease;
 }
 
 .module-card:hover {
-  transform: translateY(-6px) scale(1.01);
-  box-shadow: 0 12px 24px rgba(147, 51, 234, 0.12), 0 6px 12px rgba(59, 130, 246, 0.08);
+  transform: translateY(-8px) scale(1.01);
+  box-shadow: 0 16px 32px rgba(147, 51, 234, 0.15), 0 8px 16px rgba(59, 130, 246, 0.1);
   border-color: #c4b5fd;
 }
 
@@ -420,7 +420,7 @@ input[type="range"]::-moz-range-thumb:active {
 
 .module-card.opacity-60:hover {
   transform: none;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
   border-color: #e5e7eb;
 }
 
