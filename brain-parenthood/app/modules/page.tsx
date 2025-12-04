@@ -21,45 +21,51 @@ export default function ModulesPage() {
 
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-6 sm:px-8 md:px-10 lg:px-12 py-16 pt-28">
-        <div className="mb-16 text-center max-w-3xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-5 tracking-tight">All Modules</h1>
-          <p className="text-lg md:text-xl text-gray-600">
+    <div className="min-h-screen" style={{background: '#F2F2F7'}}>
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 md:px-8 lg:px-10 py-20 pt-32">
+        <div className="mb-12 text-center max-w-3xl mx-auto">
+          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{color: '#1C1C1E', letterSpacing: '-0.03em'}}>All Modules</h1>
+          <p className="text-lg" style={{color: '#3C3C43'}}>
             The complete 12-week Brain Parenthood journey
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto">
           {modules.map((module) => (
             <div
               key={module.id}
-              className={`bg-white rounded-3xl p-8 border transition-all duration-300 ${
+              className={`bg-white rounded-3xl p-7 transition-all duration-300 ${
                 module.available
-                  ? "border-purple-100 hover:border-purple-300 shadow-md hover:shadow-2xl hover:-translate-y-2 cursor-pointer"
-                  : "border-gray-200 opacity-55 shadow-sm"
+                  ? "hover:shadow-2xl hover:-translate-y-1 cursor-pointer"
+                  : "opacity-50"
               }`}
+              style={{
+                boxShadow: module.available
+                  ? '0 2px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04)'
+                  : '0 1px 8px rgba(0, 0, 0, 0.04)',
+                border: 'none'
+              }}
             >
-              <div className="flex items-start justify-between mb-5">
+              <div className="flex items-start justify-between mb-4">
                 <div>
-                  <p className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">{module.duration}</p>
-                  <h2 className="text-2xl font-bold text-gray-900 leading-tight">{module.title}</h2>
+                  <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{color: '#8E8E93'}}>{module.duration}</p>
+                  <h2 className="text-2xl font-bold leading-tight" style={{color: '#1C1C1E', letterSpacing: '-0.02em'}}>{module.title}</h2>
                 </div>
                 {module.completed && (
-                  <span className="bg-green-100 text-green-700 text-xs font-semibold px-3 py-1.5 rounded-full">
+                  <span className="text-xs font-semibold px-3 py-1.5 rounded-full" style={{background: '#34C759', color: 'white'}}>
                     Completed
                   </span>
                 )}
               </div>
 
-              <p className="text-gray-600 mb-5 leading-relaxed">{module.description}</p>
+              <p className="mb-5 leading-relaxed" style={{color: '#3C3C43', fontSize: '15px'}}>{module.description}</p>
 
               <div className="mb-5">
-                <h3 className="font-bold text-sm text-gray-900 mb-3">Key Activities:</h3>
+                <h3 className="font-bold mb-3" style={{fontSize: '14px', color: '#1C1C1E'}}>Key Activities:</h3>
                 <ul className="space-y-2">
                   {module.activities.map((activity, index) => (
-                    <li key={index} className="text-sm text-gray-600 flex items-start">
-                      <span className="text-purple-500 mr-2 mt-0.5">•</span>
+                    <li key={index} className="flex items-start" style={{fontSize: '14px', color: '#3C3C43'}}>
+                      <span className="mr-2 mt-0.5" style={{color: '#007AFF'}}>•</span>
                       <span>{activity}</span>
                     </li>
                   ))}
@@ -67,11 +73,11 @@ export default function ModulesPage() {
               </div>
 
               <div className="mb-6">
-                <h3 className="font-bold text-sm text-gray-900 mb-3">Expected Outcomes:</h3>
+                <h3 className="font-bold mb-3" style={{fontSize: '14px', color: '#1C1C1E'}}>Expected Outcomes:</h3>
                 <ul className="space-y-2">
                   {module.outcomes.map((outcome, index) => (
-                    <li key={index} className="text-sm text-gray-600 flex items-start">
-                      <span className="text-green-500 mr-2 mt-0.5">✓</span>
+                    <li key={index} className="flex items-start" style={{fontSize: '14px', color: '#3C3C43'}}>
+                      <span className="mr-2 mt-0.5" style={{color: '#34C759'}}>✓</span>
                       <span>{outcome}</span>
                     </li>
                   ))}
@@ -81,16 +87,25 @@ export default function ModulesPage() {
               {module.available ? (
                 <Link
                   href={`/module/${module.id}`}
-                  className="block w-full text-center bg-gradient-to-r from-purple-600 to-blue-600 text-white py-3.5 rounded-xl
-                           font-semibold hover:from-purple-700 hover:to-blue-700 hover:shadow-lg transition-all duration-200"
+                  className="block w-full text-center text-white py-3.5 rounded-xl font-semibold transition-all duration-200 hover:scale-102 active:scale-98"
+                  style={{
+                    background: '#007AFF',
+                    boxShadow: '0 2px 8px rgba(0, 122, 255, 0.25)',
+                    fontSize: '17px',
+                    letterSpacing: '-0.022em'
+                  }}
                 >
                   {module.completed ? "Review Module" : "Start Module"}
                 </Link>
               ) : (
                 <button
                   disabled
-                  className="w-full bg-gray-200 text-gray-400 py-3.5 rounded-xl font-semibold
-                           cursor-not-allowed"
+                  className="w-full py-3.5 rounded-xl font-semibold cursor-not-allowed"
+                  style={{
+                    background: '#F2F2F7',
+                    color: '#8E8E93',
+                    fontSize: '17px'
+                  }}
                 >
                   Coming Soon
                 </button>

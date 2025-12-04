@@ -371,7 +371,7 @@ NEXT_PUBLIC_API_URL=https://your-api-domain.com
 
 #### 5. Custom Domain (Optional)
 
-1. Go to Project Settings ’ Domains
+1. Go to Project Settings ï¿½ Domains
 2. Add your custom domain
 3. Configure DNS settings as instructed
 4. Wait for DNS propagation (up to 48 hours)

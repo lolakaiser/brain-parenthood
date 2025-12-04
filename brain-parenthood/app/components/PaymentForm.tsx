@@ -257,6 +257,15 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
     <div className="payment-modal-overlay">
       <div className="payment-form-container">
         <div className="payment-form">
+        <button
+          className="modal-close-button"
+          onClick={() => window.location.href = '/'}
+          aria-label="Close"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
         <h2 className="payment-title">Payment</h2>
 
         {mode === 'input' ? (

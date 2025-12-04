@@ -34,66 +34,67 @@ export default function Home() {
   }
 
   return (
-    <Layout maxWidth="xl" className="pt-20 pb-24 px-6 md:px-8 lg:px-12">
-      {/* Hero Section */}
-      <div className="text-center mb-20 max-w-4xl mx-auto">
-        <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold mb-5 text-gray-900 tracking-tight">
-          Brain Parenthood
-        </h1>
-        <p className="text-xl md:text-2xl text-gray-600 mb-4 max-w-3xl mx-auto font-medium">
-          A 12-Week Resilience and Performance Toolkit
-        </p>
-        <p className="text-base md:text-lg text-gray-500 max-w-2xl mx-auto leading-relaxed">
-          Build team resilience through structured psychological training
-        </p>
-      </div>
+    <div className="min-h-screen" style={{background: '#F2F2F7'}}>
+      <div className="max-w-6xl mx-auto px-5 sm:px-6 md:px-8 lg:px-10 py-20">
+        {/* Hero Section */}
+        <div className="text-center mb-16 max-w-4xl mx-auto">
+          <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{color: '#1C1C1E', letterSpacing: '-0.03em'}}>
+            Brain Parenthood
+          </h1>
+          <p className="text-xl md:text-2xl mb-3 max-w-3xl mx-auto font-medium" style={{color: '#1C1C1E', letterSpacing: '-0.02em'}}>
+            A 12-Week Resilience and Performance Toolkit
+          </p>
+          <p className="text-base md:text-lg max-w-2xl mx-auto leading-relaxed" style={{color: '#3C3C43'}}>
+            Build team resilience through structured psychological training
+          </p>
+        </div>
 
-      {/* Key Benefits */}
-      <div className="grid md:grid-cols-3 gap-6 mb-20 max-w-6xl mx-auto">
-          <div className="flex-1 bg-white p-7 rounded-2xl shadow-sm transition-all duration-300 border border-purple-100 hover:border-purple-300 hover:shadow-lg hover:-translate-y-1">
+        {/* Key Benefits */}
+        <div className="grid md:grid-cols-3 gap-5 mb-16 max-w-5xl mx-auto">
+          <div className="flex-1 bg-white p-8 rounded-3xl shadow-sm transition-all duration-300 border border-gray-200 hover:border-gray-300 hover:shadow-xl hover:-translate-y-1">
             <div className="text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-purple-100 to-purple-50 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                <svg className="w-5 h-5 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-10 h-10 bg-gradient-to-br from-purple-100 to-purple-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <svg className="w-4 h-4 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">
+              <h3 className="text-xl font-bold mb-2" style={{color: '#1C1C1E', letterSpacing: '-0.02em'}}>
                 Train Your Team's Brain
               </h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p style={{color: '#3C3C43', fontSize: '14px'}} className="leading-relaxed">
                 Just like raising a child, develop your team's collective intelligence through
                 structured psychological resilience training.
               </p>
             </div>
           </div>
 
-          <div className="flex-1 bg-white p-7 rounded-2xl shadow-sm transition-all duration-300 border border-blue-100 hover:border-blue-300 hover:shadow-lg hover:-translate-y-1">
+          <div className="flex-1 bg-white p-8 rounded-3xl shadow-sm transition-all duration-300 border border-gray-200 hover:border-gray-300 hover:shadow-xl hover:-translate-y-1">
             <div className="text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-blue-100 to-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                <svg className="w-5 h-5 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-10 h-10 bg-gradient-to-br from-blue-100 to-blue-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <svg className="w-4 h-4 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">
+              <h3 className="text-xl font-bold mb-2" style={{color: '#1C1C1E', letterSpacing: '-0.02em'}}>
                 Reduce Stress
               </h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p style={{color: '#3C3C43', fontSize: '14px'}} className="leading-relaxed">
                 Improve mental health and productivity by reducing stress across your entire team.
               </p>
             </div>
           </div>
 
-          <div className="flex-1 bg-white p-7 rounded-2xl shadow-sm transition-all duration-300 border border-indigo-100 hover:border-indigo-300 hover:shadow-lg hover:-translate-y-1">
+          <div className="flex-1 bg-white p-8 rounded-3xl shadow-sm transition-all duration-300 border border-gray-200 hover:border-gray-300 hover:shadow-xl hover:-translate-y-1">
             <div className="text-center">
-              <div className="w-12 h-12 bg-gradient-to-br from-indigo-100 to-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-5">
-                <svg className="w-5 h-5 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <div className="w-10 h-10 bg-gradient-to-br from-indigo-100 to-indigo-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
+                <svg className="w-4 h-4 text-indigo-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
                 </svg>
               </div>
-              <h3 className="text-xl font-bold mb-3 text-gray-900">
+              <h3 className="text-xl font-bold mb-2" style={{color: '#1C1C1E', letterSpacing: '-0.02em'}}>
                 Modular Design
               </h3>
-              <p className="text-gray-600 text-sm leading-relaxed">
+              <p style={{color: '#3C3C43', fontSize: '14px'}} className="leading-relaxed">
                 Easy to understand, see progress, and track growth from beginning to end through
                 12 weekly modules.
               </p>
@@ -101,82 +102,91 @@ export default function Home() {
           </div>
         </div>
 
-      {/* CTA Section */}
-      <div className="text-center bg-gradient-to-br from-purple-50 via-blue-50 to-indigo-50 p-12 md:p-20 rounded-3xl border border-purple-100 mb-24 max-w-5xl mx-auto shadow-sm">
+        {/* CTA Section */}
+        <div className="text-center bg-white p-10 md:p-16 rounded-3xl mb-16 max-w-4xl mx-auto" style={{boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)'}}>
           <div className="relative z-10">
-            <h2 className="text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-gray-900 tracking-tight">
+            <h2 className="text-4xl md:text-5xl font-bold mb-5" style={{color: '#1C1C1E', letterSpacing: '-0.03em'}}>
               Ready to Start Your Journey?
             </h2>
-            <p className="text-lg md:text-xl mb-12 max-w-2xl mx-auto leading-relaxed text-gray-600">
+            <p className="text-lg mb-10 max-w-2xl mx-auto leading-relaxed" style={{color: '#3C3C43'}}>
               Begin with Module 1: Establish your baseline, set goals, and learn the fundamentals
               of Brain Parenthood.
             </p>
             <Link
               href="/module/1"
-              className="inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold px-10 py-5 rounded-2xl text-lg
-                       hover:from-purple-700 hover:to-blue-700 hover:shadow-2xl hover:scale-105 active:scale-95 transition-all duration-300 shadow-xl group"
+              className="inline-flex items-center gap-2 text-white font-semibold px-8 py-4 rounded-xl text-lg hover:scale-102 active:scale-98 transition-all duration-200"
+              style={{
+                background: '#007AFF',
+                boxShadow: '0 4px 16px rgba(0, 122, 255, 0.3)',
+                letterSpacing: '-0.022em'
+              }}
             >
               <span>Start Module 1</span>
-              <span className="text-xl transform group-hover:translate-x-1 transition-transform">→</span>
+              <span className="text-xl">→</span>
             </Link>
           </div>
         </div>
 
-      {/* Program Overview */}
-      <section className="mb-20">
-        <h2 className="text-3xl md:text-4xl lg:text-5xl font-bold text-center mb-4 text-gray-900 tracking-tight">
-          Your 12-Week Journey
-        </h2>
-        <p className="text-center text-gray-600 mb-12 text-base md:text-lg max-w-2xl mx-auto">
-          Select any module to begin your resilience training
-        </p>
+        {/* Program Overview */}
+        <section className="mb-16">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-3" style={{color: '#1C1C1E', letterSpacing: '-0.03em'}}>
+            Your 12-Week Journey
+          </h2>
+          <p className="text-center mb-10 text-base md:text-lg max-w-2xl mx-auto" style={{color: '#3C3C43'}}>
+            Select any module to begin your resilience training
+          </p>
 
           {/* Module Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 max-w-7xl mx-auto">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 max-w-6xl mx-auto">
             {modules.map((module, index) => (
               <Link
                 key={module.week}
                 href={module.week === "Week 1" ? "/module/1" : "#"}
-                className={`group bg-white rounded-3xl border p-7 transition-all duration-300 ${
-                  getModuleColorClass(module.colorClass)
-                } ${
+                className={`group bg-white rounded-3xl p-6 transition-all duration-300 ${
                   module.week !== "Week 1"
-                    ? "opacity-55 cursor-not-allowed shadow-sm"
-                    : "hover:shadow-2xl hover:-translate-y-2 cursor-pointer shadow-md"
+                    ? "opacity-50 cursor-not-allowed"
+                    : "hover:shadow-2xl hover:-translate-y-1 cursor-pointer"
                 }`}
+                style={{
+                  boxShadow: module.week === "Week 1"
+                    ? '0 2px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04)'
+                    : '0 1px 8px rgba(0, 0, 0, 0.04)',
+                  border: 'none'
+                }}
               >
-                <div className="text-xs font-bold text-gray-400 uppercase tracking-widest mb-3">
+                <div className="text-xs font-bold uppercase tracking-wider mb-2" style={{color: '#8E8E93'}}>
                   {module.week}
                 </div>
-                <h3 className="text-xl font-bold text-gray-900 mb-2 leading-tight">
+                <h3 className="text-xl font-bold mb-2 leading-tight" style={{color: '#1C1C1E', letterSpacing: '-0.02em'}}>
                   {module.title}
                 </h3>
-                <p className="text-sm font-medium text-gray-500 mb-3">
+                <p className="font-medium mb-2" style={{fontSize: '14px', color: '#8E8E93'}}>
                   {module.subtitle}
                 </p>
-                <p className="text-sm text-gray-600 leading-relaxed">
+                <p className="leading-relaxed" style={{fontSize: '14px', color: '#3C3C43'}}>
                   {module.description}
                 </p>
                 {module.week === "Week 1" && (
-                  <div className="mt-5 pt-4 border-t border-gray-200">
-                    <span className="text-sm font-bold text-purple-600 group-hover:text-purple-700 flex items-center gap-2">
+                  <div className="mt-4 pt-4" style={{borderTop: '0.5px solid rgba(0, 0, 0, 0.08)'}}>
+                    <span className="text-sm font-semibold flex items-center gap-2" style={{color: '#007AFF'}}>
                       Start Module
                       <span className="transform group-hover:translate-x-1 transition-transform">→</span>
                     </span>
                   </div>
                 )}
                 {module.week !== "Week 1" && (
-                  <div className="mt-5 pt-4 border-t border-gray-200">
-                    <span className="text-sm font-semibold text-gray-400">
+                  <div className="mt-4 pt-4" style={{borderTop: '0.5px solid rgba(0, 0, 0, 0.08)'}}>
+                    <span className="text-sm font-semibold" style={{color: '#8E8E93'}}>
                       Coming Soon
                     </span>
                   </div>
                 )}
               </Link>
             ))}
-        </div>
-      </section>
-    </Layout>
+          </div>
+        </section>
+      </div>
+    </div>
   );
 }
 
