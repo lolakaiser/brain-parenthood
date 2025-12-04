@@ -357,7 +357,6 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
           </div>
         </div>
       )}
-      </div>
     </div>
     </div>
   );
