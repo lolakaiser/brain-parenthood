@@ -24,7 +24,7 @@ export default function RootLayout({
       <body className={spaceGrotesk.className}>
         <AuthProvider>
           <Navigation />
-          <main className="min-h-screen">
+          <main className="min-h-screen px-6 md:px-8 lg:px-12">
             {children}
           </main>
         </AuthProvider>

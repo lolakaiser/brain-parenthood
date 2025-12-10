@@ -22,7 +22,7 @@ export default function ModulesPage() {
 
   return (
     <div className="min-h-screen" style={{background: '#F2F2F7'}}>
-      <div className="max-w-6xl mx-auto px-5 sm:px-6 md:px-8 lg:px-10 py-20 pt-32">
+      <div className="max-w-6xl mx-auto py-20 pt-32">
         <div className="mb-12 text-center max-w-3xl mx-auto">
           <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{color: '#1C1C1E', letterSpacing: '-0.03em'}}>All Modules</h1>
           <p className="text-lg" style={{color: '#3C3C43'}}>
@@ -30,11 +30,11 @@ export default function ModulesPage() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto">
+        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-6xl mx-auto">
           {modules.map((module) => (
             <div
               key={module.id}
-              className={`bg-white rounded-3xl p-7 transition-all duration-300 ${
+              className={`bg-white rounded-3xl p-8 transition-all duration-300 flex flex-col items-center text-center ${
                 module.available
                   ? "hover:shadow-2xl hover:-translate-y-1 cursor-pointer"
                   : "opacity-50"
@@ -43,55 +43,55 @@ export default function ModulesPage() {
                 boxShadow: module.available
                   ? '0 2px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04)'
                   : '0 1px 8px rgba(0, 0, 0, 0.04)',
-                border: 'none'
+                border: 'none',
+                minHeight: '360px'
               }}
             >
-              <div className="flex items-start justify-between mb-4">
-                <div>
-                  <p className="text-xs font-bold uppercase tracking-wider mb-2" style={{color: '#8E8E93'}}>{module.duration}</p>
-                  <h2 className="text-2xl font-bold leading-tight" style={{color: '#1C1C1E', letterSpacing: '-0.02em'}}>{module.title}</h2>
+              <div className="flex flex-col items-center justify-start flex-1 w-full mb-4">
+                <div className="flex items-center justify-between w-full mb-4">
+                  <p className="text-xs font-bold uppercase tracking-wider mx-auto" style={{color: '#8E8E93'}}>{module.duration}</p>
+                  {module.completed && (
+                    <span className="text-xs font-semibold px-3 py-1.5 rounded-full absolute top-8 right-8" style={{background: '#34C759', color: 'white'}}>
+                      Completed
+                    </span>
+                  )}
                 </div>
-                {module.completed && (
-                  <span className="text-xs font-semibold px-3 py-1.5 rounded-full" style={{background: '#34C759', color: 'white'}}>
-                    Completed
-                  </span>
-                )}
-              </div>
+                <h2 className="text-xl font-bold leading-tight mb-3" style={{color: '#1C1C1E', letterSpacing: '-0.02em'}}>{module.title}</h2>
+                <p className="mb-4 leading-relaxed" style={{color: '#3C3C43', fontSize: '13px'}}>{module.description}</p>
 
-              <p className="mb-5 leading-relaxed" style={{color: '#3C3C43', fontSize: '15px'}}>{module.description}</p>
+                <div className="mb-4 w-full">
+                  <h3 className="font-bold mb-2" style={{fontSize: '13px', color: '#1C1C1E'}}>Key Activities:</h3>
+                  <ul className="space-y-1.5">
+                    {module.activities.map((activity, index) => (
+                      <li key={index} className="flex items-start justify-center" style={{fontSize: '12px', color: '#3C3C43'}}>
+                        <span className="mr-1.5 mt-0.5" style={{color: '#007AFF'}}>•</span>
+                        <span>{activity}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
 
-              <div className="mb-5">
-                <h3 className="font-bold mb-3" style={{fontSize: '14px', color: '#1C1C1E'}}>Key Activities:</h3>
-                <ul className="space-y-2">
-                  {module.activities.map((activity, index) => (
-                    <li key={index} className="flex items-start" style={{fontSize: '14px', color: '#3C3C43'}}>
-                      <span className="mr-2 mt-0.5" style={{color: '#007AFF'}}>•</span>
-                      <span>{activity}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-
-              <div className="mb-6">
-                <h3 className="font-bold mb-3" style={{fontSize: '14px', color: '#1C1C1E'}}>Expected Outcomes:</h3>
-                <ul className="space-y-2">
-                  {module.outcomes.map((outcome, index) => (
-                    <li key={index} className="flex items-start" style={{fontSize: '14px', color: '#3C3C43'}}>
-                      <span className="mr-2 mt-0.5" style={{color: '#34C759'}}>✓</span>
-                      <span>{outcome}</span>
-                    </li>
-                  ))}
-                </ul>
+                <div className="mb-4 w-full">
+                  <h3 className="font-bold mb-2" style={{fontSize: '13px', color: '#1C1C1E'}}>Expected Outcomes:</h3>
+                  <ul className="space-y-1.5">
+                    {module.outcomes.map((outcome, index) => (
+                      <li key={index} className="flex items-start justify-center" style={{fontSize: '12px', color: '#3C3C43'}}>
+                        <span className="mr-1.5 mt-0.5" style={{color: '#34C759'}}>✓</span>
+                        <span>{outcome}</span>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
 
               {module.available ? (
                 <Link
                   href={`/module/${module.id}`}
-                  className="block w-full text-center text-white py-3.5 rounded-xl font-semibold transition-all duration-200 hover:scale-102 active:scale-98"
+                  className="block w-full text-center text-white py-3 rounded-xl font-semibold transition-all duration-200 hover:scale-102 active:scale-98"
                   style={{
                     background: '#007AFF',
                     boxShadow: '0 2px 8px rgba(0, 122, 255, 0.25)',
-                    fontSize: '17px',
+                    fontSize: '15px',
                     letterSpacing: '-0.022em'
                   }}
                 >
@@ -100,11 +100,11 @@ export default function ModulesPage() {
               ) : (
                 <button
                   disabled
-                  className="w-full py-3.5 rounded-xl font-semibold cursor-not-allowed"
+                  className="w-full py-3 rounded-xl font-semibold cursor-not-allowed"
                   style={{
                     background: '#F2F2F7',
                     color: '#8E8E93',
-                    fontSize: '17px'
+                    fontSize: '15px'
                   }}
                 >
                   Coming Soon
