@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import { useAuth } from '@/context/AuthContext';
+import Input from '@/components/ui/Input';
+import Button from '@/components/ui/Button';
 
 export default function SignupPage() {
   const [username, setUsername] = useState('');
@@ -47,80 +49,67 @@ export default function SignupPage() {
   };
 
   return (
-    <div className="min-h-screen bg-white flex items-center justify-center py-12">
-      <div className="w-full max-w-md mx-auto">
-        {/* Logo or Brand Section */}
+    <div className="min-h-screen bg-neutral-50 flex items-center justify-center py-12 px-4">
+      <div className="w-full max-w-md">
+        {/* Logo Section */}
         <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">Brain Parenthood</h1>
-          <p className="text-gray-600">Start your resilience journey today</p>
+          <h1 className="text-heading-1 font-bold text-neutral-900 mb-2">Brain Parenthood</h1>
+          <p className="text-body text-neutral-600">Start your resilience journey today</p>
         </div>
 
         {/* Signup Card */}
-        <div className="bg-white rounded-2xl shadow-lg border border-gray-200 p-8">
-          <h2 className="text-2xl font-bold text-gray-900 mb-2 text-center">Create Account</h2>
-          <p className="text-gray-600 text-center mb-8">Join thousands improving team resilience</p>
+        <div className="bg-white rounded-lg border border-neutral-200 shadow-sm p-8">
+          <h2 className="text-heading-2 font-semibold text-neutral-900 mb-2 text-center">Create Account</h2>
+          <p className="text-body-sm text-neutral-600 text-center mb-8">Join thousands improving team resilience</p>
 
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-800 px-4 py-3 rounded-xl mb-6">
-              <p className="text-sm font-medium">{error}</p>
+            <div className="bg-error-50 border border-error-500 text-error-700 px-4 py-3 rounded-lg mb-6">
+              <p className="text-body-sm font-medium">{error}</p>
             </div>
           )}
 
           <form onSubmit={handleSubmit} className="space-y-5">
-            <div>
-              <label htmlFor="username" className="block text-sm font-semibold text-gray-700 mb-2">
-                Username
-              </label>
-              <input
-                type="text"
-                id="username"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                placeholder="Choose a username"
-              />
-            </div>
+            <Input
+              type="text"
+              id="username"
+              label="Username"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              placeholder="Choose a username"
+              fullWidth
+            />
 
-            <div>
-              <label htmlFor="password" className="block text-sm font-semibold text-gray-700 mb-2">
-                Password
-              </label>
-              <input
-                type="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                placeholder="At least 4 characters"
-              />
-            </div>
+            <Input
+              type="password"
+              id="password"
+              label="Password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="At least 4 characters"
+              fullWidth
+            />
 
-            <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-semibold text-gray-700 mb-2">
-                Confirm Password
-              </label>
-              <input
-                type="password"
-                id="confirmPassword"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                className="w-full px-4 py-3 bg-white border border-gray-300 rounded-xl text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-                placeholder="Re-enter your password"
-              />
-            </div>
+            <Input
+              type="password"
+              id="confirmPassword"
+              label="Confirm Password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Re-enter your password"
+              fullWidth
+            />
 
-            <button
-              type="submit"
-              className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white font-bold py-4 rounded-xl hover:from-purple-700 hover:to-blue-700 hover:shadow-lg active:scale-98 transition-all duration-200 shadow-md mt-6"
-            >
-              Create Account
-            </button>
+            <div className="pt-2">
+              <Button type="submit" variant="primary" size="large" fullWidth>
+                Create Account
+              </Button>
+            </div>
           </form>
 
           <div className="mt-6 text-center">
-            <p className="text-gray-600">
+            <p className="text-body-sm text-neutral-600">
               Already have an account?{' '}
-              <Link href="/login" className="text-purple-600 hover:text-purple-700 font-semibold transition-colors">
+              <Link href="/login" className="text-primary-700 hover:text-primary-600 font-semibold">
                 Sign in
               </Link>
             </p>
