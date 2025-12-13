@@ -405,24 +405,28 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
           )}
 
           {currentQ.type === 'number' && (
-            <input
-              type="number"
-              min="1"
-              value={formData[currentQ.id as keyof typeof formData]}
-              onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })}
-              className="w-full px-5 py-4 text-lg text-gray-900 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-              placeholder={currentQ.placeholder}
-            />
+            <div className="flex justify-center">
+              <input
+                type="number"
+                min="1"
+                value={formData[currentQ.id as keyof typeof formData]}
+                onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })}
+                className="w-32 px-4 py-3 text-4xl font-bold text-center text-gray-900 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                placeholder={currentQ.placeholder}
+              />
+            </div>
           )}
 
           {currentQ.type === 'textarea' && (
-            <textarea
-              value={formData[currentQ.id as keyof typeof formData]}
-              onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })}
-              className="w-full px-5 py-4 text-lg text-gray-900 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-              rows={6}
-              placeholder={currentQ.placeholder}
-            />
+            <div className="max-w-2xl mx-auto">
+              <textarea
+                value={formData[currentQ.id as keyof typeof formData]}
+                onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })}
+                className="w-full px-5 py-4 text-base text-gray-900 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                rows={5}
+                placeholder={currentQ.placeholder}
+              />
+            </div>
           )}
         </div>
 
@@ -581,23 +585,27 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
 
         <div className="mb-12">
           {currentQ.type === 'text' && (
-            <input
-              type="text"
-              value={goals[currentQ.id as keyof typeof goals]}
-              onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })}
-              className="w-full px-5 py-4 text-lg text-gray-900 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
-              placeholder={currentQ.placeholder}
-            />
+            <div className="max-w-xl mx-auto">
+              <input
+                type="text"
+                value={goals[currentQ.id as keyof typeof goals]}
+                onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })}
+                className="w-full px-5 py-3 text-base text-gray-900 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                placeholder={currentQ.placeholder}
+              />
+            </div>
           )}
 
           {currentQ.type === 'textarea' && (
-            <textarea
-              value={goals[currentQ.id as keyof typeof goals]}
-              onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })}
-              className="w-full px-5 py-4 text-lg text-gray-900 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
-              rows={6}
-              placeholder={currentQ.placeholder}
-            />
+            <div className="max-w-2xl mx-auto">
+              <textarea
+                value={goals[currentQ.id as keyof typeof goals]}
+                onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })}
+                className="w-full px-5 py-4 text-base text-gray-900 bg-white border-2 border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent resize-none"
+                rows={5}
+                placeholder={currentQ.placeholder}
+              />
+            </div>
           )}
         </div>
 
@@ -637,8 +645,8 @@ function CompleteStep() {
     <div className="max-w-2xl mx-auto">
       <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-10 text-center">
         {/* Success Icon */}
-        <div className="inline-flex items-center justify-center w-16 h-16 bg-purple-100 rounded-full mb-6">
-          <svg className="w-8 h-8 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <div className="inline-flex items-center justify-center w-12 h-12 bg-purple-100 rounded-full mb-6">
+          <svg className="w-6 h-6 text-purple-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
           </svg>
         </div>
@@ -660,8 +668,8 @@ function CompleteStep() {
           </h3>
           <ul className="space-y-3">
             <li className="flex items-start gap-3">
-              <span className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-purple-600 text-sm font-semibold">1</span>
+              <span className="w-5 h-5 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-purple-600 text-xs font-semibold">1</span>
               </span>
               <div>
                 <p className="font-medium text-gray-900">Review your personalized plan</p>
@@ -669,8 +677,8 @@ function CompleteStep() {
               </div>
             </li>
             <li className="flex items-start gap-3">
-              <span className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-purple-600 text-sm font-semibold">2</span>
+              <span className="w-5 h-5 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-purple-600 text-xs font-semibold">2</span>
               </span>
               <div>
                 <p className="font-medium text-gray-900">Share goals with your team</p>
@@ -678,8 +686,8 @@ function CompleteStep() {
               </div>
             </li>
             <li className="flex items-start gap-3">
-              <span className="w-6 h-6 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
-                <span className="text-purple-600 text-sm font-semibold">3</span>
+              <span className="w-5 h-5 bg-purple-100 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5">
+                <span className="text-purple-600 text-xs font-semibold">3</span>
               </span>
               <div>
                 <p className="font-medium text-gray-900">Prepare for Module 2</p>
