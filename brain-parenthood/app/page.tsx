@@ -34,10 +34,9 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen" style={{background: '#F2F2F7'}}>
-      <div className="max-w-6xl mx-auto py-20">
-        {/* Hero Section */}
-        <div className="text-center mb-16 max-w-4xl mx-auto">
+    <div className="min-h-screen py-12 md:py-20" style={{background: '#F2F2F7'}}>
+      {/* Hero Section */}
+      <div className="text-center mb-16 max-w-4xl mx-auto">
           <h1 className="text-5xl md:text-6xl font-bold mb-4" style={{color: '#1C1C1E', letterSpacing: '-0.03em'}}>
             Brain Parenthood
           </h1>
@@ -49,8 +48,8 @@ export default function Home() {
           </p>
         </div>
 
-        {/* Key Benefits */}
-        <div className="grid md:grid-cols-3 gap-5 mb-16 max-w-5xl mx-auto">
+      {/* Key Benefits */}
+      <div className="grid md:grid-cols-3 gap-5 mb-16 max-w-5xl mx-auto">
           <div className="flex-1 bg-white p-8 rounded-3xl shadow-sm transition-all duration-300 border border-gray-200 hover:border-gray-300 hover:shadow-xl hover:-translate-y-1">
             <div className="text-center">
               <div className="w-8 h-8 bg-gradient-to-br from-purple-100 to-purple-50 rounded-2xl flex items-center justify-center mx-auto mb-4">
@@ -100,11 +99,11 @@ export default function Home() {
               </p>
             </div>
           </div>
-        </div>
+      </div>
 
-        {/* CTA Section */}
-        <div className="text-center bg-white p-10 md:p-16 rounded-3xl mb-16 max-w-4xl mx-auto" style={{boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)'}}>
-          <div className="relative z-10">
+      {/* CTA Section */}
+      <div className="text-center bg-white p-10 md:p-16 rounded-3xl mb-16 max-w-4xl mx-auto" style={{boxShadow: '0 4px 20px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04)'}}>
+        <div className="relative z-10">
             <h2 className="text-4xl md:text-5xl font-bold mb-5" style={{color: '#1C1C1E', letterSpacing: '-0.03em'}}>
               Ready to Start Your Journey?
             </h2>
@@ -124,20 +123,20 @@ export default function Home() {
               <span>Start Module 1</span>
               <span className="text-xl">→</span>
             </Link>
-          </div>
         </div>
+      </div>
 
-        {/* Program Overview */}
-        <section className="mb-16">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-3" style={{color: '#1C1C1E', letterSpacing: '-0.03em'}}>
-            Your 12-Week Journey
-          </h2>
-          <p className="text-center mb-10 text-base md:text-lg max-w-2xl mx-auto" style={{color: '#3C3C43'}}>
-            Select any module to begin your resilience training
-          </p>
+      {/* Program Overview */}
+      <section className="mb-16">
+        <h2 className="text-3xl md:text-4xl font-bold text-center mb-3" style={{color: '#1C1C1E', letterSpacing: '-0.03em'}}>
+          Your 12-Week Journey
+        </h2>
+        <p className="text-center mb-10 text-base md:text-lg max-w-2xl mx-auto" style={{color: '#3C3C43'}}>
+          Select any module to begin your resilience training
+        </p>
 
-          {/* Module Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-6xl mx-auto">
+        {/* Module Cards Grid */}
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
             {modules.map((module, index) => (
               <Link
                 key={module.week}
@@ -187,9 +186,8 @@ export default function Home() {
                 )}
               </Link>
             ))}
-          </div>
-        </section>
-      </div>
+        </div>
+      </section>
     </div>
   );
 }

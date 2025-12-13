@@ -21,16 +21,15 @@ export default function ModulesPage() {
 
 
   return (
-    <div className="min-h-screen" style={{background: '#F2F2F7'}}>
-      <div className="max-w-6xl mx-auto py-20 pt-32">
-        <div className="mb-12 text-center max-w-3xl mx-auto">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{color: '#1C1C1E', letterSpacing: '-0.03em'}}>All Modules</h1>
-          <p className="text-lg" style={{color: '#3C3C43'}}>
-            The complete 12-week Brain Parenthood journey
-          </p>
-        </div>
+    <div className="min-h-screen py-12 md:py-20" style={{background: '#F2F2F7'}}>
+      <div className="mb-12 text-center max-w-3xl mx-auto">
+        <h1 className="text-4xl md:text-5xl font-bold mb-4" style={{color: '#1C1C1E', letterSpacing: '-0.03em'}}>All Modules</h1>
+        <p className="text-lg" style={{color: '#3C3C43'}}>
+          The complete 12-week Brain Parenthood journey
+        </p>
+      </div>
 
-        <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6 max-w-6xl mx-auto">
+      <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
           {modules.map((module) => (
             <div
               key={module.id}
@@ -112,7 +111,6 @@ export default function ModulesPage() {
               )}
             </div>
           ))}
-        </div>
       </div>
     </div>
   );
