@@ -21,139 +21,151 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-white">
       <div className="app-container">
         {/* Hero Section */}
-        <div className="text-center mb-12">
-          <div className="inline-block px-4 py-1.5 mb-6 bg-primary-50 text-primary-700 rounded-full text-label font-medium">
-            12-Week Program
+        <div className="text-center mb-20 max-w-4xl mx-auto pt-12">
+          <div className="inline-block px-5 py-2 mb-8 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold">
+            12-Week Resilience Program
           </div>
-          <h1 className="text-display-1 font-bold text-neutral-900 mb-4">
-            Brain Parenthood
+
+          <h1 className="text-6xl font-bold text-neutral-900 mb-6 leading-tight">
+            Build Unshakeable Team Resilience
           </h1>
-          <p className="text-heading-3 text-neutral-700 mb-3 max-w-3xl mx-auto">
-            A Resilience and Performance Toolkit for Startup Teams
+
+          <p className="text-xl text-neutral-600 mb-4 leading-relaxed max-w-3xl mx-auto">
+            Transform your startup team with science-backed psychological training designed for high-performance environments
           </p>
-          <p className="text-body-lg text-neutral-600 max-w-2xl mx-auto">
-            Build team resilience through structured psychological training
-          </p>
-        </div>
 
-        {/* Key Benefits */}
-        <div className="grid md:grid-cols-3 gap-6 mb-12 max-w-5xl mx-auto">
-          <div className="bg-white p-8 rounded-lg border border-neutral-200 shadow-sm">
-            <div className="w-12 h-12 bg-primary-50 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-primary-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
-              </svg>
-            </div>
-            <h3 className="text-heading-3 font-semibold text-neutral-900 mb-2">
-              Train Your Team's Brain
-            </h3>
-            <p className="text-body-sm text-neutral-600 leading-relaxed">
-              Just like raising a child, develop your team's collective intelligence through
-              structured psychological resilience training.
-            </p>
-          </div>
-
-          <div className="bg-white p-8 rounded-lg border border-neutral-200 shadow-sm">
-            <div className="w-12 h-12 bg-primary-50 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-primary-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-              </svg>
-            </div>
-            <h3 className="text-heading-3 font-semibold text-neutral-900 mb-2">
-              Reduce Stress
-            </h3>
-            <p className="text-body-sm text-neutral-600 leading-relaxed">
-              Improve mental health and productivity by reducing stress across your entire team.
-            </p>
-          </div>
-
-          <div className="bg-white p-8 rounded-lg border border-neutral-200 shadow-sm">
-            <div className="w-12 h-12 bg-primary-50 rounded-lg flex items-center justify-center mb-4">
-              <svg className="w-6 h-6 text-primary-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
-              </svg>
-            </div>
-            <h3 className="text-heading-3 font-semibold text-neutral-900 mb-2">
-              Modular Design
-            </h3>
-            <p className="text-body-sm text-neutral-600 leading-relaxed">
-              Easy to understand, see progress, and track growth from beginning to end through
-              12 weekly modules.
-            </p>
+          <div className="flex items-center justify-center gap-4 mt-10">
+            <Link href="/module/1">
+              <Button variant="primary" size="large" className="px-10 py-4 text-lg rounded-2xl">
+                Start Training
+              </Button>
+            </Link>
+            <Link href="/dashboard">
+              <Button variant="secondary" size="large" className="px-10 py-4 text-lg rounded-2xl">
+                View Dashboard
+              </Button>
+            </Link>
           </div>
         </div>
 
-        {/* CTA Section */}
-        <div className="bg-white p-12 rounded-lg border border-neutral-200 shadow-sm mb-12 max-w-4xl mx-auto text-center">
-          <h2 className="text-heading-1 font-bold text-neutral-900 mb-4">
-            Ready to Start Your Journey?
+        {/* Features Grid */}
+        <div className="mb-24">
+          <h2 className="text-4xl font-bold text-neutral-900 text-center mb-16">
+            Why Brain Parenthood Works
           </h2>
-          <p className="text-body-lg text-neutral-600 mb-8 max-w-2xl mx-auto">
-            Begin with Module 1: Establish your baseline, set goals, and learn the fundamentals
-            of Brain Parenthood.
-          </p>
-          <Link href="/module/1">
-            <Button variant="primary" size="large">
-              Start Module 1 →
-            </Button>
-          </Link>
+          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+            <div className="bg-gradient-to-br from-primary-50 to-white p-10 rounded-3xl border border-primary-200">
+              <h3 className="text-2xl font-bold text-neutral-900 mb-4">
+                Structured Training
+              </h3>
+              <p className="text-neutral-600 text-lg leading-relaxed">
+                12 weekly modules that progressively build your team's psychological resilience and performance capabilities
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-calm-50 to-white p-10 rounded-3xl border border-calm-200">
+              <h3 className="text-2xl font-bold text-neutral-900 mb-4">
+                Science-Backed Methods
+              </h3>
+              <p className="text-neutral-600 text-lg leading-relaxed">
+                Evidence-based techniques from cognitive psychology, mindfulness research, and organizational behavior
+              </p>
+            </div>
+
+            <div className="bg-gradient-to-br from-success-50 to-white p-10 rounded-3xl border border-success-200">
+              <h3 className="text-2xl font-bold text-neutral-900 mb-4">
+                Measurable Results
+              </h3>
+              <p className="text-neutral-600 text-lg leading-relaxed">
+                Track progress through baseline assessments, weekly metrics, and clear milestones throughout the program
+              </p>
+            </div>
+          </div>
+        </div>
+
+        {/* Stats */}
+        <div className="bg-gradient-to-br from-neutral-50 to-white rounded-3xl p-12 mb-24 max-w-4xl mx-auto border border-neutral-200">
+          <div className="grid grid-cols-3 gap-12 text-center">
+            <div>
+              <div className="text-5xl font-bold text-primary-700 mb-3">12</div>
+              <div className="text-neutral-600 font-medium">Weeks of Training</div>
+            </div>
+            <div className="border-l border-r border-neutral-200">
+              <div className="text-5xl font-bold text-success-500 mb-3">5-10</div>
+              <div className="text-neutral-600 font-medium">Minutes Per Day</div>
+            </div>
+            <div>
+              <div className="text-5xl font-bold text-calm-500 mb-3">100%</div>
+              <div className="text-neutral-600 font-medium">Team Focused</div>
+            </div>
+          </div>
         </div>
 
         {/* Program Overview */}
-        <section className="mb-12">
-          <h2 className="text-heading-1 font-bold text-center text-neutral-900 mb-3">
-            Your 12-Week Journey
-          </h2>
-          <p className="text-center text-body-lg text-neutral-600 mb-10 max-w-2xl mx-auto">
-            Select any module to begin your resilience training
-          </p>
+        <section className="mb-20">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl font-bold text-neutral-900 mb-4">
+              Your Learning Path
+            </h2>
+            <p className="text-xl text-neutral-600 max-w-2xl mx-auto">
+              Each module builds on the previous one, creating lasting behavioral change
+            </p>
+          </div>
 
-          {/* Module Cards Grid */}
-          <div className="module-grid">
-            {modules.map((module) => (
-              <Link
-                key={module.week}
-                href={module.week === "Week 1" ? "/module/1" : "#"}
-                className={`module-card ${
-                  module.week !== "Week 1" ? "opacity-60" : ""
-                }`}
-              >
-                <div>
-                  <div className="module-week">
-                    {module.week}
+          <div className="grid grid-cols-2 gap-6 max-w-5xl mx-auto">
+            {modules.map((module, index) => {
+              const isAvailable = module.week === "Week 1";
+              return (
+                <Link
+                  key={module.week}
+                  href={isAvailable ? "/module/1" : "#"}
+                  className={`group p-8 rounded-3xl border-2 transition-all duration-300 ${
+                    isAvailable
+                      ? "bg-white border-primary-300 hover:border-primary-500 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+                      : "bg-neutral-50 border-neutral-200 opacity-60 cursor-not-allowed"
+                  }`}
+                >
+                  <div className="flex items-start gap-5">
+                    <div className={`flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-xl ${
+                      isAvailable ? "bg-success-500" : "bg-neutral-300"
+                    }`}>
+                      {index + 1}
+                    </div>
+                    <div className="flex-1">
+                      <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2">
+                        {module.week}
+                      </div>
+                      <h3 className="text-2xl font-bold text-neutral-900 mb-3">
+                        {module.title}
+                      </h3>
+                      <p className="text-neutral-600 leading-relaxed">
+                        {module.description}
+                      </p>
+                    </div>
                   </div>
-                  <h3 className="module-title">
-                    {module.title}
-                  </h3>
-                  <p className="text-body-sm text-neutral-500 font-medium mb-3">
-                    {module.subtitle}
-                  </p>
-                  <p className="text-body-sm text-neutral-600">
-                    {module.description}
-                  </p>
-                </div>
-                {module.week === "Week 1" && (
-                  <div className="mt-6 pt-6 border-t border-neutral-200">
-                    <span className="text-body-sm font-semibold text-primary-700 flex items-center justify-center gap-2">
-                      Start Module
-                      <span>→</span>
-                    </span>
-                  </div>
-                )}
-                {module.week !== "Week 1" && (
-                  <div className="mt-6 pt-6 border-t border-neutral-200">
-                    <span className="text-body-sm font-semibold text-neutral-400">
-                      Coming Soon
-                    </span>
-                  </div>
-                )}
-              </Link>
-            ))}
+                </Link>
+              );
+            })}
           </div>
         </section>
+
+        {/* CTA */}
+        <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-3xl p-16 text-center text-white mb-12">
+          <h2 className="text-4xl font-bold mb-6">
+            Ready to Build Team Resilience?
+          </h2>
+          <p className="text-xl text-primary-100 mb-10 max-w-2xl mx-auto">
+            Start with Module 1 today and begin your team's transformation
+          </p>
+          <Link href="/module/1">
+            <Button variant="secondary" size="large" className="px-12 py-5 text-lg rounded-2xl bg-white text-primary-700 hover:bg-primary-50">
+              Begin Module 1
+            </Button>
+          </Link>
+        </div>
       </div>
     </div>
   );
@@ -163,43 +175,36 @@ const modules = [
   {
     week: "Week 1",
     title: "Kick Off",
-    subtitle: "Start your journey",
-    description: "Establish baseline, set goals, and introduction to Brain Parenthood concepts.",
+    description: "Establish baseline metrics, set team goals, and learn core Brain Parenthood concepts",
   },
   {
     week: "Week 2-3",
-    title: "Mindfulness",
-    subtitle: "2 times a day",
-    description: "Focus on individuals and teams with mindfulness practices to improve creativity, focus, and attention.",
+    title: "Mindfulness Foundation",
+    description: "Build individual and team mindfulness practices to improve focus, creativity, and attention",
   },
   {
     week: "Week 4-5",
-    title: "Resilience",
-    subtitle: "3 times a week",
-    description: "Resilience workshop with cognitive reframing, breathing exercises, and personal/team resilience plans.",
+    title: "Resilience Building",
+    description: "Develop cognitive reframing skills, breathing techniques, and personal resilience strategies",
   },
   {
     week: "Week 6-7",
-    title: "Communication",
-    subtitle: "1 time a day",
-    description: "Active communication training, psychological safety rituals, and team agreements.",
+    title: "Communication Skills",
+    description: "Practice active communication, establish psychological safety, and create team agreements",
   },
   {
     week: "Week 8-9",
-    title: "Innovation",
-    subtitle: "3 times a day",
-    description: "Apply new skills to real challenges with creative brainstorming and adaptability drills.",
+    title: "Applied Innovation",
+    description: "Apply learned skills to real challenges through creative problem-solving exercises",
   },
   {
     week: "Week 10-11",
-    title: "Measurement",
-    subtitle: "2 times a week",
-    description: "Progress assessment, team retrospective, and personalized coaching.",
+    title: "Progress Measurement",
+    description: "Assess progress, conduct team retrospective, and receive personalized coaching",
   },
   {
     week: "Week 12",
-    title: "Wrap-up",
-    subtitle: "Final celebration",
-    description: "Final reflection, celebrate achievements, and plan for continuous brain parenting.",
+    title: "Program Completion",
+    description: "Final reflection, celebrate achievements, and create your ongoing resilience plan",
   }
 ];

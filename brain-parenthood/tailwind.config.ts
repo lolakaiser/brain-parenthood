@@ -99,11 +99,13 @@ const config: Config = {
         '12': '96px',
       },
       borderRadius: {
-        'sm': '6px',
-        'DEFAULT': '8px',
-        'md': '8px',
-        'lg': '12px',
-        'xl': '16px',
+        'sm': '12px',
+        'DEFAULT': '16px',
+        'md': '16px',
+        'lg': '20px',
+        'xl': '24px',
+        '2xl': '32px',
+        '3xl': '40px',
       },
       boxShadow: {
         'xs': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
