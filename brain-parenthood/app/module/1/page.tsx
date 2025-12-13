@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { saveBaseline, saveGoals, completeModule, type BaselineData, type GoalsData } from "@/lib/storage";
 
 type StepType = 'overview' | 'baseline' | 'goals' | 'complete';
 
@@ -316,7 +317,18 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      console.log('Baseline data:', formData);
+      // Save baseline data to localStorage
+      const baselineData: BaselineData = {
+        teamStressLevel: formData.teamStressLevel,
+        individualStressLevel: formData.individualStressLevel,
+        productivity: formData.productivity,
+        communication: formData.communication,
+        workLifeBalance: formData.workLifeBalance,
+        teamSize: formData.teamSize,
+        primaryChallenges: formData.primaryChallenges,
+      };
+      saveBaseline(baselineData);
+      console.log('Baseline data saved:', baselineData);
       onNext();
     }
   };
@@ -508,7 +520,19 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      console.log('Goals data:', goals);
+      // Save goals data to localStorage
+      const goalsData: GoalsData = {
+        stressReduction: goals.stressReduction,
+        productivityGoal: goals.productivityGoal,
+        communicationGoal: goals.communicationGoal,
+        personalGoal: goals.personalGoal,
+        teamGoal: goals.teamGoal,
+        successMetrics: goals.successMetrics,
+      };
+      saveGoals(goalsData);
+      // Mark Module 1 as complete
+      completeModule(1);
+      console.log('Goals data saved and Module 1 completed:', goalsData);
       onNext();
     }
   };

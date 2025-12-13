@@ -1,0 +1,133 @@
+/**
+ * LocalStorage utility for Brain Parenthood MVP
+ * Provides type-safe storage for user progress data
+ */
+
+export interface BaselineData {
+  teamStressLevel: number;
+  individualStressLevel: number;
+  productivity: number;
+  communication: number;
+  workLifeBalance: number;
+  teamSize: string;
+  primaryChallenges: string;
+  completedAt?: string;
+}
+
+export interface GoalsData {
+  stressReduction: string;
+  productivityGoal: string;
+  communicationGoal: string;
+  personalGoal: string;
+  teamGoal: string;
+  successMetrics: string;
+  completedAt?: string;
+}
+
+export interface UserProgress {
+  completedModules: number[];
+  currentModule: number;
+  lastActivity?: string;
+}
+
+// Storage keys
+const STORAGE_KEYS = {
+  BASELINE: 'brainParenthood_baseline',
+  GOALS: 'brainParenthood_goals',
+  PROGRESS: 'brainParenthood_progress',
+};
+
+// Baseline Assessment
+export function saveBaseline(data: BaselineData): void {
+  try {
+    const dataWithTimestamp = {
+      ...data,
+      completedAt: new Date().toISOString(),
+    };
+    localStorage.setItem(STORAGE_KEYS.BASELINE, JSON.stringify(dataWithTimestamp));
+  } catch (error) {
+    console.error('Error saving baseline data:', error);
+  }
+}
+
+export function getBaseline(): BaselineData | null {
+  try {
+    const data = localStorage.getItem(STORAGE_KEYS.BASELINE);
+    return data ? JSON.parse(data) : null;
+  } catch (error) {
+    console.error('Error loading baseline data:', error);
+    return null;
+  }
+}
+
+// Goals
+export function saveGoals(data: GoalsData): void {
+  try {
+    const dataWithTimestamp = {
+      ...data,
+      completedAt: new Date().toISOString(),
+    };
+    localStorage.setItem(STORAGE_KEYS.GOALS, JSON.stringify(dataWithTimestamp));
+  } catch (error) {
+    console.error('Error saving goals data:', error);
+  }
+}
+
+export function getGoals(): GoalsData | null {
+  try {
+    const data = localStorage.getItem(STORAGE_KEYS.GOALS);
+    return data ? JSON.parse(data) : null;
+  } catch (error) {
+    console.error('Error loading goals data:', error);
+    return null;
+  }
+}
+
+// Progress Tracking
+export function saveProgress(data: UserProgress): void {
+  try {
+    const dataWithTimestamp = {
+      ...data,
+      lastActivity: new Date().toISOString(),
+    };
+    localStorage.setItem(STORAGE_KEYS.PROGRESS, JSON.stringify(dataWithTimestamp));
+  } catch (error) {
+    console.error('Error saving progress data:', error);
+  }
+}
+
+export function getProgress(): UserProgress {
+  try {
+    const data = localStorage.getItem(STORAGE_KEYS.PROGRESS);
+    return data ? JSON.parse(data) : { completedModules: [], currentModule: 1 };
+  } catch (error) {
+    console.error('Error loading progress data:', error);
+    return { completedModules: [], currentModule: 1 };
+  }
+}
+
+export function completeModule(moduleId: number): void {
+  const progress = getProgress();
+  if (!progress.completedModules.includes(moduleId)) {
+    progress.completedModules.push(moduleId);
+    progress.completedModules.sort((a, b) => a - b);
+  }
+  // Set current module to next incomplete module
+  const nextModule = moduleId + 1;
+  if (nextModule <= 12 && !progress.completedModules.includes(nextModule)) {
+    progress.currentModule = nextModule;
+  }
+  saveProgress(progress);
+}
+
+export function isModuleCompleted(moduleId: number): boolean {
+  const progress = getProgress();
+  return progress.completedModules.includes(moduleId);
+}
+
+// Clear all data (useful for testing)
+export function clearAllData(): void {
+  localStorage.removeItem(STORAGE_KEYS.BASELINE);
+  localStorage.removeItem(STORAGE_KEYS.GOALS);
+  localStorage.removeItem(STORAGE_KEYS.PROGRESS);
+}

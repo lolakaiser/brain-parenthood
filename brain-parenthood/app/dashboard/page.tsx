@@ -3,12 +3,30 @@
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Layout from "@/components/Layout";
+import { getBaseline, getGoals, getProgress } from "@/lib/storage";
 
 export default function DashboardPage() {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
+  const [dashboardData, setDashboardData] = useState({
+    currentModule: 1,
+    completedModules: [] as number[],
+    baselineData: {
+      teamStressLevel: 5,
+      individualStressLevel: 5,
+      productivity: 5,
+      communication: 5,
+      workLifeBalance: 5,
+    },
+    goals: {
+      stressReduction: "Complete Module 1 to set your goals",
+      productivityGoal: "Complete Module 1 to set your goals",
+      communicationGoal: "Complete Module 1 to set your goals",
+    },
+    teamMembers: 0,
+  });
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -16,29 +34,36 @@ export default function DashboardPage() {
     }
   }, [isAuthenticated, router]);
 
+  // Load data from localStorage
+  useEffect(() => {
+    const baseline = getBaseline();
+    const goals = getGoals();
+    const progress = getProgress();
+
+    if (baseline || goals || progress) {
+      setDashboardData({
+        currentModule: progress.currentModule || 1,
+        completedModules: progress.completedModules || [],
+        baselineData: baseline ? {
+          teamStressLevel: baseline.teamStressLevel,
+          individualStressLevel: baseline.individualStressLevel,
+          productivity: baseline.productivity,
+          communication: baseline.communication,
+          workLifeBalance: baseline.workLifeBalance,
+        } : dashboardData.baselineData,
+        goals: goals ? {
+          stressReduction: goals.stressReduction || "Complete Module 1 to set your goals",
+          productivityGoal: goals.productivityGoal || "Complete Module 1 to set your goals",
+          communicationGoal: goals.communicationGoal || "Complete Module 1 to set your goals",
+        } : dashboardData.goals,
+        teamMembers: baseline ? parseInt(baseline.teamSize) || 0 : 0,
+      });
+    }
+  }, []);
+
   if (!isAuthenticated) {
     return null;
   }
-
-
-  // TODO: Fetch this data from the backend API
-  const dashboardData = {
-    currentModule: 1,
-    completedModules: [1],
-    baselineData: {
-      teamStressLevel: 7,
-      individualStressLevel: 6,
-      productivity: 5,
-      communication: 6,
-      workLifeBalance: 5,
-    },
-    goals: {
-      stressReduction: "Reduce team stress level from 7 to 4",
-      productivityGoal: "Increase team productivity by 25%",
-      communicationGoal: "Establish daily check-ins and weekly retrospectives",
-    },
-    teamMembers: 8,
-  };
 
   return (
     <Layout maxWidth="xl" className="pt-16 pb-24">

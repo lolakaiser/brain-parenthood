@@ -3,17 +3,25 @@
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { getProgress, isModuleCompleted } from "@/lib/storage";
 
 export default function ModulesPage() {
   const { isAuthenticated } = useAuth();
   const router = useRouter();
+  const [completedModules, setCompletedModules] = useState<number[]>([]);
 
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/login');
     }
   }, [isAuthenticated, router]);
+
+  // Load completion status
+  useEffect(() => {
+    const progress = getProgress();
+    setCompletedModules(progress.completedModules || []);
+  }, []);
 
   if (!isAuthenticated) {
     return null;
@@ -30,31 +38,33 @@ export default function ModulesPage() {
       </div>
 
       <div className="grid md:grid-cols-2 xl:grid-cols-3 gap-6">
-          {modules.map((module) => (
-            <div
-              key={module.id}
-              className={`bg-white rounded-3xl p-8 transition-all duration-300 flex flex-col items-center text-center ${
-                module.available
-                  ? "hover:shadow-2xl hover:-translate-y-1 cursor-pointer"
-                  : "opacity-50"
-              }`}
-              style={{
-                boxShadow: module.available
-                  ? '0 2px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04)'
-                  : '0 1px 8px rgba(0, 0, 0, 0.04)',
-                border: 'none',
-                minHeight: '360px'
-              }}
-            >
-              <div className="flex flex-col items-center justify-start flex-1 w-full mb-4">
-                <div className="flex items-center justify-between w-full mb-4">
-                  <p className="text-xs font-bold uppercase tracking-wider mx-auto" style={{color: '#8E8E93'}}>{module.duration}</p>
-                  {module.completed && (
-                    <span className="text-xs font-semibold px-3 py-1.5 rounded-full absolute top-8 right-8" style={{background: '#34C759', color: 'white'}}>
-                      Completed
-                    </span>
-                  )}
-                </div>
+          {modules.map((module) => {
+            const isCompleted = completedModules.includes(module.id);
+            return (
+              <div
+                key={module.id}
+                className={`bg-white rounded-3xl p-8 transition-all duration-300 flex flex-col items-center text-center ${
+                  module.available
+                    ? "hover:shadow-2xl hover:-translate-y-1 cursor-pointer"
+                    : "opacity-50"
+                }`}
+                style={{
+                  boxShadow: module.available
+                    ? '0 2px 16px rgba(0, 0, 0, 0.08), 0 1px 4px rgba(0, 0, 0, 0.04)'
+                    : '0 1px 8px rgba(0, 0, 0, 0.04)',
+                  border: 'none',
+                  minHeight: '360px'
+                }}
+              >
+                <div className="flex flex-col items-center justify-start flex-1 w-full mb-4">
+                  <div className="flex items-center justify-between w-full mb-4">
+                    <p className="text-xs font-bold uppercase tracking-wider mx-auto" style={{color: '#8E8E93'}}>{module.duration}</p>
+                    {isCompleted && (
+                      <span className="text-xs font-semibold px-3 py-1.5 rounded-full absolute top-8 right-8" style={{background: '#34C759', color: 'white'}}>
+                        Completed
+                      </span>
+                    )}
+                  </div>
                 <h2 className="text-xl font-bold leading-tight mb-3" style={{color: '#1C1C1E', letterSpacing: '-0.02em'}}>{module.title}</h2>
                 <p className="mb-4 leading-relaxed" style={{color: '#3C3C43', fontSize: '13px'}}>{module.description}</p>
 
@@ -94,7 +104,7 @@ export default function ModulesPage() {
                     letterSpacing: '-0.022em'
                   }}
                 >
-                  {module.completed ? "Review Module" : "Start Module"}
+                  {isCompleted ? "Review Module" : "Start Module"}
                 </Link>
               ) : (
                 <button
@@ -109,8 +119,9 @@ export default function ModulesPage() {
                   Coming Soon
                 </button>
               )}
-            </div>
-          ))}
+              </div>
+            );
+          })}
       </div>
     </div>
   );
