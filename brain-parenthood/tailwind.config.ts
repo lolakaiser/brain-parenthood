@@ -9,20 +9,46 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Linear-inspired muted purples for primary brand
+        // Calm Authority (Deep Sage) - Main brand color
         primary: {
-          50: '#f6f5ff',
-          100: '#edebfe',
-          200: '#ddd6fe',
-          300: '#c4b5fd',
-          400: '#a78bfa',
-          500: '#8b5cf6',
-          600: '#7c3aed',
-          700: '#6d28d9',
-          800: '#5b21b6',
-          900: '#4c1d95',
+          50: '#f4f7f5',
+          100: '#e3ebe6',
+          200: '#c7d7cc',
+          300: '#a0bfaa',
+          400: '#6d9d7f',
+          500: '#4a8061',
+          600: '#3d6a51',
+          700: '#325543',
+          800: '#2a4638',
+          900: '#243a30',
         },
-        // Notion-inspired neutrals for text/backgrounds
+        // Warm Trust (Terracotta) - Call-to-actions, highlights
+        secondary: {
+          50: '#fdf6f3',
+          100: '#f9e8df',
+          200: '#f3d1bf',
+          300: '#e9b094',
+          400: '#de8b66',
+          500: '#d06d42',
+          600: '#b5583a',
+          700: '#974733',
+          800: '#7a3b2f',
+          900: '#653329',
+        },
+        // Quiet Achievement (Forest Green) - Success states
+        success: {
+          50: '#f0f8f4',
+          100: '#d7f0e3',
+          200: '#afe1c7',
+          300: '#7dc9a4',
+          400: '#4aad7d',
+          500: '#2d9561',
+          600: '#25784f',
+          700: '#1f5f41',
+          800: '#1a4d36',
+          900: '#16402d',
+        },
+        // Grounded Space (Warm Gray) - Text, backgrounds
         neutral: {
           50: '#fafaf9',
           100: '#f5f5f4',
@@ -35,18 +61,33 @@ const config: Config = {
           800: '#292524',
           900: '#1c1917',
         },
-        // Duolingo-inspired bright green for success/progress
-        success: {
-          50: '#f0fdf4',
-          100: '#dcfce7',
-          200: '#bbf7d0',
-          300: '#86efac',
-          400: '#4ade80',
-          500: '#58cc02', // Duolingo green
-          600: '#16a34a',
-          700: '#15803d',
+        // Gentle Warning (Amber) - Warnings, important info
+        alert: {
+          50: '#fffbeb',
+          100: '#fef3c7',
+          200: '#fde68a',
+          300: '#fcd34d',
+          400: '#fbbf24',
+          500: '#f59e0b',
+          600: '#d97706',
+          700: '#b45309',
+          800: '#92400e',
+          900: '#78350f',
         },
-        // Headspace-inspired calm blue
+        // Supportive Correction (Muted Red) - Errors
+        error: {
+          50: '#fef2f2',
+          100: '#fee2e2',
+          200: '#fecaca',
+          300: '#fca5a5',
+          400: '#f87171',
+          500: '#ef4444',
+          600: '#dc2626',
+          700: '#b91c1c',
+          800: '#991b1b',
+          900: '#7f1d1d',
+        },
+        // Legacy colors (for gradual migration)
         calm: {
           50: '#eff6ff',
           100: '#dbeafe',
@@ -56,7 +97,6 @@ const config: Config = {
           500: '#3b82f6',
           600: '#2563eb',
         },
-        // Headspace-inspired warm orange
         warm: {
           50: '#fff7ed',
           100: '#ffedd5',
@@ -66,23 +106,22 @@ const config: Config = {
           500: '#f97316',
           600: '#ea580c',
         },
-        error: {
-          500: '#ef4444',
-          600: '#dc2626',
-        },
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
+        display: ['Space Grotesk', 'Inter', 'system-ui', 'sans-serif'],
       },
       fontSize: {
-        'display-1': ['56px', { lineHeight: '64px', fontWeight: '700' }],
-        'heading-1': ['40px', { lineHeight: '48px', fontWeight: '700' }],
-        'heading-2': ['32px', { lineHeight: '40px', fontWeight: '600' }],
-        'heading-3': ['24px', { lineHeight: '32px', fontWeight: '600' }],
-        'body-lg': ['18px', { lineHeight: '28px', fontWeight: '400' }],
-        'body': ['16px', { lineHeight: '24px', fontWeight: '400' }],
-        'body-sm': ['14px', { lineHeight: '20px', fontWeight: '400' }],
-        'label': ['12px', { lineHeight: '16px', fontWeight: '500' }],
+        'display-1': ['48px', { lineHeight: '1.1', fontWeight: '700' }],
+        'display-2': ['40px', { lineHeight: '1.15', fontWeight: '700' }],
+        'heading-1': ['32px', { lineHeight: '1.2', fontWeight: '600' }],
+        'heading-2': ['24px', { lineHeight: '1.3', fontWeight: '600' }],
+        'heading-3': ['20px', { lineHeight: '1.4', fontWeight: '600' }],
+        'body-lg': ['18px', { lineHeight: '1.6', fontWeight: '400' }],
+        'body': ['16px', { lineHeight: '1.6', fontWeight: '400' }],
+        'body-sm': ['14px', { lineHeight: '1.5', fontWeight: '400' }],
+        'label': ['14px', { lineHeight: '1.4', fontWeight: '500' }],
+        'caption': ['12px', { lineHeight: '1.4', fontWeight: '400' }],
       },
       spacing: {
         '0.5': '4px',
@@ -99,19 +138,21 @@ const config: Config = {
         '12': '96px',
       },
       borderRadius: {
-        'sm': '12px',
-        'DEFAULT': '16px',
-        'md': '16px',
-        'lg': '20px',
-        'xl': '24px',
-        '2xl': '32px',
-        '3xl': '40px',
+        'sm': '8px',
+        'DEFAULT': '12px',
+        'md': '12px',
+        'lg': '16px',
+        'xl': '20px',
+        '2xl': '24px',
+        '3xl': '32px',
       },
       boxShadow: {
-        'xs': '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
-        'sm': '0 1px 3px 0 rgba(0, 0, 0, 0.08), 0 1px 2px -1px rgba(0, 0, 0, 0.08)',
-        'md': '0 4px 6px -1px rgba(0, 0, 0, 0.08), 0 2px 4px -2px rgba(0, 0, 0, 0.08)',
-        'lg': '0 10px 15px -3px rgba(0, 0, 0, 0.08), 0 4px 6px -4px rgba(0, 0, 0, 0.08)',
+        'xs': '0 1px 2px rgba(0, 0, 0, 0.05)',
+        'sm': '0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04)',
+        'md': '0 4px 6px rgba(0, 0, 0, 0.07), 0 2px 4px rgba(0, 0, 0, 0.03)',
+        'lg': '0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05)',
+        'xl': '0 20px 25px rgba(0, 0, 0, 0.1), 0 10px 10px rgba(0, 0, 0, 0.04)',
+        'inner': 'inset 0 2px 4px rgba(0, 0, 0, 0.06)',
       },
     },
   },

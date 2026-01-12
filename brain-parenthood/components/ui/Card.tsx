@@ -11,7 +11,7 @@ const Card = React.forwardRef<HTMLDivElement, CardProps>(
   ({ children, className = '', clickable = false, onClick }, ref) => {
     const baseStyles = 'bg-white rounded-lg border border-neutral-200 shadow-sm';
     const clickableStyles = clickable
-      ? 'cursor-pointer transition-all duration-200 hover:border-primary-700 hover:shadow-md hover:-translate-y-0.5'
+      ? 'cursor-pointer transition-all duration-200 hover:border-primary-500 hover:shadow-md hover:-translate-y-0.5 active:scale-[0.99]'
       : '';
 
     const combinedClassName = `${baseStyles} ${clickableStyles} ${className}`.trim();
