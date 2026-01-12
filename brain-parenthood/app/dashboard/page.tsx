@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getBaseline, getGoals, getProgress } from "@/lib/storage";
 import Button from "@/components/ui/Button";
+import ProgressBar from "@/components/ui/ProgressBar";
+import Breadcrumb from "@/components/ui/Breadcrumb";
 
 export default function DashboardPage() {
   const { isAuthenticated } = useAuth();
@@ -67,105 +69,111 @@ export default function DashboardPage() {
   const progressPercent = (dashboardData.completedModules.length / 12) * 100;
 
   return (
-    <div className="min-h-screen bg-neutral-50">
+    <div className="min-h-screen bg-[#fdfcfb]">
       <div className="app-container">
-        {/* Header with Duolingo-style streak */}
-        <div className="mb-10">
-          <div className="flex items-center justify-between mb-6">
+        {/* Breadcrumb for orientation */}
+        <div className="mb-6">
+          <Breadcrumb items={[
+            { label: 'Home', href: '/' },
+            { label: 'Dashboard' }
+          ]} />
+        </div>
+
+        {/* Header with team progress indicator */}
+        <div className="mb-10 animate-fade-in">
+          <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-6 mb-8">
             <div>
-              <h1 className="text-4xl font-bold text-neutral-900 mb-2">Your Progress</h1>
-              <p className="text-lg text-neutral-600">Keep building your team's resilience</p>
+              <h1 className="font-display text-display-2 text-neutral-800 mb-2">Team Progress</h1>
+              <p className="text-body-lg text-neutral-600">Your collective resilience journey</p>
             </div>
-            <div className="flex items-center gap-3 bg-gradient-to-r from-warm-50 to-warm-100 px-6 py-4 rounded-2xl border border-warm-200">
-              <svg className="w-8 h-8 text-warm-500" fill="currentColor" viewBox="0 0 20 20">
-                <path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z" />
-              </svg>
+            <div className="flex items-center gap-3 bg-white px-6 py-4 rounded-xl border-2 border-success-200 shadow-sm">
+              <div className="w-12 h-12 bg-success-100 rounded-lg flex items-center justify-center">
+                <svg className="w-6 h-6 text-success-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
               <div>
-                <div className="text-2xl font-bold text-warm-600">{dashboardData.completedModules.length}</div>
-                <div className="text-xs text-neutral-600 font-medium">Modules Done</div>
+                <div className="font-display text-[28px] font-bold text-success-600">{dashboardData.completedModules.length}</div>
+                <div className="text-caption text-neutral-600 font-medium uppercase tracking-wide">Modules Complete</div>
               </div>
             </div>
           </div>
 
-          {/* Duolingo-style progress bar */}
-          <div className="bg-white rounded-2xl p-6 border border-neutral-200 shadow-sm">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-sm font-semibold text-neutral-700">Overall Progress</span>
-              <span className="text-sm font-bold text-primary-600">{dashboardData.completedModules.length}/12 Modules</span>
-            </div>
-            <div className="relative w-full bg-neutral-200 rounded-full h-4 overflow-hidden">
-              <div
-                className="absolute top-0 left-0 h-full bg-gradient-to-r from-success-500 to-success-400 rounded-full transition-all duration-500 ease-out"
-                style={{ width: `${progressPercent}%` }}
-              >
-                {progressPercent > 0 && (
-                  <div className="absolute right-2 top-1/2 -translate-y-1/2">
-                    <svg className="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
-                      <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
-                    </svg>
-                  </div>
-                )}
-              </div>
-            </div>
+          {/* Progress bar with team context */}
+          <div className="bg-white rounded-xl p-6 border-2 border-neutral-200 shadow-sm">
+            <ProgressBar
+              value={dashboardData.completedModules.length}
+              max={12}
+              showPercentage
+              label="Overall Program Progress"
+              variant="gradient"
+              size="lg"
+            />
+            <p className="text-body-sm text-neutral-500 mt-3 text-center">
+              {dashboardData.teamMembers > 0 && `Your team of ${dashboardData.teamMembers} is building resilience together`}
+            </p>
           </div>
         </div>
 
-        {/* Stats Grid - Headspace inspired cards */}
-        <div className="grid sm:grid-cols-3 gap-5 mb-10">
-          <div className="bg-gradient-to-br from-primary-50 to-white p-6 rounded-2xl border border-primary-200 shadow-sm">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-primary-600 rounded-xl flex items-center justify-center shadow-lg shadow-primary-500/30">
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+        {/* Stats Grid */}
+        <div className="grid sm:grid-cols-3 gap-5 mb-10 animate-slide-up">
+          <div className="bg-white p-6 rounded-xl border-2 border-primary-200 hover:border-primary-400 transition-all duration-200">
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-12 h-12 bg-primary-100 rounded-lg flex items-center justify-center">
+                <svg className="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
                 </svg>
               </div>
               <div>
-                <div className="text-sm text-neutral-600 font-medium">Current</div>
-                <div className="text-2xl font-bold text-neutral-900">Module {dashboardData.currentModule}</div>
+                <div className="text-caption text-neutral-600 font-medium uppercase tracking-wide">Current</div>
+                <div className="font-display text-[24px] font-bold text-neutral-800">Module {dashboardData.currentModule}</div>
               </div>
             </div>
-            <div className="text-sm text-neutral-600">Kick Off & Assessment</div>
+            <div className="text-body-sm text-neutral-600">Kick Off & Assessment</div>
           </div>
 
-          <div className="bg-gradient-to-br from-success-50 to-white p-6 rounded-2xl border border-success-200 shadow-sm">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-success-500 rounded-xl flex items-center justify-center shadow-lg shadow-success-500/30">
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="bg-white p-6 rounded-xl border-2 border-success-200 hover:border-success-400 transition-all duration-200">
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-12 h-12 bg-success-100 rounded-lg flex items-center justify-center">
+                <svg className="w-6 h-6 text-success-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
               <div>
-                <div className="text-sm text-neutral-600 font-medium">Completed</div>
-                <div className="text-2xl font-bold text-neutral-900">{dashboardData.completedModules.length}/12</div>
+                <div className="text-caption text-neutral-600 font-medium uppercase tracking-wide">Progress</div>
+                <div className="font-display text-[24px] font-bold text-neutral-800">{dashboardData.completedModules.length} of 12</div>
               </div>
             </div>
-            <div className="text-sm text-neutral-600">{Math.round(progressPercent)}% Complete</div>
+            <div className="text-body-sm text-neutral-600">{Math.round(progressPercent)}% Complete</div>
           </div>
 
-          <div className="bg-gradient-to-br from-calm-50 to-white p-6 rounded-2xl border border-calm-200 shadow-sm">
-            <div className="flex items-center gap-4 mb-4">
-              <div className="w-12 h-12 bg-calm-500 rounded-xl flex items-center justify-center shadow-lg shadow-calm-500/30">
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="bg-white p-6 rounded-xl border-2 border-secondary-200 hover:border-secondary-400 transition-all duration-200">
+            <div className="flex items-center gap-4 mb-3">
+              <div className="w-12 h-12 bg-secondary-100 rounded-lg flex items-center justify-center">
+                <svg className="w-6 h-6 text-secondary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
                   <path strokeLinecap="round" strokeLinejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
               </div>
               <div>
-                <div className="text-sm text-neutral-600 font-medium">Team Size</div>
-                <div className="text-2xl font-bold text-neutral-900">{dashboardData.teamMembers}</div>
+                <div className="text-caption text-neutral-600 font-medium uppercase tracking-wide">Team</div>
+                <div className="font-display text-[24px] font-bold text-neutral-800">{dashboardData.teamMembers || '—'}</div>
               </div>
             </div>
-            <div className="text-sm text-neutral-600">Members Training</div>
+            <div className="text-body-sm text-neutral-600">Members Together</div>
           </div>
         </div>
 
-        {/* Baseline Metrics - Linear style */}
-        <div className="bg-white rounded-2xl p-8 mb-8 border border-neutral-200 shadow-sm">
-          <h2 className="text-2xl font-bold text-neutral-900 mb-6">Baseline Metrics</h2>
+        {/* Baseline Metrics - Non-judgmental tracking */}
+        <div className="bg-white rounded-xl p-8 mb-8 border-2 border-neutral-200 shadow-sm">
+          <div className="mb-6">
+            <h2 className="font-display text-heading-2 text-neutral-800 mb-2">Your Baseline</h2>
+            <p className="text-body text-neutral-600">Starting point for tracking change over time. No scores are "good" or "bad" — this is just where you are.</p>
+          </div>
           <div className="space-y-5">
-            <MetricBar label="Team Stress Level" value={dashboardData.baselineData.teamStressLevel} max={10} color="warm" />
-            <MetricBar label="Individual Stress" value={dashboardData.baselineData.individualStressLevel} max={10} color="warm" />
-            <MetricBar label="Productivity" value={dashboardData.baselineData.productivity} max={10} color="primary" />
-            <MetricBar label="Communication" value={dashboardData.baselineData.communication} max={10} color="calm" />
+            <MetricBar label="Team Stress" value={dashboardData.baselineData.teamStressLevel} max={10} color="secondary" />
+            <MetricBar label="Individual Stress" value={dashboardData.baselineData.individualStressLevel} max={10} color="secondary" />
+            <MetricBar label="Productivity Feeling" value={dashboardData.baselineData.productivity} max={10} color="primary" />
+            <MetricBar label="Communication Quality" value={dashboardData.baselineData.communication} max={10} color="primary" />
             <MetricBar label="Work-Life Balance" value={dashboardData.baselineData.workLifeBalance} max={10} color="success" />
           </div>
         </div>
@@ -222,23 +230,22 @@ export default function DashboardPage() {
   );
 }
 
-function MetricBar({ label, value, max, color }: { label: string; value: number; max: number; color: 'warm' | 'primary' | 'calm' | 'success'; }) {
+function MetricBar({ label, value, max, color }: { label: string; value: number; max: number; color: 'secondary' | 'primary' | 'success'; }) {
   const percentage = (value / max) * 100;
   const colorClasses: Record<string, string> = {
-    warm: 'bg-warm-500',
-    primary: 'bg-primary-600',
-    calm: 'bg-calm-500',
+    secondary: 'bg-secondary-500',
+    primary: 'bg-primary-500',
     success: 'bg-success-500',
   };
 
   return (
     <div>
       <div className="flex justify-between items-center mb-2">
-        <span className="font-semibold text-neutral-900">{label}</span>
-        <span className="text-sm font-bold text-neutral-600">{value}/{max}</span>
+        <span className="font-medium text-neutral-800">{label}</span>
+        <span className="text-body-sm text-neutral-600">{value} of {max}</span>
       </div>
-      <div className="relative w-full bg-neutral-200 rounded-full h-3 overflow-hidden">
-        <div className={`h-full rounded-full transition-all duration-500 ${colorClasses[color]}`} style={{ width: `${percentage}%` }} />
+      <div className="relative w-full bg-neutral-200 rounded-full h-2.5 overflow-hidden">
+        <div className={`h-full rounded-full transition-all duration-300 ${colorClasses[color]}`} style={{ width: `${percentage}%` }} />
       </div>
     </div>
   );

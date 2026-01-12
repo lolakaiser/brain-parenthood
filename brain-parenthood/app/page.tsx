@@ -5,6 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
 import Button from "@/components/ui/Button";
+import ProgressBar from "@/components/ui/ProgressBar";
 
 export default function Home() {
   const { isAuthenticated } = useAuth();
@@ -21,129 +22,172 @@ export default function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="min-h-screen bg-[#fdfcfb]">
       <div className="app-container">
         {/* Hero Section */}
-        <div className="text-center mb-20 max-w-4xl mx-auto pt-12">
-          <div className="inline-block px-5 py-2 mb-8 bg-primary-100 text-primary-700 rounded-full text-sm font-semibold">
+        <div className="text-center mb-20 max-w-4xl mx-auto pt-12 animate-fade-in">
+          <div className="inline-flex items-center px-4 py-2 mb-6 bg-primary-50 text-primary-700 rounded-full text-label font-medium border border-primary-200">
+            <svg className="w-4 h-4 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             12-Week Resilience Program
           </div>
 
-          <h1 className="text-6xl font-bold text-neutral-900 mb-6 leading-tight">
-            Build Unshakeable Team Resilience
+          <h1 className="font-display text-display-1 md:text-[56px] font-bold text-neutral-800 mb-6 leading-tight">
+            Build Resilience Together
           </h1>
 
-          <p className="text-xl text-neutral-600 mb-4 leading-relaxed max-w-3xl mx-auto">
-            Transform your startup team with science-backed psychological training designed for high-performance environments
+          <p className="text-body-lg text-neutral-600 mb-8 leading-relaxed max-w-2xl mx-auto">
+            A structured program for workplace teams to develop psychological skills, build trust, and create lasting resilience through science-backed practices
           </p>
 
-          <div className="flex items-center justify-center gap-4 mt-10">
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mt-10">
             <Link href="/module/1">
-              <Button variant="primary" size="large" className="px-10 py-4 text-lg rounded-2xl">
-                Start Training
+              <Button variant="primary" size="large" className="min-w-[200px]">
+                Start Module 1
               </Button>
             </Link>
             <Link href="/dashboard">
-              <Button variant="secondary" size="large" className="px-10 py-4 text-lg rounded-2xl">
-                View Dashboard
+              <Button variant="secondary" size="large" className="min-w-[200px]">
+                View Progress
               </Button>
             </Link>
           </div>
         </div>
 
         {/* Features Grid */}
-        <div className="mb-24">
-          <h2 className="text-4xl font-bold text-neutral-900 text-center mb-16">
-            Why Brain Parenthood Works
+        <div className="mb-24 animate-slide-up">
+          <h2 className="font-display text-heading-1 text-neutral-800 text-center mb-4">
+            Why This Works
           </h2>
-          <div className="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-            <div className="bg-gradient-to-br from-primary-50 to-white p-10 rounded-3xl border border-primary-200">
-              <h3 className="text-2xl font-bold text-neutral-900 mb-4">
-                Structured Training
+          <p className="text-body-lg text-neutral-600 text-center mb-12 max-w-2xl mx-auto">
+            Designed for teams who need psychological skills, not corporate wellness theater
+          </p>
+          <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
+            <div className="bg-white p-8 rounded-xl border-2 border-primary-200 hover:border-primary-400 transition-all duration-200 hover:shadow-md">
+              <div className="w-12 h-12 rounded-lg bg-primary-100 flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
+                </svg>
+              </div>
+              <h3 className="font-display text-heading-3 text-neutral-800 mb-3">
+                Structured & Manageable
               </h3>
-              <p className="text-neutral-600 text-lg leading-relaxed">
-                12 weekly modules that progressively build your team's psychological resilience and performance capabilities
+              <p className="text-body text-neutral-600 leading-relaxed">
+                12 weekly modules, 5-10 minutes per day. Designed to fit into busy schedules without overwhelming teams
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-calm-50 to-white p-10 rounded-3xl border border-calm-200">
-              <h3 className="text-2xl font-bold text-neutral-900 mb-4">
-                Science-Backed Methods
+            <div className="bg-white p-8 rounded-xl border-2 border-success-200 hover:border-success-400 transition-all duration-200 hover:shadow-md">
+              <div className="w-12 h-12 rounded-lg bg-success-100 flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-success-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="font-display text-heading-3 text-neutral-800 mb-3">
+                Science-Backed
               </h3>
-              <p className="text-neutral-600 text-lg leading-relaxed">
-                Evidence-based techniques from cognitive psychology, mindfulness research, and organizational behavior
+              <p className="text-body text-neutral-600 leading-relaxed">
+                Techniques from cognitive psychology, mindfulness research, and organizational behavior studies
               </p>
             </div>
 
-            <div className="bg-gradient-to-br from-success-50 to-white p-10 rounded-3xl border border-success-200">
-              <h3 className="text-2xl font-bold text-neutral-900 mb-4">
-                Measurable Results
+            <div className="bg-white p-8 rounded-xl border-2 border-secondary-200 hover:border-secondary-400 transition-all duration-200 hover:shadow-md">
+              <div className="w-12 h-12 rounded-lg bg-secondary-100 flex items-center justify-center mb-4">
+                <svg className="w-6 h-6 text-secondary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
+                </svg>
+              </div>
+              <h3 className="font-display text-heading-3 text-neutral-800 mb-3">
+                Track Progress
               </h3>
-              <p className="text-neutral-600 text-lg leading-relaxed">
-                Track progress through baseline assessments, weekly metrics, and clear milestones throughout the program
+              <p className="text-body text-neutral-600 leading-relaxed">
+                Baseline assessments, weekly check-ins, and clear milestones show how skills develop over time
               </p>
             </div>
           </div>
         </div>
 
         {/* Stats */}
-        <div className="bg-gradient-to-br from-neutral-50 to-white rounded-3xl p-12 mb-24 max-w-4xl mx-auto border border-neutral-200">
-          <div className="grid grid-cols-3 gap-12 text-center">
+        <div className="bg-white rounded-2xl p-10 mb-24 max-w-4xl mx-auto border-2 border-neutral-200 shadow-sm">
+          <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="text-5xl font-bold text-primary-700 mb-3">12</div>
-              <div className="text-neutral-600 font-medium">Weeks of Training</div>
+              <div className="font-display text-[48px] font-bold text-primary-600 mb-2">12</div>
+              <div className="text-body text-neutral-600 font-medium">Weeks</div>
+              <div className="text-body-sm text-neutral-500 mt-1">Progressive training</div>
             </div>
-            <div className="border-l border-r border-neutral-200">
-              <div className="text-5xl font-bold text-success-500 mb-3">5-10</div>
-              <div className="text-neutral-600 font-medium">Minutes Per Day</div>
+            <div className="md:border-l md:border-r border-neutral-200">
+              <div className="font-display text-[48px] font-bold text-secondary-600 mb-2">5-10</div>
+              <div className="text-body text-neutral-600 font-medium">Min/Day</div>
+              <div className="text-body-sm text-neutral-500 mt-1">Low time commitment</div>
             </div>
             <div>
-              <div className="text-5xl font-bold text-calm-500 mb-3">100%</div>
-              <div className="text-neutral-600 font-medium">Team Focused</div>
+              <div className="font-display text-[48px] font-bold text-success-600 mb-2">100%</div>
+              <div className="text-body text-neutral-600 font-medium">Team</div>
+              <div className="text-body-sm text-neutral-500 mt-1">Collective growth</div>
             </div>
           </div>
         </div>
 
         {/* Program Overview */}
         <section className="mb-20">
-          <div className="text-center mb-16">
-            <h2 className="text-4xl font-bold text-neutral-900 mb-4">
-              Your Learning Path
+          <div className="text-center mb-12">
+            <h2 className="font-display text-heading-1 text-neutral-800 mb-4">
+              Your 12-Week Journey
             </h2>
-            <p className="text-xl text-neutral-600 max-w-2xl mx-auto">
-              Each module builds on the previous one, creating lasting behavioral change
+            <p className="text-body-lg text-neutral-600 max-w-2xl mx-auto">
+              Each module builds on the last. Progress at your own pace, together as a team
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-6 max-w-5xl mx-auto">
+          <div className="mb-8 max-w-5xl mx-auto">
+            <ProgressBar value={1} max={12} showPercentage label="Program Progress" variant="gradient" size="md" />
+          </div>
+
+          <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto">
             {modules.map((module, index) => {
               const isAvailable = module.week === "Week 1";
+              const isCompleted = false; // Would come from user progress data
               return (
                 <Link
                   key={module.week}
                   href={isAvailable ? "/module/1" : "#"}
-                  className={`group p-8 rounded-3xl border-2 transition-all duration-300 ${
+                  className={`group p-6 rounded-xl border-2 transition-all duration-200 ${
                     isAvailable
-                      ? "bg-white border-primary-300 hover:border-primary-500 hover:shadow-xl hover:-translate-y-1 cursor-pointer"
+                      ? "bg-white border-primary-300 hover:border-primary-500 hover:shadow-md hover:-translate-y-1 cursor-pointer"
                       : "bg-neutral-50 border-neutral-200 opacity-60 cursor-not-allowed"
                   }`}
                 >
-                  <div className="flex items-start gap-5">
-                    <div className={`flex-shrink-0 w-14 h-14 rounded-2xl flex items-center justify-center text-white font-bold text-xl ${
-                      isAvailable ? "bg-success-500" : "bg-neutral-300"
+                  <div className="flex items-start gap-4">
+                    <div className={`flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center text-white font-display font-bold text-lg ${
+                      isCompleted ? "bg-success-500" : isAvailable ? "bg-primary-500" : "bg-neutral-300"
                     }`}>
-                      {index + 1}
+                      {isCompleted ? (
+                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        index + 1
+                      )}
                     </div>
                     <div className="flex-1">
-                      <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2">
+                      <div className="text-caption font-semibold text-neutral-500 uppercase tracking-wider mb-1">
                         {module.week}
                       </div>
-                      <h3 className="text-2xl font-bold text-neutral-900 mb-3">
+                      <h3 className="font-display text-heading-3 text-neutral-800 mb-2">
                         {module.title}
                       </h3>
-                      <p className="text-neutral-600 leading-relaxed">
+                      <p className="text-body-sm text-neutral-600 leading-relaxed">
                         {module.description}
                       </p>
+                      {!isAvailable && (
+                        <div className="mt-3 inline-flex items-center text-caption text-neutral-500">
+                          <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                          </svg>
+                          Unlocks after previous module
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Link>
@@ -153,15 +197,15 @@ export default function Home() {
         </section>
 
         {/* CTA */}
-        <div className="bg-gradient-to-br from-primary-600 to-primary-700 rounded-3xl p-16 text-center text-white mb-12">
-          <h2 className="text-4xl font-bold mb-6">
-            Ready to Build Team Resilience?
+        <div className="bg-gradient-to-br from-primary-500 to-primary-700 rounded-2xl p-12 md:p-16 text-center text-white mb-12 shadow-lg">
+          <h2 className="font-display text-heading-1 md:text-display-2 mb-4">
+            Ready to Start?
           </h2>
-          <p className="text-xl text-primary-100 mb-10 max-w-2xl mx-auto">
-            Start with Module 1 today and begin your team's transformation
+          <p className="text-body-lg text-primary-100 mb-8 max-w-xl mx-auto">
+            Module 1 is available now. Begin your team's resilience journey today
           </p>
           <Link href="/module/1">
-            <Button variant="secondary" size="large" className="px-12 py-5 text-lg rounded-2xl bg-white text-primary-700 hover:bg-primary-50">
+            <Button variant="secondary" size="large" className="bg-white text-primary-700 hover:bg-neutral-50 border-white">
               Begin Module 1
             </Button>
           </Link>
