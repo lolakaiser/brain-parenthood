@@ -64,13 +64,13 @@ export default function Home() {
             Designed for teams who need psychological skills, not corporate wellness theater
           </p>
           <div className="grid md:grid-cols-3 gap-6 max-w-6xl mx-auto">
-            <div className="bg-white p-8 rounded-xl border-2 border-primary-200 hover:border-primary-400 transition-all duration-200 hover:shadow-md">
-              <div className="w-12 h-12 rounded-lg bg-primary-100 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="bg-white p-6 rounded-xl border-2 border-primary-200 hover:border-primary-400 transition-all duration-200 hover:shadow-md">
+              <div className="w-10 h-10 rounded-lg bg-primary-100 flex items-center justify-center mb-4">
+                <svg className="w-5 h-5 text-primary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4" />
                 </svg>
               </div>
-              <h3 className="font-display text-heading-3 text-neutral-800 mb-3">
+              <h3 className="font-display text-heading-3 text-neutral-800 mb-2">
                 Structured & Manageable
               </h3>
               <p className="text-body text-neutral-600 leading-relaxed">
@@ -78,13 +78,13 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="bg-white p-8 rounded-xl border-2 border-success-200 hover:border-success-400 transition-all duration-200 hover:shadow-md">
-              <div className="w-12 h-12 rounded-lg bg-success-100 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-success-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="bg-white p-6 rounded-xl border-2 border-success-200 hover:border-success-400 transition-all duration-200 hover:shadow-md">
+              <div className="w-10 h-10 rounded-lg bg-success-100 flex items-center justify-center mb-4">
+                <svg className="w-5 h-5 text-success-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <h3 className="font-display text-heading-3 text-neutral-800 mb-3">
+              <h3 className="font-display text-heading-3 text-neutral-800 mb-2">
                 Science-Backed
               </h3>
               <p className="text-body text-neutral-600 leading-relaxed">
@@ -92,13 +92,13 @@ export default function Home() {
               </p>
             </div>
 
-            <div className="bg-white p-8 rounded-xl border-2 border-secondary-200 hover:border-secondary-400 transition-all duration-200 hover:shadow-md">
-              <div className="w-12 h-12 rounded-lg bg-secondary-100 flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-secondary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <div className="bg-white p-6 rounded-xl border-2 border-secondary-200 hover:border-secondary-400 transition-all duration-200 hover:shadow-md">
+              <div className="w-10 h-10 rounded-lg bg-secondary-100 flex items-center justify-center mb-4">
+                <svg className="w-5 h-5 text-secondary-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z" />
                 </svg>
               </div>
-              <h3 className="font-display text-heading-3 text-neutral-800 mb-3">
+              <h3 className="font-display text-heading-3 text-neutral-800 mb-2">
                 Track Progress
               </h3>
               <p className="text-body text-neutral-600 leading-relaxed">
@@ -109,20 +109,20 @@ export default function Home() {
         </div>
 
         {/* Stats */}
-        <div className="bg-white rounded-2xl p-10 mb-24 max-w-4xl mx-auto border-2 border-neutral-200 shadow-sm">
+        <div className="bg-white rounded-xl p-8 mb-24 max-w-4xl mx-auto border-2 border-neutral-200 shadow-sm">
           <div className="grid md:grid-cols-3 gap-8 text-center">
             <div>
-              <div className="font-display text-[48px] font-bold text-primary-600 mb-2">12</div>
+              <div className="font-display text-[40px] font-bold text-primary-600 mb-1">12</div>
               <div className="text-body text-neutral-600 font-medium">Weeks</div>
               <div className="text-body-sm text-neutral-500 mt-1">Progressive training</div>
             </div>
             <div className="md:border-l md:border-r border-neutral-200">
-              <div className="font-display text-[48px] font-bold text-secondary-600 mb-2">5-10</div>
+              <div className="font-display text-[40px] font-bold text-secondary-600 mb-1">5-10</div>
               <div className="text-body text-neutral-600 font-medium">Min/Day</div>
               <div className="text-body-sm text-neutral-500 mt-1">Low time commitment</div>
             </div>
             <div>
-              <div className="font-display text-[48px] font-bold text-success-600 mb-2">100%</div>
+              <div className="font-display text-[40px] font-bold text-success-600 mb-1">100%</div>
               <div className="text-body text-neutral-600 font-medium">Team</div>
               <div className="text-body-sm text-neutral-500 mt-1">Collective growth</div>
             </div>
@@ -144,7 +144,7 @@ export default function Home() {
             <ProgressBar value={1} max={12} showPercentage label="Program Progress" variant="gradient" size="md" />
           </div>
 
-          <div className="grid md:grid-cols-2 gap-5 max-w-5xl mx-auto">
+          <div className="grid md:grid-cols-2 gap-4 max-w-5xl mx-auto">
             {modules.map((module, index) => {
               const isAvailable = module.week === "Week 1";
               const isCompleted = false; // Would come from user progress data
@@ -152,18 +152,18 @@ export default function Home() {
                 <Link
                   key={module.week}
                   href={isAvailable ? "/module/1" : "#"}
-                  className={`group p-6 rounded-xl border-2 transition-all duration-200 ${
+                  className={`group p-5 rounded-xl border-2 transition-all duration-200 ${
                     isAvailable
                       ? "bg-white border-primary-300 hover:border-primary-500 hover:shadow-md hover:-translate-y-1 cursor-pointer"
                       : "bg-neutral-50 border-neutral-200 opacity-60 cursor-not-allowed"
                   }`}
                 >
-                  <div className="flex items-start gap-4">
-                    <div className={`flex-shrink-0 w-12 h-12 rounded-lg flex items-center justify-center text-white font-display font-bold text-lg ${
+                  <div className="flex items-start gap-3">
+                    <div className={`flex-shrink-0 w-10 h-10 rounded-lg flex items-center justify-center text-white font-display font-bold text-base ${
                       isCompleted ? "bg-success-500" : isAvailable ? "bg-primary-500" : "bg-neutral-300"
                     }`}>
                       {isCompleted ? (
-                        <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                         </svg>
                       ) : (
@@ -174,14 +174,14 @@ export default function Home() {
                       <div className="text-caption font-semibold text-neutral-500 uppercase tracking-wider mb-1">
                         {module.week}
                       </div>
-                      <h3 className="font-display text-heading-3 text-neutral-800 mb-2">
+                      <h3 className="font-display text-[18px] font-semibold text-neutral-800 mb-1.5 leading-snug">
                         {module.title}
                       </h3>
                       <p className="text-body-sm text-neutral-600 leading-relaxed">
                         {module.description}
                       </p>
                       {!isAvailable && (
-                        <div className="mt-3 inline-flex items-center text-caption text-neutral-500">
+                        <div className="mt-2 inline-flex items-center text-caption text-neutral-500">
                           <svg className="w-3 h-3 mr-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
                           </svg>
