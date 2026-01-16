@@ -53,7 +53,7 @@ export default function Home() {
         <div className="max-w-4xl mx-auto mb-20">
           <h2 className="font-display text-heading-2 text-neutral-800 mb-8">Program Overview</h2>
 
-          <div className="bg-white rounded-xl border-2 border-neutral-200 p-8 shadow-sm">
+          <div className="bg-white rounded-3xl border-2 border-neutral-200 p-8 shadow-sm">
             <div className="grid md:grid-cols-4 gap-6 mb-8">
               <div>
                 <div className="text-caption text-neutral-500 uppercase tracking-wide mb-2">Week 1–3</div>
@@ -111,48 +111,53 @@ export default function Home() {
           </div>
         </div>
 
-        {/* All Modules */}
-        <section className="mb-20 max-w-4xl mx-auto">
-          <h2 className="font-display text-heading-2 text-neutral-800 mb-6">All Modules</h2>
-          <div className="mb-6">
+        {/* All Modules - App-like Grid */}
+        <section className="mb-20 max-w-5xl mx-auto">
+          <h2 className="font-display text-heading-2 text-neutral-800 mb-3">All Modules</h2>
+          <p className="text-body text-neutral-600 mb-6">Your 12-week journey to workplace resilience</p>
+          <div className="mb-8 bg-white rounded-3xl p-6 border-2 border-neutral-200 shadow-sm">
             <ProgressBar value={1} max={12} showPercentage label="Your progress" variant="gradient" size="md" />
           </div>
 
-          <div className="space-y-3">
-            {modules.map((module, index) => {
-              const isAvailable = module.week === "Week 1";
-              const isCompleted = false; // Would come from user progress data
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {allModules.map((module, index) => {
+              const isAvailable = index === 0;
+              const isCompleted = false;
               return (
                 <Link
-                  key={module.week}
-                  href={isAvailable ? "/module/1" : "#"}
-                  className={`group p-4 rounded-lg border-2 transition-all duration-200 flex items-start gap-4 ${
-                    isAvailable
-                      ? "bg-white border-primary-300 hover:border-primary-500 hover:shadow-sm cursor-pointer"
+                  key={index}
+                  href={isAvailable ? `/module/${index + 1}` : "#"}
+                  className={`group p-6 rounded-3xl border-2 transition-all duration-300 ${
+                    isCompleted
+                      ? "bg-success-50 border-success-300 hover:border-success-500 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
+                      : isAvailable
+                      ? "bg-white border-primary-300 hover:border-primary-500 hover:shadow-lg hover:-translate-y-1 cursor-pointer"
                       : "bg-neutral-50 border-neutral-200 opacity-60 cursor-not-allowed"
                   }`}
                 >
-                  <div className={`flex-shrink-0 w-8 h-8 rounded-lg flex items-center justify-center text-white font-display font-bold text-sm ${
-                    isCompleted ? "bg-success-500" : isAvailable ? "bg-primary-500" : "bg-neutral-300"
-                  }`}>
-                    {isCompleted ? (
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
-                      </svg>
-                    ) : (
-                      index + 1
-                    )}
-                  </div>
-                  <div className="flex-1">
-                    <div className="flex items-baseline gap-3 mb-1">
-                      <div className="text-caption text-neutral-500 uppercase tracking-wide">{module.week}</div>
-                      <h3 className="font-display text-base font-semibold text-neutral-800">{module.title}</h3>
+                  <div className="flex flex-col items-center text-center">
+                    <div className={`w-16 h-16 rounded-2xl flex items-center justify-center text-white font-bold text-2xl mb-4 shadow-lg transition-transform duration-300 group-hover:scale-110 ${
+                      isCompleted
+                        ? "bg-success-500"
+                        : isAvailable
+                        ? "bg-primary-600"
+                        : "bg-neutral-300"
+                    }`}>
+                      {isCompleted ? (
+                        <svg className="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={3}>
+                          <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+                        </svg>
+                      ) : (
+                        index + 1
+                      )}
                     </div>
-                    <p className="text-body-sm text-neutral-600 leading-relaxed">{module.description}</p>
+                    <h3 className="font-bold text-neutral-900 text-sm mb-1">
+                      {module.title}
+                    </h3>
+                    <p className="text-xs text-neutral-500 leading-snug">
+                      {module.subtitle}
+                    </p>
                   </div>
-                  {!isAvailable && (
-                    <div className="flex-shrink-0 text-caption text-neutral-400 mt-1">Locked</div>
-                  )}
                 </Link>
               );
             })}
@@ -209,4 +214,19 @@ const modules = [
     title: "Program Completion",
     description: "Final reflection, celebrate achievements, and create your ongoing resilience plan",
   }
+];
+
+const allModules = [
+  { title: "Kick Off", subtitle: "Baseline & Goals" },
+  { title: "Mindfulness", subtitle: "Focus & Clarity" },
+  { title: "Resilience", subtitle: "Stress Management" },
+  { title: "Communication", subtitle: "Team Connection" },
+  { title: "Boundaries", subtitle: "Work-Life Balance" },
+  { title: "Innovation", subtitle: "Creative Thinking" },
+  { title: "Conflict", subtitle: "Healthy Resolution" },
+  { title: "Leadership", subtitle: "Empowered Teams" },
+  { title: "Adaptation", subtitle: "Change Management" },
+  { title: "Integration", subtitle: "Daily Practice" },
+  { title: "Measurement", subtitle: "Progress Review" },
+  { title: "Completion", subtitle: "Sustaining Growth" }
 ];
