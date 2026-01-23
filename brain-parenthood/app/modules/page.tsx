@@ -31,20 +31,23 @@ export default function ModulesPage() {
   const overallProgress = Math.round((completedModules.length / 12) * 100);
 
   return (
-    <div className="min-h-screen bg-[#fafafa]">
-      <div className="max-w-5xl mx-auto px-6 py-10">
-        {/* Header */}
-        <header className="mb-10">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-neutral-700 mb-6 transition-colors"
-          >
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
-            </svg>
-            Back to Dashboard
-          </Link>
+    <div className="min-h-screen bg-neutral-50">
+      {/* Page Container with generous padding */}
+      <div className="max-w-5xl mx-auto px-8 py-12">
 
+        {/* Back Navigation */}
+        <Link
+          href="/"
+          className="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-neutral-700 mb-8 transition-colors"
+        >
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+          </svg>
+          Back to Dashboard
+        </Link>
+
+        {/* Header */}
+        <header className="mb-12">
           <div className="flex items-start justify-between">
             <div>
               <h1 className="font-display text-3xl font-bold text-neutral-900 mb-2">
@@ -55,36 +58,28 @@ export default function ModulesPage() {
               </p>
             </div>
             <div className="text-right">
-              <span className="text-2xl font-bold text-primary-600">{overallProgress}%</span>
-              <p className="text-xs text-neutral-400">complete</p>
+              <span className="text-3xl font-bold text-primary-600">{overallProgress}%</span>
+              <p className="text-sm text-neutral-400">complete</p>
             </div>
           </div>
         </header>
 
-        {/* Progress Overview */}
-        <div className="bg-white rounded-2xl border border-neutral-200 p-5 mb-10 shadow-card">
-          <div className="flex gap-1 mb-4">
-            {Array.from({ length: 12 }).map((_, i) => (
-              <div
-                key={i}
-                className={`h-2 flex-1 rounded-full transition-colors ${
-                  completedModules.includes(i + 1)
-                    ? "bg-success-500"
-                    : i + 1 === currentModule
-                    ? "bg-primary-400"
-                    : "bg-neutral-100"
-                }`}
-              />
-            ))}
+        {/* Progress Overview Card */}
+        <div className="bg-white rounded-2xl border border-neutral-200 p-6 mb-12 shadow-sm">
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="font-medium text-neutral-900">Program Progress</h2>
+            <span className="text-sm text-neutral-500">{completedModules.length} of 12 modules</span>
           </div>
-          <div className="flex items-center justify-between text-sm">
-            <span className="text-neutral-500">{completedModules.length} of 12 modules completed</span>
-            <span className="text-neutral-400">Week {currentModule} in progress</span>
+          <div className="h-2 bg-neutral-100 rounded-full overflow-hidden">
+            <div
+              className="h-full bg-primary-500 rounded-full transition-all duration-500"
+              style={{ width: `${overallProgress}%` }}
+            />
           </div>
         </div>
 
-        {/* Module Grid - Detailed Cards */}
-        <div className="grid md:grid-cols-2 gap-5">
+        {/* 2-Column Module Grid - Fixed gap, cards never touch */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {modules.map((module) => {
             const isCompleted = completedModules.includes(module.id);
             const isCurrent = module.id === currentModule;
@@ -116,10 +111,13 @@ export default function ModulesPage() {
         </div>
 
         {/* Bottom CTA */}
-        <div className="mt-12 text-center">
+        <div className="mt-16 pt-8 border-t border-neutral-200 text-center">
+          <p className="text-sm text-neutral-500 mb-4">
+            Continue your resilience journey
+          </p>
           <Link
             href={`/module/${currentModule}`}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white text-sm font-medium rounded-xl hover:bg-primary-700 transition-colors shadow-sm"
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
           >
             Continue to Week {currentModule}
             <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
@@ -137,7 +135,7 @@ const modules = [
     id: 1,
     title: "Kick Off",
     duration: "Week 1",
-    description: "Establish your baseline, set goals, and get introduced to Brain Parenthood concepts.",
+    description: "Establish your baseline, set goals, and get introduced to program concepts.",
   },
   {
     id: 2,
