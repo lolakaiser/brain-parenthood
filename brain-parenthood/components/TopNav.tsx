@@ -55,10 +55,10 @@ export default function TopNav() {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-3">
             <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-white font-semibold text-sm">
-              {user?.username?.charAt(0).toUpperCase() || "U"}
+              {user?.name?.charAt(0).toUpperCase() || "U"}
             </div>
             <div className="hidden md:block">
-              <p className="text-white font-medium text-sm">{user?.username || "User"}</p>
+              <p className="text-white font-medium text-sm">{user?.name || "User"}</p>
               <p className="text-white/50 text-xs">Team Member</p>
             </div>
           </div>
