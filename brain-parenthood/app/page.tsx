@@ -1,22 +1,14 @@
 "use client";
 
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
-import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import ModuleCard from "@/components/ui/ModuleCard";
+import AppLayout from "@/components/AppLayout";
+import { ModuleCardColorful } from "@/components/ui/ModuleCard";
+import ModuleCard, { ModuleListItem } from "@/components/ui/ModuleCard";
 import { getProgress } from "@/lib/storage";
 
 export default function Home() {
-  const { isAuthenticated } = useAuth();
-  const router = useRouter();
   const [completedModules, setCompletedModules] = useState<number[]>([]);
-
-  useEffect(() => {
-    if (!isAuthenticated) {
-      router.push('/login');
-    }
-  }, [isAuthenticated, router]);
 
   useEffect(() => {
     const progress = getProgress();
@@ -25,213 +17,222 @@ export default function Home() {
     }
   }, []);
 
-  if (!isAuthenticated) {
-    return null;
-  }
-
   const currentModule = completedModules.length + 1;
   const overallProgress = Math.round((completedModules.length / 12) * 100);
 
-  return (
-    <div className="min-h-screen bg-neutral-50">
-      {/* Page Container with generous padding */}
-      <div className="max-w-5xl mx-auto px-8 py-12">
-
-        {/* Header Section */}
-        <header className="mb-12">
-          <div className="flex items-center gap-4 mb-3">
-            <div className="w-12 h-12 rounded-xl bg-primary-600 flex items-center justify-center">
-              <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-              </svg>
-            </div>
-            <div>
-              <h1 className="font-display text-2xl font-bold text-neutral-900">
-                Resilience Program
-              </h1>
-              <p className="text-sm text-neutral-500">
-                12-week workplace resilience training
-              </p>
-            </div>
-          </div>
-        </header>
-
-        {/* Progress Overview Card */}
-        <div className="bg-white rounded-2xl border border-neutral-200 p-8 mb-12 shadow-sm">
-          <div className="flex items-center justify-between mb-6">
-            <div>
-              <h2 className="font-display font-semibold text-lg text-neutral-900 mb-1">
-                Your Progress
-              </h2>
-              <p className="text-sm text-neutral-500">
-                {completedModules.length} of 12 modules completed
-              </p>
-            </div>
-            <div className="text-right">
-              <span className="text-4xl font-bold text-primary-600">{overallProgress}%</span>
-            </div>
-          </div>
-
-          {/* Progress Bar */}
-          <div className="h-2 bg-neutral-100 rounded-full overflow-hidden mb-6">
-            <div
-              className="h-full bg-primary-500 rounded-full transition-all duration-500"
-              style={{ width: `${overallProgress}%` }}
-            />
-          </div>
-
-          {/* Quick Actions */}
-          <div className="flex items-center gap-4">
-            <Link
-              href={`/module/${currentModule}`}
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-primary-600 text-white text-sm font-medium rounded-lg hover:bg-primary-700 transition-colors"
-            >
-              Continue Week {currentModule}
-              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-              </svg>
-            </Link>
-            <Link
-              href="/dashboard"
-              className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-neutral-700 text-sm font-medium rounded-lg border border-neutral-200 hover:bg-neutral-50 hover:border-neutral-300 transition-colors"
-            >
-              View Dashboard
-            </Link>
-          </div>
+  // Right panel content
+  const RightPanel = (
+    <div className="space-y-6">
+      {/* Continue Module CTA */}
+      <div className="bg-gradient-to-br from-blue-500 to-blue-600 rounded-3xl p-6 text-white">
+        <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center mb-4">
+          <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
         </div>
+        <h3 className="font-semibold text-lg mb-1">Continue Learning</h3>
+        <p className="text-white/70 text-sm mb-4">Pick up where you left off</p>
+        <Link
+          href={`/module/${currentModule}`}
+          className="inline-flex items-center gap-2 px-4 py-2 bg-white text-blue-600 text-sm font-medium rounded-lg hover:bg-white/90 transition-colors"
+        >
+          Week {currentModule}
+          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+          </svg>
+        </Link>
+      </div>
 
-        {/* Modules Section */}
-        <section>
-          <div className="flex items-center justify-between mb-8">
-            <div>
-              <h2 className="font-display font-semibold text-xl text-neutral-900 mb-1">
-                All Modules
-              </h2>
-              <p className="text-sm text-neutral-500">
-                Complete each module to progress through the program
-              </p>
-            </div>
-            <Link
-              href="/modules"
-              className="text-sm text-primary-600 hover:text-primary-700 font-medium"
-            >
-              View all
-            </Link>
-          </div>
+      {/* Storage/Progress Card */}
+      <div className="bg-white rounded-2xl p-5 border border-gray-100">
+        <div className="flex items-center justify-between mb-3">
+          <span className="font-medium text-gray-900">Your progress</span>
+          <span className="text-sm font-semibold text-teal-600">{100 - overallProgress}% left</span>
+        </div>
+        <p className="text-sm text-gray-500 mb-3">{completedModules.length} of 12 modules completed</p>
+        <div className="h-2 bg-teal-100 rounded-full overflow-hidden">
+          <div
+            className="h-full bg-gradient-to-r from-teal-500 to-teal-600 rounded-full transition-all duration-500"
+            style={{ width: `${overallProgress}%` }}
+          />
+        </div>
+      </div>
 
-          {/* 2-Column Module Grid - Cards never touch */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {allModules.map((module, index) => {
-              const moduleNum = index + 1;
-              const isCompleted = completedModules.includes(moduleNum);
-              const isCurrent = moduleNum === currentModule;
-              const isAvailable = moduleNum <= currentModule;
-
-              let status: "completed" | "in-progress" | "available" | "locked";
-              if (isCompleted) status = "completed";
-              else if (isCurrent) status = "in-progress";
-              else if (isAvailable) status = "available";
-              else status = "locked";
-
-              let progress = 0;
-              if (isCompleted) progress = 100;
-              else if (isCurrent) progress = 25;
-
-              return (
-                <ModuleCard
-                  key={moduleNum}
-                  moduleNumber={moduleNum}
-                  title={module.title}
-                  subtitle={module.subtitle}
-                  description={module.description}
-                  status={status}
-                  progress={progress}
-                  href={isAvailable ? `/module/${moduleNum}` : undefined}
-                />
-              );
-            })}
-          </div>
-        </section>
-
-        {/* Footer CTA */}
-        <div className="mt-16 pt-8 border-t border-neutral-200 text-center">
-          <p className="text-sm text-neutral-500 mb-4">
-            Ready to continue building workplace resilience?
-          </p>
+      {/* Quick Access */}
+      <div className="bg-white rounded-2xl p-5 border border-gray-100">
+        <h3 className="font-medium text-gray-900 mb-4">Quick access</h3>
+        <div className="space-y-2">
           <Link
-            href={`/module/${currentModule}`}
-            className="inline-flex items-center gap-2 px-6 py-3 bg-neutral-900 text-white text-sm font-medium rounded-lg hover:bg-neutral-800 transition-colors"
+            href="/dashboard"
+            className="flex items-center gap-3 p-3 rounded-xl bg-teal-50 hover:bg-teal-100 transition-colors"
           >
-            Start Week {currentModule}
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
+            <div className="w-8 h-8 rounded-lg bg-teal-500 flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-gray-700">View Dashboard</span>
+          </Link>
+          <Link
+            href="/modules"
+            className="flex items-center gap-3 p-3 rounded-xl bg-blue-50 hover:bg-blue-100 transition-colors"
+          >
+            <div className="w-8 h-8 rounded-lg bg-blue-500 flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-gray-700">All Modules</span>
+          </Link>
+          <Link
+            href="/module/1"
+            className="flex items-center gap-3 p-3 rounded-xl bg-pink-50 hover:bg-pink-100 transition-colors"
+          >
+            <div className="w-8 h-8 rounded-lg bg-pink-500 flex items-center justify-center">
+              <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+              </svg>
+            </div>
+            <span className="text-sm font-medium text-gray-700">Review Baseline</span>
           </Link>
         </div>
       </div>
+
+      {/* Add more button */}
+      <button className="w-full py-3 border-2 border-dashed border-gray-200 rounded-xl text-sm text-gray-400 hover:border-gray-300 hover:text-gray-500 transition-colors">
+        + Add shortcut
+      </button>
     </div>
+  );
+
+  return (
+    <AppLayout rightPanel={RightPanel}>
+      {/* Search Bar */}
+      <div className="mb-8">
+        <div className="relative">
+          <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+          <input
+            type="text"
+            placeholder="Search modules..."
+            className="w-full pl-12 pr-4 py-3 bg-white rounded-xl border border-gray-200 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+          />
+        </div>
+      </div>
+
+      {/* Categories Section - Colorful Cards */}
+      <section className="mb-10">
+        <h2 className="text-lg font-semibold text-gray-900 mb-5">Categories</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {categories.map((category, index) => {
+            const isAvailable = index === 0 || completedModules.includes(index);
+            return (
+              <ModuleCardColorful
+                key={index}
+                moduleNumber={index + 1}
+                title={category.title}
+                subtitle={category.count}
+                status={isAvailable ? (completedModules.includes(index + 1) ? "completed" : index === 0 ? "in-progress" : "available") : "locked"}
+                href={isAvailable ? `/module/${index + 1}` : undefined}
+              />
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Modules Section - White Cards */}
+      <section className="mb-10">
+        <h2 className="text-lg font-semibold text-gray-900 mb-5">Modules</h2>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {allModules.slice(0, 8).map((module, index) => {
+            const moduleNum = index + 1;
+            const isCompleted = completedModules.includes(moduleNum);
+            const isCurrent = moduleNum === currentModule;
+            const isAvailable = moduleNum <= currentModule;
+
+            let status: "completed" | "in-progress" | "available" | "locked";
+            if (isCompleted) status = "completed";
+            else if (isCurrent) status = "in-progress";
+            else if (isAvailable) status = "available";
+            else status = "locked";
+
+            let progress = 0;
+            if (isCompleted) progress = 100;
+            else if (isCurrent) progress = 25;
+
+            return (
+              <ModuleCard
+                key={moduleNum}
+                moduleNumber={moduleNum}
+                title={module.title}
+                subtitle={module.subtitle}
+                status={status}
+                progress={progress}
+                href={isAvailable ? `/module/${moduleNum}` : undefined}
+              />
+            );
+          })}
+        </div>
+      </section>
+
+      {/* Recent Modules - List Style */}
+      <section>
+        <h2 className="text-lg font-semibold text-gray-900 mb-5">Recent modules</h2>
+        <div className="space-y-3">
+          {allModules.slice(0, 4).map((module, index) => {
+            const moduleNum = index + 1;
+            const isCompleted = completedModules.includes(moduleNum);
+            const isCurrent = moduleNum === currentModule;
+            const isAvailable = moduleNum <= currentModule;
+
+            let status: "completed" | "in-progress" | "available" | "locked";
+            if (isCompleted) status = "completed";
+            else if (isCurrent) status = "in-progress";
+            else if (isAvailable) status = "available";
+            else status = "locked";
+
+            let progress = 0;
+            if (isCompleted) progress = 100;
+            else if (isCurrent) progress = 25;
+
+            return (
+              <ModuleListItem
+                key={moduleNum}
+                moduleNumber={moduleNum}
+                title={module.title}
+                subtitle={module.subtitle}
+                status={status}
+                progress={progress}
+                href={isAvailable ? `/module/${moduleNum}` : undefined}
+              />
+            );
+          })}
+        </div>
+      </section>
+    </AppLayout>
   );
 }
 
+const categories = [
+  { title: "Foundations", count: "Weeks 1-3" },
+  { title: "Regulation", count: "Weeks 4-6" },
+  { title: "Resilience", count: "Weeks 7-9" },
+  { title: "Integration", count: "Weeks 10-12" },
+];
+
 const allModules = [
-  {
-    title: "Kick Off",
-    subtitle: "Baseline & Goals",
-    description: "Establish your baseline metrics and set team goals for the program.",
-  },
-  {
-    title: "Mindfulness",
-    subtitle: "Focus & Clarity",
-    description: "Build mindfulness skills to improve focus and stress management.",
-  },
-  {
-    title: "Self-Awareness",
-    subtitle: "Self-Knowledge",
-    description: "Develop deeper understanding of your patterns and triggers.",
-  },
-  {
-    title: "Emotional Regulation",
-    subtitle: "Emotional Balance",
-    description: "Learn techniques to manage emotional responses effectively.",
-  },
-  {
-    title: "Boundaries",
-    subtitle: "Work-Life Balance",
-    description: "Establish healthy boundaries between work and personal life.",
-  },
-  {
-    title: "Communication",
-    subtitle: "Team Connection",
-    description: "Practice active listening and constructive feedback delivery.",
-  },
-  {
-    title: "Resilience",
-    subtitle: "Stress Response",
-    description: "Develop strategies to bounce back from setbacks.",
-  },
-  {
-    title: "Adaptation",
-    subtitle: "Change Skills",
-    description: "Build flexibility and adaptability in changing environments.",
-  },
-  {
-    title: "Innovation",
-    subtitle: "Creative Thinking",
-    description: "Apply learned skills through creative problem-solving exercises.",
-  },
-  {
-    title: "Leadership",
-    subtitle: "Empowered Teams",
-    description: "Develop leadership skills for building empowered teams.",
-  },
-  {
-    title: "Integration",
-    subtitle: "Daily Practice",
-    description: "Integrate resilience practices into your daily routine.",
-  },
-  {
-    title: "Completion",
-    subtitle: "Sustaining Growth",
-    description: "Celebrate achievements and create your ongoing resilience plan.",
-  },
+  { title: "Kick Off", subtitle: "Baseline & Goals" },
+  { title: "Mindfulness", subtitle: "Focus & Clarity" },
+  { title: "Self-Awareness", subtitle: "Self-Knowledge" },
+  { title: "Emotional Regulation", subtitle: "Emotional Balance" },
+  { title: "Boundaries", subtitle: "Work-Life Balance" },
+  { title: "Communication", subtitle: "Team Connection" },
+  { title: "Resilience", subtitle: "Stress Response" },
+  { title: "Adaptation", subtitle: "Change Skills" },
+  { title: "Innovation", subtitle: "Creative Thinking" },
+  { title: "Leadership", subtitle: "Empowered Teams" },
+  { title: "Integration", subtitle: "Daily Practice" },
+  { title: "Completion", subtitle: "Sustaining Growth" },
 ];
