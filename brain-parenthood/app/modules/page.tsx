@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { getProgress } from "@/lib/storage";
-import Button from "@/components/ui/Button";
+import ModuleCard from "@/components/ui/ModuleCard";
 
 export default function ModulesPage() {
   const { isAuthenticated } = useAuth();
@@ -27,69 +27,105 @@ export default function ModulesPage() {
     return null;
   }
 
+  const currentModule = completedModules.length + 1;
+  const overallProgress = Math.round((completedModules.length / 12) * 100);
+
   return (
-    <div className="min-h-screen bg-neutral-50">
-      <div className="app-container">
-        <div className="mb-16 text-center max-w-3xl mx-auto">
-          <h1 className="text-5xl font-bold text-neutral-900 mb-4">All Modules</h1>
-          <p className="text-xl text-neutral-600">
-            The complete 12-week Brain Parenthood journey
-          </p>
+    <div className="min-h-screen bg-[#fafafa]">
+      <div className="max-w-5xl mx-auto px-6 py-10">
+        {/* Header */}
+        <header className="mb-10">
+          <Link
+            href="/"
+            className="inline-flex items-center gap-2 text-sm text-neutral-500 hover:text-neutral-700 mb-6 transition-colors"
+          >
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            </svg>
+            Back to Dashboard
+          </Link>
+
+          <div className="flex items-start justify-between">
+            <div>
+              <h1 className="font-display text-3xl font-bold text-neutral-900 mb-2">
+                All Modules
+              </h1>
+              <p className="text-neutral-500">
+                Your complete 12-week resilience journey
+              </p>
+            </div>
+            <div className="text-right">
+              <span className="text-2xl font-bold text-primary-600">{overallProgress}%</span>
+              <p className="text-xs text-neutral-400">complete</p>
+            </div>
+          </div>
+        </header>
+
+        {/* Progress Overview */}
+        <div className="bg-white rounded-2xl border border-neutral-200 p-5 mb-10 shadow-card">
+          <div className="flex gap-1 mb-4">
+            {Array.from({ length: 12 }).map((_, i) => (
+              <div
+                key={i}
+                className={`h-2 flex-1 rounded-full transition-colors ${
+                  completedModules.includes(i + 1)
+                    ? "bg-success-500"
+                    : i + 1 === currentModule
+                    ? "bg-primary-400"
+                    : "bg-neutral-100"
+                }`}
+              />
+            ))}
+          </div>
+          <div className="flex items-center justify-between text-sm">
+            <span className="text-neutral-500">{completedModules.length} of 12 modules completed</span>
+            <span className="text-neutral-400">Week {currentModule} in progress</span>
+          </div>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+        {/* Module Grid - Detailed Cards */}
+        <div className="grid md:grid-cols-2 gap-5">
           {modules.map((module) => {
             const isCompleted = completedModules.includes(module.id);
-            const isAvailable = module.id === 1;
+            const isCurrent = module.id === currentModule;
+            const isAvailable = module.id <= currentModule;
+
+            let status: "completed" | "in-progress" | "available" | "locked";
+            if (isCompleted) status = "completed";
+            else if (isCurrent) status = "in-progress";
+            else if (isAvailable) status = "available";
+            else status = "locked";
+
+            let progress = 0;
+            if (isCompleted) progress = 100;
+            else if (isCurrent) progress = 25;
 
             return (
-              <div
+              <ModuleCard
                 key={module.id}
-                className={`bg-white rounded-3xl p-8 border-2 transition-all duration-300 ${
-                  isAvailable
-                    ? "border-primary-300 hover:border-primary-500 hover:shadow-xl hover:-translate-y-1"
-                    : "border-neutral-200 opacity-60"
-                }`}
-              >
-                <div className="flex items-start gap-4 mb-6">
-                  <div className={`flex-shrink-0 w-12 h-12 rounded-2xl flex items-center justify-center text-white font-bold text-lg ${
-                    isCompleted ? "bg-success-500" : isAvailable ? "bg-primary-600" : "bg-neutral-300"
-                  }`}>
-                    {module.id}
-                  </div>
-                  <div className="flex-1">
-                    <div className="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-1">
-                      {module.duration}
-                    </div>
-                    <h2 className="text-xl font-bold text-neutral-900">
-                      {module.title}
-                    </h2>
-                  </div>
-                  {isCompleted && (
-                    <span className="px-3 py-1 bg-success-100 text-success-700 rounded-full text-xs font-semibold">
-                      Done
-                    </span>
-                  )}
-                </div>
-
-                <p className="text-neutral-600 mb-6 leading-relaxed">
-                  {module.description}
-                </p>
-
-                {isAvailable ? (
-                  <Link href={`/module/${module.id}`}>
-                    <Button variant="primary" fullWidth className="rounded-2xl">
-                      {isCompleted ? "Review Module" : "Start Module"}
-                    </Button>
-                  </Link>
-                ) : (
-                  <Button variant="secondary" fullWidth disabled className="rounded-2xl">
-                    Coming Soon
-                  </Button>
-                )}
-              </div>
+                moduleNumber={module.id}
+                title={module.title}
+                subtitle={module.duration}
+                description={module.description}
+                status={status}
+                progress={progress}
+                href={isAvailable ? `/module/${module.id}` : undefined}
+              />
             );
           })}
+        </div>
+
+        {/* Bottom CTA */}
+        <div className="mt-12 text-center">
+          <Link
+            href={`/module/${currentModule}`}
+            className="inline-flex items-center gap-2 px-6 py-3 bg-primary-600 text-white text-sm font-medium rounded-xl hover:bg-primary-700 transition-colors shadow-sm"
+          >
+            Continue to Week {currentModule}
+            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </Link>
         </div>
       </div>
     </div>
@@ -99,73 +135,73 @@ export default function ModulesPage() {
 const modules = [
   {
     id: 1,
-    title: "Module 1: Kick Off",
+    title: "Kick Off",
     duration: "Week 1",
     description: "Establish your baseline, set goals, and get introduced to Brain Parenthood concepts.",
   },
   {
     id: 2,
-    title: "Module 2: Mindfulness Foundation",
+    title: "Mindfulness Foundation",
     duration: "Week 2",
     description: "Build mindfulness skills to improve focus, creativity, and stress management.",
   },
   {
     id: 3,
-    title: "Module 3: Cognitive Restructuring",
+    title: "Cognitive Restructuring",
     duration: "Week 3",
     description: "Master cognitive reframing to challenge distorted thinking patterns.",
   },
   {
     id: 4,
-    title: "Module 4: Emotional Intelligence",
+    title: "Emotional Intelligence",
     duration: "Week 4",
     description: "Develop emotional awareness and regulation skills for better leadership.",
   },
   {
     id: 5,
-    title: "Module 5: Team Dynamics",
+    title: "Team Dynamics",
     duration: "Week 5",
     description: "Build psychological safety and collaboration within your team.",
   },
   {
     id: 6,
-    title: "Module 6: Resilience Building",
+    title: "Resilience Building",
     duration: "Week 6",
     description: "Develop growth mindset and resilience to bounce back from setbacks.",
   },
   {
     id: 7,
-    title: "Module 7: Communication Skills",
+    title: "Communication Skills",
     duration: "Week 7",
     description: "Master active listening and constructive feedback delivery.",
   },
   {
     id: 8,
-    title: "Module 8: Stress Management",
+    title: "Stress Management",
     duration: "Week 8",
     description: "Build a personalized stress management toolkit with proven techniques.",
   },
   {
     id: 9,
-    title: "Module 9: Work-Life Integration",
+    title: "Work-Life Integration",
     duration: "Week 9",
     description: "Design sustainable work-life integration with clear boundaries.",
   },
   {
     id: 10,
-    title: "Module 10: Performance Optimization",
+    title: "Performance Optimization",
     duration: "Week 10",
     description: "Access peak performance states and design rituals for consistent flow.",
   },
   {
     id: 11,
-    title: "Module 11: Sustainability Planning",
+    title: "Sustainability Planning",
     duration: "Week 11",
     description: "Build lasting habits and create a 90-day sustainability plan.",
   },
   {
     id: 12,
-    title: "Module 12: Celebration & Reflection",
+    title: "Celebration & Reflection",
     duration: "Week 12",
     description: "Celebrate your journey, assess final growth, and set your future vision.",
   },
