@@ -37,7 +37,9 @@
       "Bash(cmd //c copy \"brain-parenthood\\components\\nextjs\\PaymentForm.css\" \"brain-parenthood\\app\\components\\PaymentForm.css\")",
       "WebSearch",
       "Bash(npm audit fix:*)",
-      "Bash(git reset:*)"
+      "Bash(git reset:*)",
+      "Bash(tree:*)",
+      "Bash(dir \"C:\\\\Users\\\\lolak\\\\OneDrive\\\\Desktop\\\\SenSym Module 1\" /b /ad)"
     ],
     "deny": [],
     "ask": []

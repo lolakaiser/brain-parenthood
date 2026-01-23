@@ -125,7 +125,7 @@ export default function Home() {
       {/* Categories Section - Colorful Cards */}
       <section className="mb-10">
         <h2 className="text-lg font-semibold text-gray-900 mb-5">Categories</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 gap-5">
           {categories.map((category, index) => {
             const isAvailable = index === 0 || completedModules.includes(index);
             return (
@@ -145,8 +145,8 @@ export default function Home() {
       {/* Modules Section - White Cards */}
       <section className="mb-10">
         <h2 className="text-lg font-semibold text-gray-900 mb-5">Modules</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {allModules.slice(0, 8).map((module, index) => {
+        <div className="grid grid-cols-2 gap-5">
+          {allModules.slice(0, 6).map((module, index) => {
             const moduleNum = index + 1;
             const isCompleted = completedModules.includes(moduleNum);
             const isCurrent = moduleNum === currentModule;
