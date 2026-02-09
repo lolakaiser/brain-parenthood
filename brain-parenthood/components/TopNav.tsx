@@ -3,75 +3,106 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
+import { useState } from "react";
+import CoffeeModal from "./CoffeeModal";
 
 export default function TopNav() {
   const pathname = usePathname();
   const { user, logout } = useAuth();
+  const [showCoffeeModal, setShowCoffeeModal] = useState(false);
 
   const navItems = [
-    { label: "Dashboard", href: "/" },
-    { label: "All Modules", href: "/modules" },
-    { label: "Progress", href: "/dashboard" },
-    { label: "Current Module", href: "/module/1" },
+    { label: "Dashboard", href: "/dashboard" },
+    { label: "Modules", href: "/modules" },
+    { label: "About", href: "/about" },
   ];
 
+  // Get user initials for avatar
+  const getInitials = (name: string | undefined) => {
+    if (!name) return "U";
+    const parts = name.split(" ");
+    if (parts.length >= 2) {
+      return (parts[0][0] + parts[1][0]).toUpperCase();
+    }
+    return name.substring(0, 2).toUpperCase();
+  };
+
   return (
-    <header className="bg-gradient-to-r from-[#1e3a5f] to-[#0d2137] px-6 py-4">
-      <div className="max-w-7xl mx-auto flex items-center justify-between">
-        {/* Logo / Brand */}
-        <Link href="/" className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center">
-            <svg className="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
-            </svg>
-          </div>
-          <div>
-            <h1 className="text-white font-semibold text-lg leading-tight">Resilience</h1>
-            <p className="text-white/50 text-xs">12-Week Program</p>
-          </div>
-        </Link>
+    <>
+      <header className="bg-white border-b-4 border-blue-600">
+        <div className="max-w-7xl mx-auto px-6">
+          <div className="flex items-center justify-between h-16">
+            {/* Logo [LOGO-BP] */}
+            <Link href="/dashboard" className="flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-purple-600 flex items-center justify-center">
+                <span className="text-white font-bold text-sm">BP</span>
+              </div>
+              <span className="font-semibold text-purple-600 text-lg">Brain Parenthood</span>
+            </Link>
 
-        {/* Navigation */}
-        <nav className="flex items-center gap-2">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-all ${
-                  isActive
-                    ? "bg-white/15 text-white"
-                    : "text-white/60 hover:bg-white/10 hover:text-white"
-                }`}
+            {/* Navigation Tabs */}
+            <nav className="flex items-center gap-1">
+              {navItems.map((item) => {
+                const isActive = pathname === item.href;
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className={`px-4 py-2 text-sm font-medium transition-all relative ${
+                      isActive
+                        ? "text-blue-600"
+                        : "text-gray-600 hover:text-gray-900"
+                    }`}
+                  >
+                    {item.label}
+                    {isActive && (
+                      <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-blue-600 -mb-[1.125rem]" />
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
+
+            {/* Right Side - User Info & Actions */}
+            <div className="flex items-center gap-4">
+              {/* Buy Me a Coffee Button */}
+              <button
+                onClick={() => setShowCoffeeModal(true)}
+                className="px-3 py-1.5 text-sm font-medium text-purple-600 hover:bg-purple-50 rounded-lg transition-all"
               >
-                {item.label}
-              </Link>
-            );
-          })}
-        </nav>
+                Support Us
+              </button>
 
-        {/* User Menu */}
-        <div className="flex items-center gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-9 h-9 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-white font-semibold text-sm">
-              {user?.name?.charAt(0).toUpperCase() || "U"}
-            </div>
-            <div className="hidden md:block">
-              <p className="text-white font-medium text-sm">{user?.name || "User"}</p>
-              <p className="text-white/50 text-xs">Team Member</p>
+              {/* User Info */}
+              <div className="flex items-center gap-3">
+                <div className="text-right hidden sm:block">
+                  <p className="text-sm font-medium text-gray-900">{user?.name || "User"}</p>
+                  <p className="text-xs text-gray-500">Client</p>
+                </div>
+
+                {/* Avatar with initials */}
+                <div className="w-9 h-9 rounded-full bg-gradient-to-br from-purple-500 to-pink-500 flex items-center justify-center text-white font-semibold text-sm">
+                  {getInitials(user?.name)}
+                </div>
+
+                {/* Logout */}
+                <button
+                  onClick={logout}
+                  className="text-red-500 hover:text-red-600 text-sm font-medium transition-colors"
+                >
+                  Logout
+                </button>
+              </div>
             </div>
           </div>
-          <button
-            onClick={logout}
-            className="px-3 py-2 rounded-lg text-white/60 hover:bg-white/10 hover:text-white transition-all text-sm"
-          >
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
-            </svg>
-          </button>
         </div>
-      </div>
-    </header>
+      </header>
+
+      {/* Coffee Modal */}
+      <CoffeeModal
+        isOpen={showCoffeeModal}
+        onClose={() => setShowCoffeeModal(false)}
+      />
+    </>
   );
 }

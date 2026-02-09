@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import AppLayout from "@/components/AppLayout";
-import ModuleCard from "@/components/ui/ModuleCard";
 import { getProgress } from "@/lib/storage";
 
 export default function ModulesPage() {
@@ -11,134 +10,187 @@ export default function ModulesPage() {
 
   useEffect(() => {
     const progress = getProgress();
-    setCompletedModules(progress.completedModules || []);
+    setCompletedModules(progress?.completedModules || []);
   }, []);
 
+  const totalModules = 12;
+  const modulesCompleted = completedModules.length;
+  const overallProgress = Math.round((modulesCompleted / totalModules) * 100);
   const currentModule = completedModules.length + 1;
-  const overallProgress = Math.round((completedModules.length / 12) * 100);
 
-  // Right panel content
-  const RightPanel = (
-    <div className="space-y-6">
-      {/* Progress Card */}
-      <div className="bg-white rounded-2xl p-5 border border-gray-100">
-        <div className="flex items-center justify-between mb-3">
-          <span className="font-medium text-gray-900">Program progress</span>
-          <span className="text-sm font-semibold text-teal-600">{overallProgress}%</span>
-        </div>
-        <p className="text-sm text-gray-500 mb-3">{completedModules.length} of 12 modules</p>
-        <div className="h-2 bg-teal-100 rounded-full overflow-hidden">
-          <div
-            className="h-full bg-gradient-to-r from-teal-500 to-teal-600 rounded-full transition-all duration-500"
-            style={{ width: `${overallProgress}%` }}
-          />
+  return (
+    <AppLayout>
+      {/* Hero Header with Stats */}
+      <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 py-12 px-6">
+        <div className="max-w-7xl mx-auto">
+          <h1 className="text-3xl font-bold text-white mb-2">Learning Modules</h1>
+          <p className="text-white/80 mb-8">
+            Comprehensive modules for personal and professional development
+          </p>
+
+          {/* Stats in header */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+              <p className="text-sm text-white/70">Total Modules</p>
+              <p className="text-2xl font-bold text-white">{totalModules}</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+              <p className="text-sm text-white/70">Completed</p>
+              <p className="text-2xl font-bold text-white">{modulesCompleted}</p>
+            </div>
+            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
+              <p className="text-sm text-white/70">Progress</p>
+              <p className="text-2xl font-bold text-white">{overallProgress}%</p>
+            </div>
+          </div>
         </div>
       </div>
 
-      {/* Continue CTA */}
-      <Link
-        href={`/module/${currentModule}`}
-        className="block bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl p-5 text-white hover:shadow-lg transition-shadow"
-      >
-        <div className="flex items-center gap-3 mb-3">
-          <div className="w-10 h-10 rounded-xl bg-white/20 flex items-center justify-center">
-            <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z" />
-              <path strokeLinecap="round" strokeLinejoin="round" d="M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
-            </svg>
-          </div>
-          <div>
-            <h3 className="font-semibold">Continue</h3>
-            <p className="text-white/70 text-sm">Week {currentModule}</p>
-          </div>
-        </div>
-      </Link>
+      {/* Modules Grid */}
+      <div className="max-w-7xl mx-auto px-6 py-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {modules.map((module) => {
+            const isCompleted = completedModules.includes(module.id);
+            const isCurrent = module.id === currentModule;
+            const isLocked = module.id > currentModule;
 
-      {/* Phase Progress */}
-      <div className="bg-white rounded-2xl p-5 border border-gray-100">
-        <h3 className="font-medium text-gray-900 mb-4">Phases</h3>
-        <div className="space-y-3">
-          {phases.map((phase, i) => {
-            const phaseModules = [1, 2, 3].map(n => n + i * 3);
-            const completed = phaseModules.filter(m => completedModules.includes(m)).length;
-            const total = 3;
             return (
-              <div key={i} className="flex items-center gap-3">
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-white text-sm font-medium ${phase.color}`}>
-                  {i + 1}
+              <div
+                key={module.id}
+                className={`bg-white rounded-2xl p-6 border transition-all ${
+                  isLocked
+                    ? "border-gray-100 opacity-60"
+                    : "border-gray-100 hover:border-purple-200 hover:shadow-lg"
+                }`}
+              >
+                {/* Header Row */}
+                <div className="flex items-center justify-between mb-4">
+                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
+                    isCompleted
+                      ? "bg-green-100 text-green-700"
+                      : isCurrent
+                      ? "bg-purple-100 text-purple-700"
+                      : "bg-gray-100 text-gray-600"
+                  }`}>
+                    Module {module.id}
+                  </span>
+                  <span className="text-sm text-gray-400">{module.duration}</span>
                 </div>
-                <div className="flex-1">
-                  <p className="text-sm font-medium text-gray-900">{phase.title}</p>
-                  <p className="text-xs text-gray-400">{completed}/{total} complete</p>
+
+                {/* Title & Description */}
+                <h3 className="font-semibold text-gray-900 text-lg mb-2">{module.title}</h3>
+                <p className="text-sm text-gray-500 mb-4 line-clamp-2">{module.description}</p>
+
+                {/* Footer */}
+                <div className="flex items-center justify-between pt-4 border-t border-gray-50">
+                  <span className="text-sm text-gray-400">{module.sections} sections</span>
+                  {!isLocked && (
+                    <Link
+                      href={`/module/${module.id}`}
+                      className="text-purple-600 hover:text-purple-700 font-medium text-sm flex items-center gap-1"
+                    >
+                      {isCompleted ? "Review" : "Start"}
+                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                      </svg>
+                    </Link>
+                  )}
+                  {isLocked && (
+                    <span className="text-gray-400 text-sm">Locked</span>
+                  )}
                 </div>
               </div>
             );
           })}
         </div>
       </div>
-    </div>
-  );
-
-  return (
-    <AppLayout rightPanel={RightPanel}>
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900 mb-2">All Modules</h1>
-        <p className="text-gray-500">Complete 12-week resilience program</p>
-      </div>
-
-      {/* 2-Column Module Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-        {modules.map((module) => {
-          const isCompleted = completedModules.includes(module.id);
-          const isCurrent = module.id === currentModule;
-          const isAvailable = module.id <= currentModule;
-
-          let status: "completed" | "in-progress" | "available" | "locked";
-          if (isCompleted) status = "completed";
-          else if (isCurrent) status = "in-progress";
-          else if (isAvailable) status = "available";
-          else status = "locked";
-
-          let progress = 0;
-          if (isCompleted) progress = 100;
-          else if (isCurrent) progress = 25;
-
-          return (
-            <ModuleCard
-              key={module.id}
-              moduleNumber={module.id}
-              title={module.title}
-              subtitle={module.duration}
-              status={status}
-              progress={progress}
-              href={isAvailable ? `/module/${module.id}` : undefined}
-            />
-          );
-        })}
-      </div>
     </AppLayout>
   );
 }
 
-const phases = [
-  { title: "Foundations", color: "bg-teal-500" },
-  { title: "Regulation", color: "bg-blue-500" },
-  { title: "Resilience", color: "bg-pink-500" },
-  { title: "Integration", color: "bg-indigo-500" },
-];
-
 const modules = [
-  { id: 1, title: "Kick Off", duration: "Week 1" },
-  { id: 2, title: "Mindfulness Foundation", duration: "Week 2" },
-  { id: 3, title: "Cognitive Restructuring", duration: "Week 3" },
-  { id: 4, title: "Emotional Intelligence", duration: "Week 4" },
-  { id: 5, title: "Team Dynamics", duration: "Week 5" },
-  { id: 6, title: "Resilience Building", duration: "Week 6" },
-  { id: 7, title: "Communication Skills", duration: "Week 7" },
-  { id: 8, title: "Stress Management", duration: "Week 8" },
-  { id: 9, title: "Work-Life Integration", duration: "Week 9" },
-  { id: 10, title: "Performance Optimization", duration: "Week 10" },
-  { id: 11, title: "Sustainability Planning", duration: "Week 11" },
-  { id: 12, title: "Celebration & Reflection", duration: "Week 12" },
+  {
+    id: 1,
+    title: "The Right Frame of Mind",
+    description: "Develop a positive mindset by overcoming negative thought patterns, understanding motivation, and embracing personal accountability.",
+    duration: "75 min",
+    sections: 6,
+  },
+  {
+    id: 2,
+    title: "How to Handle the Tough Stuff",
+    description: "Learn comprehensive coping strategies for difficult situations including conflict resolution, anger management, stress reduction, and building resilience.",
+    duration: "90 min",
+    sections: 6,
+  },
+  {
+    id: 3,
+    title: "How to Put Your Best Foot Forward",
+    description: "Master effective communication skills for personal and professional success, including verbal, non-verbal, and active listening techniques.",
+    duration: "85 min",
+    sections: 6,
+  },
+  {
+    id: 4,
+    title: "The Nuts and Bolts",
+    description: "Master practical life skills including money management, time management, and decision making.",
+    duration: "50 min",
+    sections: 3,
+  },
+  {
+    id: 5,
+    title: "Effective Communication",
+    description: "Master specific communication techniques including 'I' statements and active listening.",
+    duration: "45 min",
+    sections: 3,
+  },
+  {
+    id: 6,
+    title: "Stress Management",
+    description: "Master relaxation techniques and stress coping strategies.",
+    duration: "70 min",
+    sections: 4,
+  },
+  {
+    id: 7,
+    title: "Parenting",
+    description: "Guidance for parents on positive parenting techniques and work-life balance.",
+    duration: "50 min",
+    sections: 3,
+  },
+  {
+    id: 8,
+    title: "Positive Attitude",
+    description: "Assess and improve your overall outlook on life.",
+    duration: "35 min",
+    sections: 2,
+  },
+  {
+    id: 9,
+    title: "Communication",
+    description: "Explore different forms and styles of communication.",
+    duration: "60 min",
+    sections: 3,
+  },
+  {
+    id: 10,
+    title: "Communication Skills Worksheet",
+    description: "Practice and apply communication skills through hands-on exercises.",
+    duration: "40 min",
+    sections: 2,
+  },
+  {
+    id: 11,
+    title: "Decision Making",
+    description: "Learn structured approaches to making better decisions.",
+    duration: "65 min",
+    sections: 3,
+  },
+  {
+    id: 12,
+    title: "Anger Management",
+    description: "Comprehensive anger management and conflict resolution techniques.",
+    duration: "70 min",
+    sections: 4,
+  },
 ];

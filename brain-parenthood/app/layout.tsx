@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { Space_Grotesk } from "next/font/google";
 import "./globals.css";
-import Navigation from "@/components/Navigation";
 import { AuthProvider } from "@/context/AuthContext";
 
 const spaceGrotesk = Space_Grotesk({ subsets: ["latin"] });
@@ -23,12 +22,7 @@ export default function RootLayout({
       </head>
       <body className={spaceGrotesk.className}>
         <AuthProvider>
-          <Navigation />
-          <main className="min-h-screen">
-            <div className="max-w-[1200px] mx-auto px-4 sm:px-6 md:px-8 lg:px-12 xl:px-16">
-              {children}
-            </div>
-          </main>
+          {children}
         </AuthProvider>
       </body>
     </html>
