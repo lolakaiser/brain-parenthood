@@ -40,25 +40,25 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-blue-500 via-purple-500 to-pink-500 flex items-center justify-center p-4">
+    <div className="min-h-screen w-full bg-gradient-to-br from-[#3B82F6] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center p-4">
       {/* Login Card */}
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-2xl p-8">
+      <div className="w-full max-w-sm bg-white rounded-xl shadow-2xl p-8">
         {/* Logo [LOGO-BP] */}
         <div className="flex justify-center mb-6">
-          <div className="w-16 h-16 rounded-2xl bg-purple-600 flex items-center justify-center">
-            <span className="text-white font-bold text-2xl">BP</span>
+          <div className="w-14 h-14 rounded-xl bg-[#4F46E5] flex items-center justify-center">
+            <span className="text-white font-bold text-xl">BP</span>
           </div>
         </div>
 
         {/* Header */}
         <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Welcome Back</h1>
+          <h1 className="text-2xl font-bold text-gray-900 mb-1">Welcome Back</h1>
           <p className="text-gray-500 text-sm">Sign in to your account</p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-xl mb-6 text-sm">
+          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">
             {error}
           </div>
         )}
@@ -66,7 +66,7 @@ export default function LoginPage() {
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
               Email Address
             </label>
             <input
@@ -75,12 +75,12 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 outline-none transition-all text-gray-900 placeholder-gray-400"
+              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#4F46E5] focus:ring-2 focus:ring-[#4F46E5]/20 outline-none transition-all text-gray-900 placeholder-gray-400 text-sm"
             />
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
               Password
             </label>
             <input
@@ -89,14 +89,14 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              className="w-full px-4 py-3 rounded-xl border border-gray-200 focus:border-purple-500 focus:ring-2 focus:ring-purple-500/20 outline-none transition-all text-gray-900 placeholder-gray-400"
+              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#4F46E5] focus:ring-2 focus:ring-[#4F46E5]/20 outline-none transition-all text-gray-900 placeholder-gray-400 text-sm"
             />
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-3 px-4 bg-gradient-to-r from-purple-600 to-purple-700 text-white font-medium rounded-xl hover:from-purple-700 hover:to-purple-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            className="w-full py-2.5 px-4 bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] text-white font-medium rounded-lg hover:from-[#6D28D9] hover:to-[#4338CA] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
           >
             {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
@@ -106,12 +106,12 @@ export default function LoginPage() {
         <div className="mt-6 text-center space-y-3">
           <p className="text-sm text-gray-500">
             Don't have an account?{' '}
-            <Link href="/signup" className="text-purple-600 hover:text-purple-700 font-medium">
+            <Link href="/signup" className="text-[#4F46E5] hover:text-[#4338CA] font-medium">
               Sign up
             </Link>
           </p>
           <Link href="/" className="block text-sm text-gray-400 hover:text-gray-500">
-            Back to Home
+            ← Back to Home
           </Link>
         </div>
       </div>

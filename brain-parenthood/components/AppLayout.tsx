@@ -24,11 +24,11 @@ export default function AppLayout({ children }: AppLayoutProps) {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-white">
       {/* Top Navigation */}
       <TopNav />
 
-      {/* Main Content */}
+      {/* Main Content - Full Width for gradient headers */}
       <main>
         {children}
       </main>

@@ -24,123 +24,202 @@ export default function DashboardPage() {
   return (
     <AppLayout>
       {/* Hero Header */}
-      <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 py-12 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-white mb-2">
+      <div style={{ background: 'linear-gradient(to right, #4F46E5, #7C3AED, #EC4899)', width: '100%' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
+          <h1 style={{ fontSize: '36px', fontWeight: 'bold', color: 'white', marginBottom: '8px' }}>
             Welcome back, {user?.name || "User"}!
           </h1>
-          <p className="text-white/80">
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '18px' }}>
             Continue your journey to personal growth
           </p>
         </div>
       </div>
 
-      {/* Main Content */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        {/* Stats Row */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-          <div className="bg-white rounded-2xl p-6 border border-gray-100">
-            <p className="text-sm text-gray-500 mb-1">Modules Started</p>
-            <p className="text-3xl font-bold text-gray-900">
-              {modulesStarted} / {totalModules}
-            </p>
+      {/* Content Area */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
+
+        {/* Stats Row - 3 cards side by side */}
+        <div style={{ display: 'flex', gap: '40px', marginBottom: '80px' }}>
+          {/* Card 1 */}
+          <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB' }}>
+            <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '12px' }}>Modules Started</p>
+            <p style={{ fontSize: '42px', fontWeight: 'bold', color: '#111827' }}>{modulesStarted} / {totalModules}</p>
           </div>
-          <div className="bg-white rounded-2xl p-6 border border-gray-100">
-            <p className="text-sm text-gray-500 mb-1">Modules Completed</p>
-            <p className="text-3xl font-bold text-green-600">{modulesCompleted}</p>
+
+          {/* Card 2 */}
+          <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB' }}>
+            <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '12px' }}>Modules Completed</p>
+            <p style={{ fontSize: '42px', fontWeight: 'bold', color: '#22C55E' }}>{modulesCompleted}</p>
           </div>
-          <div className="bg-white rounded-2xl p-6 border border-gray-100">
-            <p className="text-sm text-gray-500 mb-1">Overall Progress</p>
-            <p className="text-3xl font-bold text-gray-900">{overallProgress}%</p>
-            <div className="mt-2 h-2 bg-gray-100 rounded-full overflow-hidden">
-              <div
-                className="h-full bg-gradient-to-r from-blue-500 to-purple-500 rounded-full transition-all duration-500"
-                style={{ width: `${overallProgress}%` }}
-              />
+
+          {/* Card 3 */}
+          <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB' }}>
+            <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '12px' }}>Overall Progress</p>
+            <p style={{ fontSize: '42px', fontWeight: 'bold', color: '#111827', marginBottom: '16px' }}>{overallProgress}%</p>
+            <div style={{ height: '8px', backgroundColor: '#F3F4F6', borderRadius: '4px', overflow: 'hidden' }}>
+              <div style={{ height: '100%', width: `${overallProgress}%`, backgroundColor: '#D1D5DB', borderRadius: '4px' }} />
             </div>
           </div>
         </div>
 
         {/* New to Platform Banner */}
-        <div className="bg-gradient-to-r from-purple-600 via-pink-500 to-pink-400 rounded-2xl p-8 mb-8 relative overflow-hidden">
-          {/* Decorative shape */}
-          <div className="absolute right-0 top-0 bottom-0 w-1/3 opacity-20">
-            <div className="absolute right-8 top-1/2 -translate-y-1/2 w-48 h-48 bg-white/30 rounded-3xl transform rotate-12" />
-          </div>
-
-          <div className="relative z-10">
-            <div className="flex items-start gap-4">
-              {/* [ICON-WELCOME] */}
-              <div className="w-12 h-12 rounded-xl bg-white/20 flex items-center justify-center flex-shrink-0">
-                <span className="text-white text-2xl">W</span>
-              </div>
-              <div>
-                <h2 className="text-xl font-bold text-white mb-2">New to the Platform?</h2>
-                <p className="text-white/80 mb-4 max-w-xl">
-                  Take our interactive training module to learn how to use all the features!
-                  Practice with sample exercises before starting the real modules.
-                </p>
-                <div className="flex gap-3">
-                  <Link
-                    href="/modules"
-                    className="inline-flex items-center gap-2 px-5 py-2.5 bg-white text-purple-600 font-medium rounded-xl hover:bg-white/90 transition-all"
-                  >
-                    <span>Start Training Module</span>
-                  </Link>
-                  <button className="px-5 py-2.5 bg-white/20 text-white font-medium rounded-xl hover:bg-white/30 transition-all">
-                    Maybe Later
-                  </button>
-                </div>
+        <div style={{
+          background: 'linear-gradient(to right, #7C3AED, #DB2777, #F472B6)',
+          borderRadius: '20px',
+          padding: '50px',
+          marginBottom: '80px',
+          position: 'relative',
+          overflow: 'hidden'
+        }}>
+          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '24px', position: 'relative', zIndex: 1 }}>
+            {/* Icon */}
+            <div style={{
+              width: '56px',
+              height: '56px',
+              borderRadius: '12px',
+              backgroundColor: '#FBBF24',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              flexShrink: 0
+            }}>
+              <span style={{ color: '#92400E', fontSize: '24px' }}>W</span>
+            </div>
+            <div>
+              <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: 'white', marginBottom: '12px' }}>
+                New to the Platform?
+              </h2>
+              <p style={{ color: 'rgba(255,255,255,0.8)', marginBottom: '32px', maxWidth: '600px', lineHeight: '1.6' }}>
+                Take our interactive training module to learn how to use all the features! Practice with sample exercises before starting the real modules.
+              </p>
+              <div style={{ display: 'flex', gap: '16px' }}>
+                <Link
+                  href="/modules"
+                  style={{
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    padding: '14px 24px',
+                    backgroundColor: 'white',
+                    color: '#7C3AED',
+                    fontWeight: '500',
+                    borderRadius: '12px',
+                    textDecoration: 'none'
+                  }}
+                >
+                  <span style={{ fontSize: '18px' }}>+</span>
+                  Start Training Module
+                </Link>
+                <button style={{
+                  padding: '14px 24px',
+                  backgroundColor: 'rgba(255,255,255,0.2)',
+                  color: 'white',
+                  fontWeight: '500',
+                  borderRadius: '12px',
+                  border: 'none',
+                  cursor: 'pointer'
+                }}>
+                  Maybe Later
+                </button>
               </div>
             </div>
           </div>
         </div>
 
-        {/* Action Cards Row */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-          <Link
-            href="/modules"
-            className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all flex items-center gap-4"
-          >
-            {/* [ICON-BROWSE] */}
-            <div className="w-12 h-12 rounded-xl bg-purple-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-purple-600 text-xl font-bold">M</span>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900">Browse Modules</h3>
-              <p className="text-sm text-gray-500">Explore all available learning modules</p>
-            </div>
-          </Link>
+        {/* Browse Modules Card */}
+        <Link
+          href="/modules"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '24px',
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '40px',
+            border: '1px solid #E5E7EB',
+            marginBottom: '80px',
+            textDecoration: 'none'
+          }}
+        >
+          <div style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '16px',
+            backgroundColor: '#EEF2FF',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0
+          }}>
+            <span style={{ color: '#4F46E5', fontSize: '24px' }}>B</span>
+          </div>
+          <div>
+            <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '20px', marginBottom: '4px' }}>Browse Modules</h3>
+            <p style={{ color: '#6B7280' }}>Explore all available learning modules</p>
+          </div>
+        </Link>
 
-          <Link
-            href="/about"
-            className="bg-white rounded-2xl p-6 border border-gray-100 hover:border-purple-200 hover:shadow-lg transition-all flex items-center gap-4"
-          >
-            {/* [ICON-TRAINING] */}
-            <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center flex-shrink-0">
-              <span className="text-blue-600 text-xl font-bold">T</span>
-            </div>
-            <div>
-              <h3 className="font-semibold text-gray-900">Learn About the Program</h3>
-              <p className="text-sm text-gray-500">Understand how Brain Parenthood works</p>
-            </div>
-          </Link>
-        </div>
+        {/* Interactive Training Card */}
+        <Link
+          href="/about"
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '24px',
+            backgroundColor: 'white',
+            borderRadius: '16px',
+            padding: '40px',
+            border: '1px solid #E5E7EB',
+            marginBottom: '80px',
+            textDecoration: 'none'
+          }}
+        >
+          <div style={{
+            width: '64px',
+            height: '64px',
+            borderRadius: '16px',
+            backgroundColor: '#EEF2FF',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flexShrink: 0
+          }}>
+            <span style={{ color: '#4F46E5', fontSize: '24px' }}>T</span>
+          </div>
+          <div>
+            <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '20px', marginBottom: '4px' }}>Interactive Training</h3>
+            <p style={{ color: '#6B7280' }}>Learn how to use the platform</p>
+          </div>
+        </Link>
 
-        {/* Continue Learning Section */}
-        <div className="bg-white rounded-2xl p-6 border border-gray-100">
-          <h3 className="font-semibold text-gray-900 mb-2">Continue Learning</h3>
-          <p className="text-sm text-gray-500 mb-4">Pick up where you left off</p>
+        {/* Continue Learning Card */}
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          padding: '40px',
+          border: '1px solid #E5E7EB'
+        }}>
+          <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '20px', marginBottom: '8px' }}>Continue Learning</h3>
+          <p style={{ color: '#6B7280', marginBottom: '24px' }}>Pick up where you left off</p>
           <Link
             href={`/module/${currentModule}`}
-            className="inline-flex items-center gap-2 px-5 py-2.5 bg-gradient-to-r from-blue-600 to-purple-600 text-white font-medium rounded-xl hover:from-blue-700 hover:to-purple-700 transition-all"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              padding: '14px 24px',
+              backgroundColor: '#4F46E5',
+              color: 'white',
+              fontWeight: '500',
+              borderRadius: '12px',
+              textDecoration: 'none'
+            }}
           >
             Continue Module
-            <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
+            <span>→</span>
           </Link>
         </div>
+
       </div>
     </AppLayout>
   );

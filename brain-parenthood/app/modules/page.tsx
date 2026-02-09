@@ -20,91 +20,149 @@ export default function ModulesPage() {
 
   return (
     <AppLayout>
-      {/* Hero Header with Stats */}
-      <div className="bg-gradient-to-r from-blue-600 via-purple-600 to-pink-500 py-12 px-6">
-        <div className="max-w-7xl mx-auto">
-          <h1 className="text-3xl font-bold text-white mb-2">Learning Modules</h1>
-          <p className="text-white/80 mb-8">
+      {/* Hero Header */}
+      <div style={{ background: 'linear-gradient(to right, #4F46E5, #7C3AED, #EC4899)', width: '100%' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
+          <h1 style={{ fontSize: '36px', fontWeight: 'bold', color: 'white', marginBottom: '8px' }}>
+            Learning Modules
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '18px', marginBottom: '40px' }}>
             Comprehensive modules for personal and professional development
           </p>
 
-          {/* Stats in header */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-              <p className="text-sm text-white/70">Total Modules</p>
-              <p className="text-2xl font-bold text-white">{totalModules}</p>
+          {/* Stats Row */}
+          <div style={{ display: 'flex', gap: '24px' }}>
+            <div style={{ flex: 1, backgroundColor: 'rgba(67, 56, 202, 0.5)', borderRadius: '12px', padding: '24px' }}>
+              <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.7)', marginBottom: '8px' }}>Total Modules</p>
+              <p style={{ fontSize: '32px', fontWeight: 'bold', color: 'white' }}>{totalModules}</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-              <p className="text-sm text-white/70">Completed</p>
-              <p className="text-2xl font-bold text-white">{modulesCompleted}</p>
+            <div style={{ flex: 1, backgroundColor: 'rgba(67, 56, 202, 0.5)', borderRadius: '12px', padding: '24px' }}>
+              <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.7)', marginBottom: '8px' }}>Completed</p>
+              <p style={{ fontSize: '32px', fontWeight: 'bold', color: 'white' }}>{modulesCompleted}</p>
             </div>
-            <div className="bg-white/10 backdrop-blur-sm rounded-xl p-4">
-              <p className="text-sm text-white/70">Progress</p>
-              <p className="text-2xl font-bold text-white">{overallProgress}%</p>
+            <div style={{ flex: 1, backgroundColor: 'rgba(67, 56, 202, 0.5)', borderRadius: '12px', padding: '24px' }}>
+              <p style={{ fontSize: '14px', color: 'rgba(255,255,255,0.7)', marginBottom: '8px' }}>Progress</p>
+              <p style={{ fontSize: '32px', fontWeight: 'bold', color: 'white' }}>{overallProgress}%</p>
             </div>
           </div>
         </div>
       </div>
 
-      {/* Modules Grid */}
-      <div className="max-w-7xl mx-auto px-6 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {modules.map((module) => {
-            const isCompleted = completedModules.includes(module.id);
-            const isCurrent = module.id === currentModule;
-            const isLocked = module.id > currentModule;
+      {/* Module Cards */}
+      <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
 
-            return (
-              <div
-                key={module.id}
-                className={`bg-white rounded-2xl p-6 border transition-all ${
-                  isLocked
-                    ? "border-gray-100 opacity-60"
-                    : "border-gray-100 hover:border-purple-200 hover:shadow-lg"
-                }`}
-              >
-                {/* Header Row */}
-                <div className="flex items-center justify-between mb-4">
-                  <span className={`px-3 py-1 rounded-full text-xs font-medium ${
-                    isCompleted
-                      ? "bg-green-100 text-green-700"
-                      : isCurrent
-                      ? "bg-purple-100 text-purple-700"
-                      : "bg-gray-100 text-gray-600"
-                  }`}>
-                    Module {module.id}
-                  </span>
-                  <span className="text-sm text-gray-400">{module.duration}</span>
-                </div>
-
-                {/* Title & Description */}
-                <h3 className="font-semibold text-gray-900 text-lg mb-2">{module.title}</h3>
-                <p className="text-sm text-gray-500 mb-4 line-clamp-2">{module.description}</p>
-
-                {/* Footer */}
-                <div className="flex items-center justify-between pt-4 border-t border-gray-50">
-                  <span className="text-sm text-gray-400">{module.sections} sections</span>
-                  {!isLocked && (
-                    <Link
-                      href={`/module/${module.id}`}
-                      className="text-purple-600 hover:text-purple-700 font-medium text-sm flex items-center gap-1"
-                    >
-                      {isCompleted ? "Review" : "Start"}
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M17 8l4 4m0 0l-4 4m4-4H3" />
-                      </svg>
-                    </Link>
-                  )}
-                  {isLocked && (
-                    <span className="text-gray-400 text-sm">Locked</span>
-                  )}
-                </div>
-              </div>
-            );
-          })}
+        {/* Row 1 */}
+        <div style={{ display: 'flex', gap: '40px', marginBottom: '40px' }}>
+          <ModuleCard module={modules[0]} completedModules={completedModules} currentModule={currentModule} />
+          <ModuleCard module={modules[1]} completedModules={completedModules} currentModule={currentModule} />
+          <ModuleCard module={modules[2]} completedModules={completedModules} currentModule={currentModule} />
         </div>
+
+        {/* Row 2 */}
+        <div style={{ display: 'flex', gap: '40px', marginBottom: '40px' }}>
+          <ModuleCard module={modules[3]} completedModules={completedModules} currentModule={currentModule} />
+          <ModuleCard module={modules[4]} completedModules={completedModules} currentModule={currentModule} />
+          <ModuleCard module={modules[5]} completedModules={completedModules} currentModule={currentModule} />
+        </div>
+
+        {/* Row 3 */}
+        <div style={{ display: 'flex', gap: '40px', marginBottom: '40px' }}>
+          <ModuleCard module={modules[6]} completedModules={completedModules} currentModule={currentModule} />
+          <ModuleCard module={modules[7]} completedModules={completedModules} currentModule={currentModule} />
+          <ModuleCard module={modules[8]} completedModules={completedModules} currentModule={currentModule} />
+        </div>
+
+        {/* Row 4 */}
+        <div style={{ display: 'flex', gap: '40px' }}>
+          <ModuleCard module={modules[9]} completedModules={completedModules} currentModule={currentModule} />
+          <ModuleCard module={modules[10]} completedModules={completedModules} currentModule={currentModule} />
+          <ModuleCard module={modules[11]} completedModules={completedModules} currentModule={currentModule} />
+        </div>
+
       </div>
     </AppLayout>
+  );
+}
+
+function ModuleCard({ module, completedModules, currentModule }: {
+  module: typeof modules[0],
+  completedModules: number[],
+  currentModule: number
+}) {
+  const isCompleted = completedModules.includes(module.id);
+  const isCurrent = module.id === currentModule;
+  const isLocked = module.id > currentModule;
+
+  return (
+    <div style={{
+      flex: 1,
+      backgroundColor: 'white',
+      borderRadius: '16px',
+      padding: '32px',
+      border: '1px solid #E5E7EB',
+      opacity: isLocked ? 0.5 : 1
+    }}>
+      {/* Badge & Duration */}
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '20px' }}>
+        <span style={{
+          padding: '6px 14px',
+          borderRadius: '20px',
+          fontSize: '12px',
+          fontWeight: '500',
+          backgroundColor: isCompleted ? '#DCFCE7' : isCurrent ? '#EEF2FF' : '#F3F4F6',
+          color: isCompleted ? '#166534' : isCurrent ? '#4F46E5' : '#4B5563'
+        }}>
+          Module {module.id}
+        </span>
+        <span style={{ fontSize: '14px', color: '#9CA3AF' }}>{module.duration}</span>
+      </div>
+
+      {/* Title */}
+      <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '18px', marginBottom: '12px' }}>
+        {module.title}
+      </h3>
+
+      {/* Description */}
+      <p style={{
+        color: '#6B7280',
+        fontSize: '14px',
+        marginBottom: '32px',
+        lineHeight: '1.5',
+        minHeight: '63px',
+        overflow: 'hidden'
+      }}>
+        {module.description}
+      </p>
+
+      {/* Footer */}
+      <div style={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        paddingTop: '20px',
+        borderTop: '1px solid #F3F4F6'
+      }}>
+        <span style={{ fontSize: '14px', color: '#9CA3AF' }}>{module.sections} sections</span>
+        {!isLocked ? (
+          <Link
+            href={`/module/${module.id}`}
+            style={{
+              color: '#4F46E5',
+              fontWeight: '500',
+              fontSize: '14px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              textDecoration: 'none'
+            }}
+          >
+            {isCompleted ? "Review" : "Start"} →
+          </Link>
+        ) : (
+          <span style={{ color: '#D1D5DB', fontSize: '14px' }}>Locked</span>
+        )}
+      </div>
+    </div>
   );
 }
 
@@ -119,14 +177,14 @@ const modules = [
   {
     id: 2,
     title: "How to Handle the Tough Stuff",
-    description: "Learn comprehensive coping strategies for difficult situations including conflict resolution, anger management, stress reduction, and building resilience.",
+    description: "Learn comprehensive coping strategies for difficult situations including conflict resolution, anger management, and stress reduction.",
     duration: "90 min",
     sections: 6,
   },
   {
     id: 3,
     title: "How to Put Your Best Foot Forward",
-    description: "Master effective communication skills for personal and professional success, including verbal, non-verbal, and active listening techniques.",
+    description: "Master effective communication skills for personal and professional success, including verbal and non-verbal techniques.",
     duration: "85 min",
     sections: 6,
   },
