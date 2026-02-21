@@ -40,12 +40,36 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-[#F5F7FA] flex items-center justify-center p-4">
+    <div style={{
+      minHeight: '100vh',
+      width: '100%',
+      backgroundColor: '#F5F7FA',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '16px',
+    }}>
       {/* Login Card */}
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-gray-100 px-10 py-10">
+      <div style={{
+        width: '100%',
+        maxWidth: '420px',
+        backgroundColor: 'white',
+        borderRadius: '16px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+        border: '1px solid #F0F0F0',
+        padding: '40px',
+      }}>
         {/* Logo */}
-        <div className="flex justify-center mb-5">
-          <div className="w-12 h-12 rounded-lg bg-[#4F46E5] flex items-center justify-center">
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '10px',
+            backgroundColor: '#4F46E5',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
             <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
               <path d="M2 3H8C9.06087 3 10.0783 3.42143 10.8284 4.17157C11.5786 4.92172 12 5.93913 12 7V21C12 20.2044 11.6839 19.4413 11.1213 18.8787C10.5587 18.3161 9.79565 18 9 18H2V3Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
               <path d="M22 3H16C14.9391 3 13.9217 3.42143 13.1716 4.17157C12.4214 4.92172 12 5.93913 12 7V21C12 20.2044 12.3161 19.4413 12.8787 18.8787C13.4413 18.3161 14.2044 18 15 18H22V3Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
@@ -54,22 +78,30 @@ export default function LoginPage() {
         </div>
 
         {/* Header */}
-        <div className="text-center mb-7">
-          <h1 className="text-xl font-bold text-gray-900 mb-1">Welcome Back</h1>
-          <p className="text-gray-400 text-sm">Sign in to your account</p>
+        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+          <h1 style={{ fontSize: '20px', fontWeight: 'bold', color: '#111827', marginBottom: '4px' }}>Welcome Back</h1>
+          <p style={{ color: '#9CA3AF', fontSize: '14px' }}>Sign in to your account</p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-5 text-sm">
+          <div style={{
+            backgroundColor: '#FEF2F2',
+            border: '1px solid #FECACA',
+            color: '#DC2626',
+            padding: '12px 16px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            fontSize: '14px',
+          }}>
             {error}
           </div>
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-600 mb-1.5">
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: '16px' }}>
+            <label htmlFor="email" style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#4B5563', marginBottom: '6px' }}>
               Email Address
             </label>
             <input
@@ -78,12 +110,21 @@ export default function LoginPage() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#4F46E5] focus:ring-2 focus:ring-[#4F46E5]/20 outline-none transition-all text-gray-900 placeholder-gray-400 text-sm"
+              style={{
+                width: '100%',
+                padding: '10px 16px',
+                borderRadius: '8px',
+                border: '1px solid #E5E7EB',
+                outline: 'none',
+                fontSize: '14px',
+                color: '#111827',
+                boxSizing: 'border-box',
+              }}
             />
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-600 mb-1.5">
+          <div style={{ marginBottom: '20px' }}>
+            <label htmlFor="password" style={{ display: 'block', fontSize: '14px', fontWeight: '500', color: '#4B5563', marginBottom: '6px' }}>
               Password
             </label>
             <input
@@ -92,29 +133,48 @@ export default function LoginPage() {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Enter your password"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#4F46E5] focus:ring-2 focus:ring-[#4F46E5]/20 outline-none transition-all text-gray-900 placeholder-gray-400 text-sm"
+              style={{
+                width: '100%',
+                padding: '10px 16px',
+                borderRadius: '8px',
+                border: '1px solid #E5E7EB',
+                outline: 'none',
+                fontSize: '14px',
+                color: '#111827',
+                boxSizing: 'border-box',
+              }}
             />
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-2.5 px-4 text-white font-medium rounded-lg transition-all disabled:opacity-60 disabled:cursor-not-allowed text-sm"
-            style={{ background: 'linear-gradient(to right, #a78bfa, #818cf8)' }}
+            style={{
+              width: '100%',
+              padding: '10px 16px',
+              background: 'linear-gradient(to right, #a78bfa, #818cf8)',
+              color: 'white',
+              fontWeight: '500',
+              borderRadius: '8px',
+              border: 'none',
+              cursor: isLoading ? 'not-allowed' : 'pointer',
+              opacity: isLoading ? 0.6 : 1,
+              fontSize: '14px',
+            }}
           >
             {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
         </form>
 
         {/* Links */}
-        <div className="mt-6 text-center space-y-3">
-          <p className="text-sm text-gray-500">
+        <div style={{ marginTop: '24px', textAlign: 'center' }}>
+          <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '12px' }}>
             Don&apos;t have an account?{' '}
-            <Link href="/signup" className="text-[#4F46E5] hover:text-[#4338CA] font-medium">
+            <Link href="/signup" style={{ color: '#4F46E5', fontWeight: '500', textDecoration: 'none' }}>
               Sign up
             </Link>
           </p>
-          <Link href="/" className="block text-sm text-gray-400 hover:text-gray-500">
+          <Link href="/" style={{ fontSize: '14px', color: '#9CA3AF', textDecoration: 'none' }}>
             &#8592; Back to Home
           </Link>
         </div>
