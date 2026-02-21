@@ -40,38 +40,36 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-[#3B82F6] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center p-4">
+    <div className="min-h-screen w-full bg-[#F5F7FA] flex items-center justify-center p-4">
       {/* Login Card */}
-      <div className="w-full max-w-sm bg-white rounded-xl shadow-2xl p-8">
+      <div className="w-full max-w-md bg-white rounded-2xl shadow-lg border border-gray-100 px-10 py-10">
         {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <div className="w-14 h-14 rounded-xl bg-[#4F46E5] flex items-center justify-center">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 6V14" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-              <path d="M9 8L12 6L15 8" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <div className="flex justify-center mb-5">
+          <div className="w-12 h-12 rounded-lg bg-[#4F46E5] flex items-center justify-center">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 3H8C9.06087 3 10.0783 3.42143 10.8284 4.17157C11.5786 4.92172 12 5.93913 12 7V21C12 20.2044 11.6839 19.4413 11.1213 18.8787C10.5587 18.3161 9.79565 18 9 18H2V3Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M22 3H16C14.9391 3 13.9217 3.42143 13.1716 4.17157C12.4214 4.92172 12 5.93913 12 7V21C12 20.2044 12.3161 19.4413 12.8787 18.8787C13.4413 18.3161 14.2044 18 15 18H22V3Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </div>
         </div>
 
         {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Welcome Back</h1>
-          <p className="text-gray-500 text-sm">Sign in to your account</p>
+        <div className="text-center mb-7">
+          <h1 className="text-xl font-bold text-gray-900 mb-1">Welcome Back</h1>
+          <p className="text-gray-400 text-sm">Sign in to your account</p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">
+          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-5 text-sm">
             {error}
           </div>
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label htmlFor="email" className="block text-sm font-medium text-gray-600 mb-1.5">
               Email Address
             </label>
             <input
@@ -85,7 +83,7 @@ export default function LoginPage() {
           </div>
 
           <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
+            <label htmlFor="password" className="block text-sm font-medium text-gray-600 mb-1.5">
               Password
             </label>
             <input
@@ -101,7 +99,8 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-2.5 px-4 bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] text-white font-medium rounded-lg hover:from-[#6D28D9] hover:to-[#4338CA] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm"
+            className="w-full py-2.5 px-4 text-white font-medium rounded-lg transition-all disabled:opacity-60 disabled:cursor-not-allowed text-sm"
+            style={{ background: 'linear-gradient(to right, #a78bfa, #818cf8)' }}
           >
             {isLoading ? 'Signing in...' : 'Sign In'}
           </button>
@@ -110,13 +109,13 @@ export default function LoginPage() {
         {/* Links */}
         <div className="mt-6 text-center space-y-3">
           <p className="text-sm text-gray-500">
-            Don't have an account?{' '}
+            Don&apos;t have an account?{' '}
             <Link href="/signup" className="text-[#4F46E5] hover:text-[#4338CA] font-medium">
               Sign up
             </Link>
           </p>
           <Link href="/" className="block text-sm text-gray-400 hover:text-gray-500">
-            ← Back to Home
+            &#8592; Back to Home
           </Link>
         </div>
       </div>
