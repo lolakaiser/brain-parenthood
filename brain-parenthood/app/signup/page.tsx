@@ -53,112 +53,164 @@ export default function SignupPage() {
     setIsLoading(false);
   };
 
+  const inputStyle = {
+    width: '100%',
+    padding: '10px 16px',
+    borderRadius: '8px',
+    border: '1px solid #E5E7EB',
+    outline: 'none',
+    fontSize: '14px',
+    color: '#111827',
+    boxSizing: 'border-box' as const,
+  };
+
+  const labelStyle = {
+    display: 'block',
+    fontSize: '14px',
+    fontWeight: '500' as const,
+    color: '#4B5563',
+    marginBottom: '6px',
+  };
+
   return (
-    <div className="min-h-screen w-full bg-gradient-to-br from-[#3B82F6] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center p-4">
+    <div style={{
+      minHeight: '100vh',
+      width: '100%',
+      backgroundColor: '#F5F7FA',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      padding: '16px',
+    }}>
       {/* Signup Card */}
-      <div className="w-full max-w-sm bg-white rounded-xl shadow-2xl p-8">
+      <div style={{
+        width: '100%',
+        maxWidth: '420px',
+        backgroundColor: 'white',
+        borderRadius: '16px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+        border: '1px solid #F0F0F0',
+        padding: '40px',
+      }}>
         {/* Logo */}
-        <div className="flex justify-center mb-6">
-          <div className="w-14 h-14 rounded-xl bg-[#4F46E5] flex items-center justify-center">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
-              <path d="M12 6V14" stroke="white" strokeWidth="2" strokeLinecap="round"/>
-              <path d="M9 8L12 6L15 8" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+        <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+          <div style={{
+            width: '48px',
+            height: '48px',
+            borderRadius: '10px',
+            backgroundColor: '#4F46E5',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M2 3H8C9.06087 3 10.0783 3.42143 10.8284 4.17157C11.5786 4.92172 12 5.93913 12 7V21C12 20.2044 11.6839 19.4413 11.1213 18.8787C10.5587 18.3161 9.79565 18 9 18H2V3Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M22 3H16C14.9391 3 13.9217 3.42143 13.1716 4.17157C12.4214 4.92172 12 5.93913 12 7V21C12 20.2044 12.3161 19.4413 12.8787 18.8787C13.4413 18.3161 14.2044 18 15 18H22V3Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
             </svg>
           </div>
         </div>
 
         {/* Header */}
-        <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900 mb-1">Create Account</h1>
-          <p className="text-gray-500 text-sm">Start your resilience journey today</p>
+        <div style={{ textAlign: 'center', marginBottom: '28px' }}>
+          <h1 style={{ fontSize: '20px', fontWeight: 'bold', color: '#111827', marginBottom: '4px' }}>Create Account</h1>
+          <p style={{ color: '#9CA3AF', fontSize: '14px' }}>Start your resilience journey today</p>
         </div>
 
         {/* Error Message */}
         {error && (
-          <div className="bg-red-50 border border-red-200 text-red-600 px-4 py-3 rounded-lg mb-6 text-sm">
+          <div style={{
+            backgroundColor: '#FEF2F2',
+            border: '1px solid #FECACA',
+            color: '#DC2626',
+            padding: '12px 16px',
+            borderRadius: '8px',
+            marginBottom: '20px',
+            fontSize: '14px',
+          }}>
             {error}
           </div>
         )}
 
         {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div>
-            <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1.5">
-              Full Name
-            </label>
+        <form onSubmit={handleSubmit}>
+          <div style={{ marginBottom: '16px' }}>
+            <label htmlFor="name" style={labelStyle}>Full Name</label>
             <input
               type="text"
               id="name"
               value={name}
               onChange={(e) => setName(e.target.value)}
               placeholder="Your name"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#4F46E5] focus:ring-2 focus:ring-[#4F46E5]/20 outline-none transition-all text-gray-900 placeholder-gray-400 text-sm"
+              style={inputStyle}
             />
           </div>
 
-          <div>
-            <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1.5">
-              Email Address
-            </label>
+          <div style={{ marginBottom: '16px' }}>
+            <label htmlFor="email" style={labelStyle}>Email Address</label>
             <input
               type="email"
               id="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#4F46E5] focus:ring-2 focus:ring-[#4F46E5]/20 outline-none transition-all text-gray-900 placeholder-gray-400 text-sm"
+              style={inputStyle}
             />
           </div>
 
-          <div>
-            <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1.5">
-              Password
-            </label>
+          <div style={{ marginBottom: '16px' }}>
+            <label htmlFor="password" style={labelStyle}>Password</label>
             <input
               type="password"
               id="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="At least 4 characters"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#4F46E5] focus:ring-2 focus:ring-[#4F46E5]/20 outline-none transition-all text-gray-900 placeholder-gray-400 text-sm"
+              style={inputStyle}
             />
           </div>
 
-          <div>
-            <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1.5">
-              Confirm Password
-            </label>
+          <div style={{ marginBottom: '20px' }}>
+            <label htmlFor="confirmPassword" style={labelStyle}>Confirm Password</label>
             <input
               type="password"
               id="confirmPassword"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               placeholder="Re-enter your password"
-              className="w-full px-4 py-2.5 rounded-lg border border-gray-200 focus:border-[#4F46E5] focus:ring-2 focus:ring-[#4F46E5]/20 outline-none transition-all text-gray-900 placeholder-gray-400 text-sm"
+              style={inputStyle}
             />
           </div>
 
           <button
             type="submit"
             disabled={isLoading}
-            className="w-full py-2.5 px-4 bg-gradient-to-r from-[#7C3AED] to-[#4F46E5] text-white font-medium rounded-lg hover:from-[#6D28D9] hover:to-[#4338CA] transition-all disabled:opacity-50 disabled:cursor-not-allowed text-sm mt-2"
+            style={{
+              width: '100%',
+              padding: '10px 16px',
+              background: 'linear-gradient(to right, #a78bfa, #818cf8)',
+              color: 'white',
+              fontWeight: '500',
+              borderRadius: '8px',
+              border: 'none',
+              cursor: isLoading ? 'not-allowed' : 'pointer',
+              opacity: isLoading ? 0.6 : 1,
+              fontSize: '14px',
+            }}
           >
             {isLoading ? 'Creating account...' : 'Create Account'}
           </button>
         </form>
 
         {/* Links */}
-        <div className="mt-6 text-center space-y-3">
-          <p className="text-sm text-gray-500">
+        <div style={{ marginTop: '24px', textAlign: 'center' }}>
+          <p style={{ fontSize: '14px', color: '#6B7280', marginBottom: '12px' }}>
             Already have an account?{' '}
-            <Link href="/login" className="text-[#4F46E5] hover:text-[#4338CA] font-medium">
+            <Link href="/login" style={{ color: '#4F46E5', fontWeight: '500', textDecoration: 'none' }}>
               Sign in
             </Link>
           </p>
-          <Link href="/" className="block text-sm text-gray-400 hover:text-gray-500">
-            ← Back to Home
+          <Link href="/" style={{ fontSize: '14px', color: '#9CA3AF', textDecoration: 'none' }}>
+            &#8592; Back to Home
           </Link>
         </div>
       </div>
