@@ -1,11 +1,24 @@
 Phase,Task ID,Task,Assignee,Start Date,End Date,Duration (days),Dependencies,Status,Notes
-Phase 1: AI Provider & Setup,1.1,Evaluate AI providers (Claude / OpenAI / Azure OpenAI),Lola,2026-02-23,2026-02-25,3,,Not Started,Compare pricing / latency / coaching quality
+Phase 0: Foundation (Done),0.1,Set up Next.js frontend with React 19,Lola & Ben,2026-01-01,2026-01-15,15,,Completed,Next.js 16 + TypeScript + Tailwind
+Phase 0: Foundation (Done),0.2,Build login and signup pages,Lola & Ben,2026-01-15,2026-01-20,5,0.1,Completed,Inline styles / lavender theme
+Phase 0: Foundation (Done),0.3,Build auth system (JWT + AuthContext),Lola & Ben,2026-01-15,2026-01-22,7,0.1,Completed,In-memory + localStorage auth
+Phase 0: Foundation (Done),0.4,Build dashboard page,Lola & Ben,2026-01-20,2026-01-25,5,"0.2,0.3",Completed,User dashboard with module overview
+Phase 0: Foundation (Done),0.5,Build modules overview page,Lola & Ben,2026-01-22,2026-01-27,5,0.4,Completed,Grid view of all 12 modules
+Phase 0: Foundation (Done),0.6,Build about page,Lola & Ben,2026-01-25,2026-01-28,3,0.1,Completed,Program info / what you'll gain / how it works
+Phase 0: Foundation (Done),0.7,Build landing page with hero / founders / footer,Lola & Ben,2026-02-20,2026-02-21,2,0.1,Completed,Public home page replacing redirect
+Phase 0: Foundation (Done),0.8,"Build modules 1-3 (full content, ~500-680 lines each)",Lola & Ben,2026-01-28,2026-02-10,14,0.5,Completed,"Kick Off, Mindfulness, Cognitive Restructuring — with exercises and 4-step workflow"
+Phase 0: Foundation (Done),0.9,"Build modules 4-12 (basic scaffold, ~150 lines each)",Lola & Ben,2026-02-10,2026-02-18,8,0.8,Completed,All 9 module pages created with overview and basic steps
+Phase 0: Foundation (Done),0.10,Build FastAPI backend with SQLAlchemy models,Lola & Ben,2026-02-01,2026-02-12,12,,Completed,"User / Team / Assessment / Goal / ModuleProgress / AIRecommendation models, JWT auth, rate limiting"
+Phase 0: Foundation (Done),0.11,Build backend API routes (users / assessments / goals / teams),Lola & Ben,2026-02-05,2026-02-15,10,0.10,Completed,Full CRUD endpoints with pagination
+Phase 0: Foundation (Done),0.12,Build Next.js API routes (login / signup / me / payments),Lola & Ben,2026-01-20,2026-01-28,8,0.1,Completed,Frontend API layer
+Phase 0: Foundation (Done),0.13,Set up project documentation,Lola & Ben,2026-02-15,2026-02-18,3,,Completed,"DEPLOYMENT.md, AI_INTEGRATION_GUIDE.md, USER_GUIDE.md, module guides"
+Phase 1: AI Provider & Setup,1.1,Evaluate AI providers (Claude / OpenAI / Azure OpenAI),Lola,2026-02-23,2026-02-25,3,,In Progress,Compare pricing / latency / coaching quality
 Phase 1: AI Provider & Setup,1.2,Select provider and set up API keys / accounts,Lola,2026-02-26,2026-02-26,1,1.1,Not Started,
 Phase 1: AI Provider & Setup,1.3,Build AI service layer (prompt templates + API wrapper),Lola,2026-02-26,2026-03-02,5,1.1,Not Started,Centralized service for all AI calls
-Phase 1: AI Provider & Setup,1.4,Design personalization data model (user profile / preferences / history),Lola,2026-02-23,2026-02-25,3,,Not Started,What data feeds into AI suggestions
-Phase 1: AI Provider & Setup,1.5,Create AI suggestion API endpoints (FastAPI),Lola,2026-03-02,2026-03-04,3,"1.3,1.4",Not Started,POST /api/ai/suggest  GET /api/ai/insights
+Phase 1: AI Provider & Setup,1.4,Design personalization data model (user profile / preferences / history),Lola,2026-02-23,2026-02-25,3,,Completed,Models exist: User / BaselineAssessment / Goal / ModuleProgress / AIRecommendation
+Phase 1: AI Provider & Setup,1.5,Create AI suggestion API endpoints (FastAPI),Lola,2026-03-02,2026-03-04,3,"1.3,1.4",In Progress,Placeholder endpoints exist — need real LLM integration
 Phase 1: AI Provider & Setup,1.6,Write unit tests for AI service layer,Lola,2026-03-04,2026-03-05,2,1.5,Not Started,Mock API responses for testing
-Phase 2: Module Content & AI Integration,2.1,"Expand modules 4-12 content (currently ~150 lines each, target ~500+)",Ben,2026-02-23,2026-03-06,10,,Not Started,Add exercises / worksheets / interactive elements
+Phase 2: Module Content & AI Integration,2.1,"Expand modules 4-12 content (currently ~150 lines each, target ~500+)",Ben,2026-02-23,2026-03-06,10,,In Progress,Add exercises / worksheets / interactive elements
 Phase 2: Module Content & AI Integration,2.2,Add AI suggestion UI component (suggestion cards / chat widget),Lola,2026-03-02,2026-03-06,5,1.3,Not Started,Reusable component shown in each module
 Phase 2: Module Content & AI Integration,2.3,Integrate AI suggestions into modules 1-4,Lola,2026-03-06,2026-03-10,3,"1.5,2.2",Not Started,Personalized tips based on user assessment answers
 Phase 2: Module Content & AI Integration,2.4,Integrate AI suggestions into modules 5-8,Lola,2026-03-10,2026-03-13,4,2.3,Not Started,
