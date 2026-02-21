@@ -43,10 +43,15 @@ export default function LoginPage() {
     <div className="min-h-screen w-full bg-gradient-to-br from-[#3B82F6] via-[#8B5CF6] to-[#EC4899] flex items-center justify-center p-4">
       {/* Login Card */}
       <div className="w-full max-w-sm bg-white rounded-xl shadow-2xl p-8">
-        {/* Logo [LOGO-BP] */}
+        {/* Logo */}
         <div className="flex justify-center mb-6">
           <div className="w-14 h-14 rounded-xl bg-[#4F46E5] flex items-center justify-center">
-            <span className="text-white font-bold text-xl">BP</span>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M4 19.5C4 18.837 4.26339 18.2011 4.73223 17.7322C5.20107 17.2634 5.83696 17 6.5 17H20" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M6.5 2H20V22H6.5C5.83696 22 5.20107 21.7366 4.73223 21.2678C4.26339 20.7989 4 20.163 4 19.5V4.5C4 3.83696 4.26339 3.20107 4.73223 2.73223C5.20107 2.26339 5.83696 2 6.5 2Z" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 6V14" stroke="white" strokeWidth="2" strokeLinecap="round"/>
+              <path d="M9 8L12 6L15 8" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
           </div>
         </div>
 
