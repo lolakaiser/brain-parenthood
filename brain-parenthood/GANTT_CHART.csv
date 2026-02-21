@@ -1,0 +1,38 @@
+Phase,Task ID,Task,Assignee,Start Date,End Date,Duration (days),Dependencies,Status,Notes
+Phase 1: AI Provider & Setup,1.1,Evaluate AI providers (Claude / OpenAI / Azure OpenAI),Lola,2026-02-23,2026-02-25,3,,Not Started,Compare pricing / latency / coaching quality
+Phase 1: AI Provider & Setup,1.2,Select provider and set up API keys / accounts,Lola,2026-02-26,2026-02-26,1,1.1,Not Started,
+Phase 1: AI Provider & Setup,1.3,Build AI service layer (prompt templates + API wrapper),Lola,2026-02-26,2026-03-02,5,1.1,Not Started,Centralized service for all AI calls
+Phase 1: AI Provider & Setup,1.4,Design personalization data model (user profile / preferences / history),Lola,2026-02-23,2026-02-25,3,,Not Started,What data feeds into AI suggestions
+Phase 1: AI Provider & Setup,1.5,Create AI suggestion API endpoints (FastAPI),Lola,2026-03-02,2026-03-04,3,"1.3,1.4",Not Started,POST /api/ai/suggest  GET /api/ai/insights
+Phase 1: AI Provider & Setup,1.6,Write unit tests for AI service layer,Lola,2026-03-04,2026-03-05,2,1.5,Not Started,Mock API responses for testing
+Phase 2: Module Content & AI Integration,2.1,"Expand modules 4-12 content (currently ~150 lines each, target ~500+)",Ben,2026-02-23,2026-03-06,10,,Not Started,Add exercises / worksheets / interactive elements
+Phase 2: Module Content & AI Integration,2.2,Add AI suggestion UI component (suggestion cards / chat widget),Lola,2026-03-02,2026-03-06,5,1.3,Not Started,Reusable component shown in each module
+Phase 2: Module Content & AI Integration,2.3,Integrate AI suggestions into modules 1-4,Lola,2026-03-06,2026-03-10,3,"1.5,2.2",Not Started,Personalized tips based on user assessment answers
+Phase 2: Module Content & AI Integration,2.4,Integrate AI suggestions into modules 5-8,Lola,2026-03-10,2026-03-13,4,2.3,Not Started,
+Phase 2: Module Content & AI Integration,2.5,Integrate AI suggestions into modules 9-12,Lola,2026-03-13,2026-03-17,3,2.4,Not Started,
+Phase 2: Module Content & AI Integration,2.6,Build AI-powered progress dashboard (insights / trends / recommendations),Lola,2026-03-10,2026-03-17,6,"1.5,2.3",Not Started,Show personalized growth insights on dashboard
+Phase 3: Backend & Database,3.1,Set up PostgreSQL database (replace SQLite),Lola & Ben,2026-03-05,2026-03-06,2,,Not Started,Local dev + production config
+Phase 3: Backend & Database,3.2,Run migrations and seed data,Lola & Ben,2026-03-06,2026-03-07,2,3.1,Not Started,Alembic migrations
+Phase 3: Backend & Database,3.3,Connect frontend auth to FastAPI backend (replace in-memory),Lola & Ben,2026-03-07,2026-03-11,3,3.2,Not Started,JWT auth with real database
+Phase 3: Backend & Database,3.4,Connect module progress tracking to database,Lola & Ben,2026-03-09,2026-03-13,5,"3.2,2.1",Not Started,Save/load module answers and completion state
+Phase 3: Backend & Database,3.5,Connect assessments and goals to database,Lola & Ben,2026-03-11,2026-03-13,3,3.2,Not Started,Replace localStorage with API calls
+Phase 3: Backend & Database,3.6,Store AI recommendation history in database,Lola,2026-03-13,2026-03-16,2,"1.5,3.2",Not Started,For tracking and improving suggestions
+Phase 3: Backend & Database,3.7,Backend integration tests,Ben,2026-03-16,2026-03-18,3,"3.3,3.4,3.5,3.6",Not Started,End-to-end API tests
+Phase 4: Azure Deployment,4.1,Set up Azure resource group and subscription,Lola,2026-03-17,2026-03-17,1,,Not Started,
+Phase 4: Azure Deployment,4.2,Provision Azure App Service for frontend (Next.js),Lola,2026-03-17,2026-03-19,3,4.1,Not Started,Or Azure Static Web Apps
+Phase 4: Azure Deployment,4.3,Provision Azure App Service for backend (FastAPI),Lola,2026-03-18,2026-03-20,3,4.1,Not Started,Or Azure Container Apps
+Phase 4: Azure Deployment,4.4,Provision Azure Database for PostgreSQL,Lola,2026-03-17,2026-03-18,2,4.1,Not Started,Flexible Server tier
+Phase 4: Azure Deployment,4.5,Configure environment variables and secrets (Azure Key Vault),Lola,2026-03-19,2026-03-20,2,"4.2,4.3,4.4",Not Started,API keys / DB connection / JWT secret
+Phase 4: Azure Deployment,4.6,Set up CI/CD pipeline (GitHub Actions → Azure),Lola,2026-03-20,2026-03-24,3,4.5,Not Started,Auto-deploy on push to main
+Phase 4: Azure Deployment,4.7,Configure custom domain and SSL,Lola,2026-03-24,2026-03-25,2,4.6,Not Started,
+Phase 4: Azure Deployment,4.8,Smoke test deployed environment,Lola,2026-03-25,2026-03-26,2,"4.6,4.7",Not Started,Verify all features work in production
+Phase 5: Testing & QA,5.1,End-to-end user flow testing (signup → module completion),Ben,2026-03-26,2026-03-30,3,4.8,Not Started,Test full user journey
+Phase 5: Testing & QA,5.2,AI suggestion quality review and prompt tuning,Lola,2026-03-26,2026-03-30,3,"2.5,4.8",Not Started,Review AI outputs / adjust prompts
+Phase 5: Testing & QA,5.3,Cross-browser and mobile responsiveness testing,Ben,2026-03-30,2026-03-31,2,5.1,Not Started,Chrome / Firefox / Safari / mobile
+Phase 5: Testing & QA,5.4,Performance and load testing,Ben,2026-03-30,2026-03-31,2,5.1,Not Started,API response times / concurrent users
+Phase 5: Testing & QA,5.5,Security audit (auth / input validation / CORS),Ben,2026-03-31,2026-04-01,2,5.1,Not Started,OWASP checklist
+Phase 5: Testing & QA,5.6,Bug fixes from QA,Lola & Ben,2026-03-31,2026-04-02,3,"5.1,5.2,5.3",Not Started,
+Phase 6: Finalization,6.1,Final UI polish and consistency pass,Lola & Ben,2026-04-01,2026-04-02,2,5.6,Not Started,Ensure all pages match design system
+Phase 6: Finalization,6.2,Update documentation (README / deployment guide / user guide),Lola & Ben,2026-04-02,2026-04-03,2,5.6,Not Started,
+Phase 6: Finalization,6.3,Production deployment and DNS cutover,Lola,2026-04-03,2026-04-03,1,"6.1,6.2",Not Started,Final go-live
+Phase 6: Finalization,6.4,Team walkthrough and handoff,Lola & Ben,2026-04-03,2026-04-03,1,6.3,Not Started,Demo + knowledge transfer
