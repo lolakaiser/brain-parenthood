@@ -19,7 +19,7 @@ const STEPS = [
 ];
 
 export default function Module2Page() {
-  const [currentStep, setCurrentStep] = useState<StepType>(() => { try { return isModuleCompleted(2) ? 'review' : 'overview'; } catch { return 'overview'; } });
+  const [currentStep, setCurrentStep] = useState<StepType>('overview');
   const { isAuthenticated } = useAuth();
   const moduleId = 2;
   const isCompleted = isModuleCompleted(2);
@@ -243,7 +243,7 @@ const OverviewStep = memo(function OverviewStep({ onNext, isCompleted }: { onNex
             cursor: 'pointer',
           }}
         >
-          {isCompleted ? 'View My Answers' : 'Continue to Assessment'} <span>→</span>
+          {isCompleted ? 'Review Answers' : 'Continue to Assessment'} <span>→</span>
         </button>
       </div>
     </div>
