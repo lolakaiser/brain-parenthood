@@ -4,15 +4,23 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import AppLayout from "@/components/AppLayout";
 import { useAuth } from "@/context/AuthContext";
-import { getProgress } from "@/lib/storage";
+import { getProgress, saveProgress, loadProgressFromDB } from "@/lib/storage";
 
 export default function DashboardPage() {
   const { user } = useAuth();
   const [completedModules, setCompletedModules] = useState<number[]>([]);
 
   useEffect(() => {
-    const progress = getProgress();
-    setCompletedModules(progress?.completedModules || []);
+    // Show localStorage immediately, then update from DB
+    const localProgress = getProgress();
+    setCompletedModules(localProgress?.completedModules || []);
+
+    loadProgressFromDB().then((dbProgress) => {
+      if (dbProgress) {
+        setCompletedModules(dbProgress.completedModules);
+        saveProgress(dbProgress);
+      }
+    });
   }, []);
 
   const totalModules = 12;

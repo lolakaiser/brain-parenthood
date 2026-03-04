@@ -118,6 +118,52 @@ export function completeModule(moduleId: number): void {
     progress.currentModule = nextModule;
   }
   saveProgress(progress);
+  // Fire-and-forget sync to MongoDB
+  syncProgressToDB(progress);
+}
+
+// --- MongoDB sync helpers ---
+
+function getAuthToken(): string | null {
+  try {
+    return localStorage.getItem('authToken');
+  } catch {
+    return null;
+  }
+}
+
+export async function syncProgressToDB(progress: UserProgress): Promise<void> {
+  const token = getAuthToken();
+  if (!token) return;
+  try {
+    await fetch('/api/progress', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
+      },
+      body: JSON.stringify({
+        completedModules: progress.completedModules,
+        currentModule: progress.currentModule,
+      }),
+    });
+  } catch (error) {
+    console.error('Error syncing progress to DB:', error);
+  }
+}
+
+export async function loadProgressFromDB(): Promise<UserProgress | null> {
+  const token = getAuthToken();
+  if (!token) return null;
+  try {
+    const res = await fetch('/api/progress', {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    return await res.json();
+  } catch {
+    return null;
+  }
 }
 
 export function isModuleCompleted(moduleId: number): boolean {

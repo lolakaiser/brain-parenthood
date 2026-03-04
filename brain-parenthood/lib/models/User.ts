@@ -1,11 +1,18 @@
 import mongoose, { Schema, Document, Model } from 'mongoose';
 
+export interface IModuleProgress {
+  completedModules: number[];
+  currentModule: number;
+  lastActivity?: Date;
+}
+
 export interface IUser extends Document {
   email: string;
   password: string;
   name: string;
   isAdmin: boolean;
   createdAt: Date;
+  moduleProgress: IModuleProgress;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -14,6 +21,11 @@ const UserSchema = new Schema<IUser>({
   name:     { type: String, required: true, trim: true },
   isAdmin:  { type: Boolean, default: false },
   createdAt:{ type: Date, default: Date.now },
+  moduleProgress: {
+    completedModules: { type: [Number], default: [] },
+    currentModule:    { type: Number, default: 1 },
+    lastActivity:     { type: Date },
+  },
 });
 
 // Prevent model re-compilation during hot reloads
