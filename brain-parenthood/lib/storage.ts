@@ -45,7 +45,7 @@ export function saveBaseline(data: BaselineData): void {
       completedAt: new Date().toISOString(),
     };
     localStorage.setItem(STORAGE_KEYS.BASELINE, JSON.stringify(dataWithTimestamp));
-    saveModuleAnswers(1, 'assessment', data);
+    saveModuleAnswers(1, 'assessment', data as unknown as Record<string, unknown>);
   } catch (error) {
     console.error('Error saving baseline data:', error);
   }
@@ -69,7 +69,7 @@ export function saveGoals(data: GoalsData): void {
       completedAt: new Date().toISOString(),
     };
     localStorage.setItem(STORAGE_KEYS.GOALS, JSON.stringify(dataWithTimestamp));
-    saveModuleAnswers(1, 'goals', data);
+    saveModuleAnswers(1, 'goals', data as unknown as Record<string, unknown>);
   } catch (error) {
     console.error('Error saving goals data:', error);
   }
