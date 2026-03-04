@@ -26,11 +26,11 @@ export default function ReviewStep({ moduleId, onConfirm, onBack, isReadOnly }: 
       {/* Header */}
       <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '32px 40px', border: '1px solid #E5E7EB', marginBottom: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
         <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#111827', marginBottom: '8px' }}>
-          {isReadOnly ? 'Your Saved Answers' : 'Review Your Answers'}
+          {isReadOnly ? 'Your Answers' : 'Review Your Answers'}
         </h2>
         <p style={{ color: '#6B7280', fontSize: '15px' }}>
           {isReadOnly
-            ? 'These answers were submitted and are locked.'
+            ? 'Your submitted answers are shown below.'
             : 'Please review everything carefully. Once confirmed, your answers cannot be changed.'}
         </p>
       </div>
