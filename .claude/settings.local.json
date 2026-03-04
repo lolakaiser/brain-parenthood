@@ -39,7 +39,11 @@
       "Bash(npm audit fix:*)",
       "Bash(git reset:*)",
       "Bash(tree:*)",
-      "Bash(dir \"C:\\\\Users\\\\lolak\\\\OneDrive\\\\Desktop\\\\SenSym Module 1\" /b /ad)"
+      "Bash(dir \"C:\\\\Users\\\\lolak\\\\OneDrive\\\\Desktop\\\\SenSym Module 1\" /b /ad)",
+      "Bash(npx tsc:*)",
+      "Bash(git check-ignore:*)",
+      "Bash(npx next build)",
+      "Bash(/opt/homebrew/bin/npm install)"
     ],
     "deny": [],
     "ask": []
