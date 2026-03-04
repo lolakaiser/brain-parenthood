@@ -6,6 +6,12 @@ export interface IModuleProgress {
   lastActivity?: Date;
 }
 
+export interface IModuleAnswerEntry {
+  assessment?: Record<string, unknown>;
+  goals?: Record<string, unknown>;
+  savedAt?: Date;
+}
+
 export interface IUser extends Document {
   email: string;
   password: string;
@@ -13,6 +19,7 @@ export interface IUser extends Document {
   isAdmin: boolean;
   createdAt: Date;
   moduleProgress: IModuleProgress;
+  moduleAnswers: Map<string, IModuleAnswerEntry>;
 }
 
 const UserSchema = new Schema<IUser>({
@@ -28,9 +35,9 @@ const UserSchema = new Schema<IUser>({
   },
   moduleAnswers: {
     type: Map,
-    of: new mongoose.Schema({
-      assessment: { type: mongoose.Schema.Types.Mixed },
-      goals:      { type: mongoose.Schema.Types.Mixed },
+    of: new Schema({
+      assessment: { type: Schema.Types.Mixed },
+      goals:      { type: Schema.Types.Mixed },
       savedAt:    { type: Date },
     }, { _id: false }),
     default: {},
