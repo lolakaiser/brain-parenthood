@@ -1,160 +1,318 @@
 "use client";
+
 import Link from "next/link";
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import AppLayout from "@/components/AppLayout";
+import { completeModule } from "@/lib/storage";
 
-const GRADIENT = 'linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)';
+type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
 
-export default function Module12() {
-  const [step, setStep] = useState(0);
+const STEPS = [
+  { id: 'overview' as const, label: 'Overview' },
+  { id: 'assessment' as const, label: 'Assessment' },
+  { id: 'goals' as const, label: 'Goals' },
+  { id: 'complete' as const, label: 'Complete' },
+];
+
+export default function Module12Page() {
+  const [currentStep, setCurrentStep] = useState<StepType>('overview');
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
-  useEffect(() => { if (!isAuthenticated) router.push('/login'); }, [isAuthenticated, router]);
+  useEffect(() => {
+    if (!isAuthenticated) { router.push('/login'); }
+  }, [isAuthenticated, router]);
+
+  const handleSetStep = useCallback((step: StepType) => { setCurrentStep(step); }, []);
+
   if (!isAuthenticated) return null;
 
-  return (
-    <div className="min-h-screen pt-32 bg-[#2D3E50] px-8">
-      <div className="max-w-4xl mx-auto">
-        <Link href="/modules" className="text-white hover:text-gray-300 mb-4 inline-block">← Back</Link>
-        <h1 className="text-5xl font-bold text-white mb-2">Module 12: Celebration & Reflection</h1>
-        <p className="text-xl text-white mb-8">Week 12 - Your Journey Complete</p>
+  const currentStepIndex = STEPS.findIndex(s => s.id === currentStep);
 
-        <div className="flex gap-4 mb-8">
-          {['Overview', 'Assessment', 'Celebrate', 'Complete'].map((s, i) => (
-            <div key={i} className={`flex-1 h-2 rounded ${i <= step ? 'bg-purple-500' : 'bg-gray-600'}`} />
-          ))}
+  return (
+    <AppLayout>
+      <div style={{ background: 'linear-gradient(to right, #4F46E5, #7C3AED, #EC4899)', width: '100%' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
+          <Link href="/modules" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.7)', fontWeight: '500', marginBottom: '24px', textDecoration: 'none', fontSize: '14px' }}>
+            ← Back to Modules
+          </Link>
+          <h1 style={{ fontSize: '36px', fontWeight: 'bold', color: 'white', marginBottom: '8px' }}>Module 12: Anger Management</h1>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '18px' }}>Week 12 &bull; Managing anger and resolving conflict</p>
+        </div>
+      </div>
+
+      <div style={{ backgroundColor: 'white', borderBottom: '1px solid #E5E7EB' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 80px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            {STEPS.map((step, index) => (
+              <div key={step.id} style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: '600', marginBottom: '8px', backgroundColor: index <= currentStepIndex ? '#4F46E5' : '#E5E7EB', color: index <= currentStepIndex ? 'white' : '#6B7280' }}>
+                    {index + 1}
+                  </div>
+                  <span style={{ fontSize: '12px', fontWeight: '500', color: index <= currentStepIndex ? '#111827' : '#9CA3AF' }}>{step.label}</span>
+                </div>
+                {index < STEPS.length - 1 && (
+                  <div style={{ flex: 1, height: '2px', marginTop: '-24px', marginLeft: '8px', marginRight: '8px' }}>
+                    <div style={{ height: '100%', backgroundColor: index < currentStepIndex ? '#4F46E5' : '#E5E7EB' }} />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ backgroundColor: '#F5F7FA', minHeight: 'calc(100vh - 300px)' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
+          {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('assessment')} />}
+          {currentStep === 'assessment' && <AssessmentStep onNext={() => handleSetStep('goals')} onBack={() => handleSetStep('overview')} />}
+          {currentStep === 'goals' && <GoalsStep onNext={() => handleSetStep('complete')} onBack={() => handleSetStep('assessment')} moduleId={12} />}
+          {currentStep === 'complete' && <CompleteStep moduleId={12} />}
+        </div>
+      </div>
+    </AppLayout>
+  );
+}
+
+const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void }) {
+  return (
+    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#111827', marginBottom: '12px' }}>Anger Management</h2>
+        <p style={{ fontSize: '16px', color: '#6B7280', marginBottom: '24px', lineHeight: '1.6' }}>Comprehensive anger management and conflict resolution for lasting change</p>
+        <p style={{ fontSize: '15px', color: '#374151', lineHeight: '1.7' }}>
+          Anger is a natural human emotion — but when left unmanaged, it can damage relationships,
+          derail careers, and undermine the trust you have worked hard to build. This final module
+          brings together everything you have learned throughout the programme and applies it to
+          one of the most challenging emotional experiences: anger in a high-stakes environment.
+          You will leave equipped for lasting emotional regulation.
+        </p>
+      </div>
+
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <h3 style={{ fontSize: '20px', fontWeight: '600', color: '#111827', marginBottom: '12px' }}>What You'll Learn</h3>
+        <p style={{ fontSize: '15px', color: '#6B7280', lineHeight: '1.7' }}>
+          You will identify your personal anger triggers, learn evidence-based de-escalation
+          techniques, and build a concrete conflict resolution plan you can draw on in any
+          situation. This is the culmination of 12 weeks of growth — your final commitment to
+          being a calmer, more effective, and more resilient leader.
+        </p>
+      </div>
+
+      <div style={{ display: 'flex', gap: '40px', marginBottom: '40px' }}>
+        <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ color: '#4F46E5', fontSize: '16px' }}>⚡</span></div>
+            <h4 style={{ fontWeight: '600', color: '#111827', fontSize: '16px' }}>Why This Matters</h4>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {[
+              { title: 'Unmanaged Anger Damages Relationships:', body: 'One outburst can undo months of trust-building' },
+              { title: 'Conflict Resolution Skills Are Lifelong Assets:', body: 'The ability to navigate conflict constructively is invaluable' },
+              { title: 'Emotional Regulation Improves Wellbeing:', body: 'Calmer leaders make better decisions and inspire more confidence' },
+            ].map((item, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#4F46E5', marginTop: '8px', flexShrink: 0 }} />
+                <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}><strong style={{ color: '#111827' }}>{item.title}</strong> {item.body}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {step === 0 && <Overview onNext={() => setStep(1)} />}
-        {step === 1 && <Assessment onNext={() => setStep(2)} onBack={() => setStep(0)} />}
-        {step === 2 && <Celebration onNext={() => setStep(3)} onBack={() => setStep(1)} />}
-        {step === 3 && <Complete />}
+        <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ color: '#4F46E5', fontSize: '16px' }}>📋</span></div>
+            <h4 style={{ fontWeight: '600', color: '#111827', fontSize: '16px' }}>Module 12 Objectives</h4>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {[
+              'Identify your personal anger triggers with precision',
+              'Learn and practise de-escalation techniques',
+              'Build a personal conflict resolution plan',
+            ].map((obj, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#9CA3AF', marginTop: '8px', flexShrink: 0 }} />
+                <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}>{obj}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <button onClick={onNext} style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: 'linear-gradient(to right, #4F46E5, #7C3AED)', color: 'white', padding: '16px 40px', borderRadius: '12px', fontWeight: 'bold', fontSize: '18px', border: 'none', cursor: 'pointer' }}>
+          Continue to Assessment <span>→</span>
+        </button>
+      </div>
+    </div>
+  );
+});
+
+const AssessmentStep = memo(function AssessmentStep({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [formData, setFormData] = useState({ angerInMoment: 5, deEscalation: 5, triggerAwareness: 5, constructiveExpression: 5, angerReaction: '' });
+
+  const questions = [
+    { id: 'angerInMoment', title: 'Managing Anger in the Moment', description: 'How well do you manage anger when it flares up in the moment?', type: 'slider' as const, min: 1, max: 10, minLabel: 'React Impulsively', maxLabel: 'Stay In Control' },
+    { id: 'deEscalation', title: 'De-Escalating Conflict', description: 'How quickly can you de-escalate a conflict situation?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Escalate Further', maxLabel: 'De-escalate Quickly' },
+    { id: 'triggerAwareness', title: 'Anger Trigger Awareness', description: 'How aware are you of what specifically triggers your anger?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Not Aware', maxLabel: 'Fully Aware' },
+    { id: 'constructiveExpression', title: 'Constructive Expression of Anger', description: 'How constructively do you express anger when you feel it?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Destructively', maxLabel: 'Very Constructively' },
+    { id: 'angerReaction', title: 'Your Typical Anger Reaction at Work', description: 'Describe how you typically react when you feel angry at work.', type: 'textarea' as const, placeholder: 'Be honest — what happens in your body, your words, and your behaviour?' },
+  ];
+
+  const currentQ = questions[currentQuestion];
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
+  const sliderValue = formData[currentQ.id as keyof typeof formData] as number;
+  const sliderMin = currentQ.min ?? 1;
+  const sliderMax = currentQ.max ?? 10;
+
+  const handleNext = () => { if (currentQuestion < questions.length - 1) { setCurrentQuestion(currentQuestion + 1); } else { onNext(); } };
+  const handlePrevious = () => { if (currentQuestion > 0) { setCurrentQuestion(currentQuestion - 1); } else { onBack(); } };
+  const isAnswered = () => { const v = formData[currentQ.id as keyof typeof formData]; if (currentQ.type === 'slider') return true; return (v as string) !== ''; };
+
+  return (
+    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '32px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontSize: '14px', fontWeight: '600', color: '#4F46E5' }}>Assessment</span>
+          <span style={{ fontSize: '14px', fontWeight: '500', color: '#6B7280' }}>Question {currentQuestion + 1} of {questions.length}</span>
+        </div>
+        <div style={{ height: '8px', backgroundColor: '#F3F4F6', borderRadius: '4px', overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(to right, #4F46E5, #7C3AED)', borderRadius: '4px', transition: 'width 0.5s ease' }} />
+        </div>
+      </div>
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <div style={{ marginBottom: '32px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#111827', marginBottom: '8px' }}>{currentQ.title}</h2>
+          <p style={{ color: '#6B7280', fontSize: '15px' }}>{currentQ.description}</p>
+        </div>
+        <div style={{ marginBottom: '48px' }}>
+          {currentQ.type === 'slider' && (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
+                <div style={{ width: '72px', height: '72px', backgroundColor: '#4F46E5', color: 'white', fontSize: '28px', fontWeight: 'bold', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{sliderValue}</div>
+              </div>
+              <input type="range" min={sliderMin} max={sliderMax} value={sliderValue} onChange={(e) => setFormData({ ...formData, [currentQ.id]: parseInt(e.target.value) })}
+                style={{ width: '100%', height: '8px', borderRadius: '4px', appearance: 'none', cursor: 'pointer', accentColor: '#4F46E5', background: `linear-gradient(to right, #4F46E5 0%, #4F46E5 ${((sliderValue - sliderMin) / (sliderMax - sliderMin)) * 100}%, #e5e7eb ${((sliderValue - sliderMin) / (sliderMax - sliderMin)) * 100}%, #e5e7eb 100%)` }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
+                <span style={{ fontSize: '13px', color: '#9CA3AF' }}>{currentQ.minLabel}</span>
+                <span style={{ fontSize: '13px', color: '#9CA3AF' }}>{currentQ.maxLabel}</span>
+              </div>
+            </div>
+          )}
+          {currentQ.type === 'textarea' && (
+            <textarea value={formData[currentQ.id as keyof typeof formData] as string} onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })} placeholder={currentQ.placeholder} rows={5}
+              style={{ width: '100%', padding: '16px 20px', fontSize: '15px', color: '#111827', border: '2px solid #E5E7EB', borderRadius: '12px', outline: 'none', resize: 'none', lineHeight: '1.6', boxSizing: 'border-box' }} />
+          )}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
+          <button onClick={handlePrevious} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 20px', color: '#374151', fontWeight: '600', borderRadius: '12px', border: 'none', cursor: 'pointer', backgroundColor: 'transparent', fontSize: '15px' }}>← Back</button>
+          <button onClick={handleNext} disabled={!isAnswered()} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', border: 'none', cursor: isAnswered() ? 'pointer' : 'not-allowed', background: isAnswered() ? 'linear-gradient(to right, #4F46E5, #7C3AED)' : '#E5E7EB', color: isAnswered() ? 'white' : '#9CA3AF' }}>
+            {currentQuestion === questions.length - 1 ? 'Continue' : 'Next'} →
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [goals, setGoals] = useState({ angerTrigger: '', deEscalationTechnique: '', conflictPlan: '' });
+
+  const questions = [
+    { id: 'angerTrigger', title: 'Anger Trigger to Work On', description: 'What anger trigger will you focus on managing this week?', type: 'text' as const, placeholder: 'e.g., Feeling ignored in meetings — I will pause and breathe before reacting' },
+    { id: 'deEscalationTechnique', title: 'De-Escalation Technique', description: 'What de-escalation technique will you practise this week?', type: 'textarea' as const, placeholder: 'Describe the technique and how you plan to use it in a real situation...' },
+    { id: 'conflictPlan', title: 'Next Conflict Resolution Plan', description: 'How will you handle the next conflict constructively?', type: 'text' as const, placeholder: 'e.g., Take a break, name my feelings, use \'I\' statements, seek understanding first' },
+  ];
+
+  const currentQ = questions[currentQuestion];
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
+
+  const handleNext = () => { if (currentQuestion < questions.length - 1) { setCurrentQuestion(currentQuestion + 1); } else { completeModule(moduleId); onNext(); } };
+  const handlePrevious = () => { if (currentQuestion > 0) { setCurrentQuestion(currentQuestion - 1); } else { onBack(); } };
+  const isAnswered = () => goals[currentQ.id as keyof typeof goals].trim() !== '';
+
+  return (
+    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '32px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontSize: '14px', fontWeight: '600', color: '#4F46E5' }}>Goal Setting</span>
+          <span style={{ fontSize: '14px', fontWeight: '500', color: '#6B7280' }}>Question {currentQuestion + 1} of {questions.length}</span>
+        </div>
+        <div style={{ height: '8px', backgroundColor: '#F3F4F6', borderRadius: '4px', overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(to right, #4F46E5, #7C3AED)', borderRadius: '4px', transition: 'width 0.5s ease' }} />
+        </div>
+      </div>
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <div style={{ marginBottom: '32px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#111827', marginBottom: '8px' }}>{currentQ.title}</h2>
+          <p style={{ color: '#6B7280', fontSize: '15px' }}>{currentQ.description}</p>
+        </div>
+        <div style={{ marginBottom: '48px' }}>
+          {currentQ.type === 'text' && (
+            <input type="text" value={goals[currentQ.id as keyof typeof goals]} onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })} placeholder={currentQ.placeholder}
+              style={{ width: '100%', padding: '14px 20px', fontSize: '15px', color: '#111827', border: '2px solid #E5E7EB', borderRadius: '12px', outline: 'none', boxSizing: 'border-box' }} />
+          )}
+          {currentQ.type === 'textarea' && (
+            <textarea value={goals[currentQ.id as keyof typeof goals]} onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })} placeholder={currentQ.placeholder} rows={5}
+              style={{ width: '100%', padding: '16px 20px', fontSize: '15px', color: '#111827', border: '2px solid #E5E7EB', borderRadius: '12px', outline: 'none', resize: 'none', lineHeight: '1.6', boxSizing: 'border-box' }} />
+          )}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
+          <button onClick={handlePrevious} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 20px', color: '#374151', fontWeight: '600', borderRadius: '12px', border: 'none', cursor: 'pointer', backgroundColor: 'transparent', fontSize: '15px' }}>← Back</button>
+          <button onClick={handleNext} disabled={!isAnswered()} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', border: 'none', cursor: isAnswered() ? 'pointer' : 'not-allowed', background: isAnswered() ? 'linear-gradient(to right, #4F46E5, #7C3AED)' : '#E5E7EB', color: isAnswered() ? 'white' : '#9CA3AF' }}>
+            {currentQuestion === questions.length - 1 ? 'Complete' : 'Next'} →
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
-const Overview = memo(({ onNext }: { onNext: () => void }) => (
-  <div className="bg-[#3A4F63] rounded-3xl p-12">
-    <h2 className="text-4xl font-bold text-white mb-6">Journey Review</h2>
-    <div className="mb-6 p-4 bg-purple-900/30 rounded-xl">
-      <p className="text-white"><strong className="text-purple-300">AI Analysis:</strong> Incredible transformation! You've completed 12 modules and reduced stress by 45%</p>
-    </div>
-    <p className="text-xl text-white mb-6">You've completed a 12-week journey of growth. Time to celebrate your wins and plan your future.</p>
-    <div className="grid md:grid-cols-2 gap-6 mb-8">
-      <div className="bg-[#2D3E50] p-6 rounded-xl">
-        <h3 className="font-bold text-white mb-3">What You've Mastered</h3>
-        <ul className="text-white space-y-2">
-          <li>• Mindfulness practices</li>
-          <li>• Cognitive restructuring</li>
-          <li>• Emotional intelligence</li>
-          <li>• Team dynamics</li>
-          <li>• Resilience & more!</li>
-        </ul>
-      </div>
-      <div className="bg-[#2D3E50] p-6 rounded-xl">
-        <h3 className="font-bold text-white mb-3">This Week</h3>
-        <ul className="text-white space-y-2">
-          <li>• Final assessment</li>
-          <li>• Celebrate wins</li>
-          <li>• Set long-term vision</li>
-        </ul>
-      </div>
-    </div>
-    <button onClick={onNext} className="px-8 py-4 rounded-xl text-white font-bold" style={{background: GRADIENT}}>Final Assessment →</button>
-  </div>
-));
-
-const Assessment = memo(({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
-  const [scores, setScores] = useState({ stress: 5, confidence: 5, teamHealth: 5, wellbeing: 5 });
-
+function CompleteStep({ moduleId }: { moduleId: number }) {
   return (
-    <div className="bg-[#3A4F63] rounded-3xl p-12">
-      <h2 className="text-3xl font-bold text-white mb-6">Final Metrics vs. Module 1</h2>
-      <p className="text-gray-300 mb-6">Rate yourself now (1-10) - compare to your Module 1 baseline</p>
-      {Object.entries(scores).map(([key, val]) => (
-        <div key={key} className="mb-6 bg-[#2D3E50] p-4 rounded-xl">
-          <label className="text-white font-bold block mb-2 capitalize">{key.replace(/([A-Z])/g, ' $1')}: {val}/10</label>
-          <input type="range" min="1" max="10" value={val} onChange={(e) => setScores({...scores, [key]: parseInt(e.target.value)})}
-            className="w-full h-3 bg-white/20 rounded-lg cursor-pointer" />
+    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+      <div style={{ background: 'linear-gradient(to right, #7C3AED, #DB2777, #F472B6)', borderRadius: '20px', padding: '50px', marginBottom: '40px', textAlign: 'center' }}>
+        <div style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.2)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+          <span style={{ color: 'white', fontSize: '24px' }}>✓</span>
         </div>
-      ))}
-      <div className="p-4 bg-purple-900/20 rounded-xl mb-6">
-        <p className="text-white text-sm"><strong className="text-purple-300">AI Growth Report:</strong></p>
-        <ul className="text-white text-sm mt-2 space-y-1">
-          <li>• Stress: 8→5 (37% improvement)</li>
-          <li>• Confidence: 5→8 (60% improvement)</li>
-          <li>• Team Health: 6→9 (50% improvement)</li>
-        </ul>
+        <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: 'white', marginBottom: '12px' }}>
+          Program Complete!
+        </h2>
+        <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.8)', maxWidth: '500px', margin: '0 auto', lineHeight: '1.6' }}>
+          You have completed all 12 modules of Brain Parenthood. You are a more resilient, self-aware, and effective leader. This is just the beginning.
+        </p>
       </div>
-      <div className="flex justify-between mt-8">
-        <button onClick={onBack} className="px-8 py-4 rounded-xl text-white font-bold" style={{background: GRADIENT}}>← Back</button>
-        <button onClick={onNext} className="px-8 py-4 rounded-xl text-white font-bold" style={{background: GRADIENT}}>Celebrate →</button>
+
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px' }}>
+        <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '20px', marginBottom: '24px' }}>What's Next?</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {[
+            { num: '1', title: 'Reflect on your 12-week journey', desc: 'Look back at where you started and how far you have come' },
+            { num: '2', title: 'Share what you have learned', desc: 'Your growth can inspire and support those around you' },
+            { num: '3', title: 'Keep the habits alive', desc: 'Return to any module whenever you need a refresher or boost' },
+          ].map((item) => (
+            <div key={item.num} style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+              <div style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <span style={{ color: '#4F46E5', fontSize: '12px', fontWeight: '600' }}>{item.num}</span>
+              </div>
+              <div>
+                <p style={{ fontWeight: '500', color: '#111827', fontSize: '15px', marginBottom: '2px' }}>{item.title}</p>
+                <p style={{ color: '#6B7280', fontSize: '13px' }}>{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
+        <Link href="/dashboard" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', backgroundColor: '#4F46E5', color: 'white', fontWeight: '500', borderRadius: '12px', textDecoration: 'none' }}>View Dashboard →</Link>
+        <Link href="/modules" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', backgroundColor: 'transparent', color: '#374151', fontWeight: '500', borderRadius: '12px', textDecoration: 'none', border: '1px solid #E5E7EB' }}>← Browse Modules</Link>
       </div>
     </div>
   );
-});
-
-const Celebration = memo(({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
-  const [data, setData] = useState({ proudest: '', surprised: '', vision: '' });
-  const complete = data.proudest && data.surprised && data.vision;
-
-  return (
-    <div className="bg-[#3A4F63] rounded-3xl p-12">
-      <h2 className="text-3xl font-bold text-white mb-6">Celebrate Your Wins</h2>
-      <div className="space-y-6">
-        <div>
-          <label className="text-white font-bold block mb-2">What are you most proud of?</label>
-          <textarea value={data.proudest} onChange={(e) => setData({...data, proudest: e.target.value})}
-            className="w-full px-4 py-3 bg-[#2D3E50] text-white border-2 border-white/20 rounded-xl"
-            rows={3} placeholder="Your biggest achievement..." />
-        </div>
-        <div>
-          <label className="text-white font-bold block mb-2">What surprised you most?</label>
-          <textarea value={data.surprised} onChange={(e) => setData({...data, surprised: e.target.value})}
-            className="w-full px-4 py-3 bg-[#2D3E50] text-white border-2 border-white/20 rounded-xl"
-            rows={3} placeholder="Unexpected learnings or changes..." />
-        </div>
-        <div>
-          <label className="text-white font-bold block mb-2">Your 6-Month Vision</label>
-          <textarea value={data.vision} onChange={(e) => setData({...data, vision: e.target.value})}
-            className="w-full px-4 py-3 bg-[#2D3E50] text-white border-2 border-white/20 rounded-xl"
-            rows={3} placeholder="Where will you be 6 months from now?" />
-        </div>
-      </div>
-      {data.vision && (
-        <div className="mt-4 p-3 bg-purple-900/20 rounded-xl">
-          <p className="text-white text-sm"><strong className="text-purple-300">AI Recommendation:</strong> Based on your vision, I recommend focusing on leadership development next</p>
-        </div>
-      )}
-      <div className="flex justify-between mt-8">
-        <button onClick={onBack} className="px-8 py-4 rounded-xl text-white font-bold" style={{background: GRADIENT}}>← Back</button>
-        <button onClick={onNext} disabled={!complete} className={`px-8 py-4 rounded-xl text-white font-bold ${!complete && 'opacity-50'}`}
-          style={complete ? {background: GRADIENT} : {}}>Complete Journey →</button>
-      </div>
-    </div>
-  );
-});
-
-const Complete = memo(() => (
-  <div className="bg-[#3A4F63] rounded-3xl p-12 text-center">
-    <h2 className="text-5xl font-bold text-white mb-6">Congratulations!</h2>
-    <p className="text-2xl text-white mb-4">You've completed Brain Parenthood!</p>
-    <p className="text-xl text-white mb-8">You've transformed yourself and your team. This is just the beginning.</p>
-    <div className="mb-8 p-6 bg-purple-900/30 rounded-xl">
-      <p className="text-white text-lg"><strong className="text-purple-300">AI Personalized Maintenance Plan:</strong></p>
-      <ul className="text-white mt-4 space-y-2 text-left max-w-2xl mx-auto">
-        <li>• Continue daily mindfulness (5 min)</li>
-        <li>• Weekly thought log & team check-ins</li>
-        <li>• Monthly self-assessment</li>
-        <li>• Return to modules as refreshers</li>
-      </ul>
-    </div>
-    <div className="flex gap-4 justify-center">
-      <Link href="/dashboard" className="px-10 py-5 rounded-2xl text-white font-bold" style={{background: GRADIENT}}>Dashboard →</Link>
-      <Link href="/modules" className="px-10 py-5 rounded-2xl text-white font-bold" style={{background: GRADIENT}}>Revisit Modules</Link>
-    </div>
-  </div>
-));
+}

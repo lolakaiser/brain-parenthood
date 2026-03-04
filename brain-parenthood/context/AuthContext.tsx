@@ -6,6 +6,7 @@ interface User {
   id: number;
   email: string;
   name: string;
+  isAdmin: boolean;
 }
 
 interface AuthContextType {
@@ -113,8 +114,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       const data = await response.json();
 
       if (response.ok) {
-        // Auto-login after signup
-        return await login(email, password);
+        // Use the token returned directly from signup — no need to call login again
+        localStorage.setItem('authToken', data.access_token);
+        setUser(data.user);
+        return { success: true };
       }
 
       return {

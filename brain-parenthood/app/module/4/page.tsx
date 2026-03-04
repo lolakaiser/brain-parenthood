@@ -1,142 +1,354 @@
 "use client";
+
 import Link from "next/link";
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import AppLayout from "@/components/AppLayout";
+import { completeModule } from "@/lib/storage";
 
-const GRADIENT = 'linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)';
+type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
 
-export default function Module4() {
-  const [step, setStep] = useState(0);
+const STEPS = [
+  { id: 'overview' as const, label: 'Overview' },
+  { id: 'assessment' as const, label: 'Assessment' },
+  { id: 'goals' as const, label: 'Goals' },
+  { id: 'complete' as const, label: 'Complete' },
+];
+
+export default function Module4Page() {
+  const [currentStep, setCurrentStep] = useState<StepType>('overview');
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
-  useEffect(() => { if (!isAuthenticated) router.push('/login'); }, [isAuthenticated, router]);
-  if (!isAuthenticated) return null;
+  useEffect(() => {
+    if (!isAuthenticated) {
+      router.push('/login');
+    }
+  }, [isAuthenticated, router]);
 
-  const steps = ['Overview', 'Assess', 'Practice', 'Complete'];
+  const handleSetStep = useCallback((step: StepType) => {
+    setCurrentStep(step);
+  }, []);
+
+  if (!isAuthenticated) {
+    return null;
+  }
+
+  const currentStepIndex = STEPS.findIndex(s => s.id === currentStep);
 
   return (
-    <div className="min-h-screen pt-32 bg-[#2D3E50] px-8">
-      <div className="max-w-4xl mx-auto">
-        <Link href="/modules" className="text-white hover:text-gray-300 mb-4 inline-block">← Back to Modules</Link>
-        <h1 className="text-5xl font-bold text-white mb-2">Module 4: Emotional Intelligence</h1>
-        <p className="text-xl text-white mb-8">Week 4 - Master Your Emotions</p>
+    <AppLayout>
+      <div style={{ background: 'linear-gradient(to right, #4F46E5, #7C3AED, #EC4899)', width: '100%' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
+          <Link href="/modules" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.7)', fontWeight: '500', marginBottom: '24px', textDecoration: 'none', fontSize: '14px' }}>
+            ← Back to Modules
+          </Link>
+          <h1 style={{ fontSize: '36px', fontWeight: 'bold', color: 'white', marginBottom: '8px' }}>
+            Module 4: The Nuts and Bolts
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '18px' }}>
+            Week 4 &bull; Practical life and work skills
+          </p>
+        </div>
+      </div>
 
-        <div className="flex gap-4 mb-8">
-          {steps.map((s, i) => (
-            <div key={i} className={`flex-1 h-2 rounded ${i <= step ? 'bg-purple-500' : 'bg-gray-600'}`} />
-          ))}
+      <div style={{ backgroundColor: 'white', borderBottom: '1px solid #E5E7EB' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 80px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            {STEPS.map((step, index) => (
+              <div key={step.id} style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: '600', marginBottom: '8px', backgroundColor: index <= currentStepIndex ? '#4F46E5' : '#E5E7EB', color: index <= currentStepIndex ? 'white' : '#6B7280' }}>
+                    {index + 1}
+                  </div>
+                  <span style={{ fontSize: '12px', fontWeight: '500', color: index <= currentStepIndex ? '#111827' : '#9CA3AF' }}>{step.label}</span>
+                </div>
+                {index < STEPS.length - 1 && (
+                  <div style={{ flex: 1, height: '2px', marginTop: '-24px', marginLeft: '8px', marginRight: '8px' }}>
+                    <div style={{ height: '100%', backgroundColor: index < currentStepIndex ? '#4F46E5' : '#E5E7EB' }} />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ backgroundColor: '#F5F7FA', minHeight: 'calc(100vh - 300px)' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
+          {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('assessment')} />}
+          {currentStep === 'assessment' && <AssessmentStep onNext={() => handleSetStep('goals')} onBack={() => handleSetStep('overview')} />}
+          {currentStep === 'goals' && <GoalsStep onNext={() => handleSetStep('complete')} onBack={() => handleSetStep('assessment')} moduleId={4} />}
+          {currentStep === 'complete' && <CompleteStep moduleId={4} nextModuleId={5} />}
+        </div>
+      </div>
+    </AppLayout>
+  );
+}
+
+const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void }) {
+  return (
+    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#111827', marginBottom: '12px' }}>The Nuts and Bolts</h2>
+        <p style={{ fontSize: '16px', color: '#6B7280', marginBottom: '24px', lineHeight: '1.6' }}>Money management, time management, and decision making</p>
+        <p style={{ fontSize: '15px', color: '#374151', lineHeight: '1.7' }}>
+          Running a startup means wearing many hats. This module digs into the essential practical
+          skills that underpin everything else: understanding your finances, making the most of
+          your time, and making sound decisions under pressure. Get these foundations right and
+          everything else becomes easier.
+        </p>
+      </div>
+
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <h3 style={{ fontSize: '20px', fontWeight: '600', color: '#111827', marginBottom: '12px' }}>What You'll Learn</h3>
+        <p style={{ fontSize: '15px', color: '#6B7280', lineHeight: '1.7' }}>
+          From budgeting basics to time-blocking techniques and decision-making frameworks, this
+          module gives you the practical tools to take control of your work and life. You'll
+          assess where you stand today and leave with a clear action plan for improvement.
+        </p>
+      </div>
+
+      <div style={{ display: 'flex', gap: '40px', marginBottom: '40px' }}>
+        <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ color: '#4F46E5', fontSize: '16px' }}>⚡</span>
+            </div>
+            <h4 style={{ fontWeight: '600', color: '#111827', fontSize: '16px' }}>Why This Matters</h4>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#4F46E5', marginTop: '8px', flexShrink: 0 }} />
+              <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}><strong style={{ color: '#111827' }}>Financial Clarity Reduces Stress:</strong> Know your numbers, reduce anxiety</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#4F46E5', marginTop: '8px', flexShrink: 0 }} />
+              <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}><strong style={{ color: '#111827' }}>Time Mastery Boosts Productivity:</strong> Do more with the same 24 hours</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#4F46E5', marginTop: '8px', flexShrink: 0 }} />
+              <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}><strong style={{ color: '#111827' }}>Good Decisions Drive Outcomes:</strong> Structured thinking leads to better results</p>
+            </div>
+          </div>
         </div>
 
-        {step === 0 && <Overview onNext={() => setStep(1)} />}
-        {step === 1 && <Assessment onNext={() => setStep(2)} onBack={() => setStep(0)} />}
-        {step === 2 && <Practice onNext={() => setStep(3)} onBack={() => setStep(1)} />}
-        {step === 3 && <Complete />}
+        <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ color: '#4F46E5', fontSize: '16px' }}>📋</span>
+            </div>
+            <h4 style={{ fontWeight: '600', color: '#111827', fontSize: '16px' }}>Module 4 Objectives</h4>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#9CA3AF', marginTop: '8px', flexShrink: 0 }} />
+              <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}>Improve financial awareness and money management habits</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#9CA3AF', marginTop: '8px', flexShrink: 0 }} />
+              <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}>Master practical time management techniques</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#9CA3AF', marginTop: '8px', flexShrink: 0 }} />
+              <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}>Strengthen decision-making confidence and process</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <button onClick={onNext} style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: 'linear-gradient(to right, #4F46E5, #7C3AED)', color: 'white', padding: '16px 40px', borderRadius: '12px', fontWeight: 'bold', fontSize: '18px', border: 'none', cursor: 'pointer' }}>
+          Continue to Assessment <span>→</span>
+        </button>
+      </div>
+    </div>
+  );
+});
+
+const AssessmentStep = memo(function AssessmentStep({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [formData, setFormData] = useState({
+    financeManagement: 5,
+    timeManagement: 5,
+    decisionConfidence: 5,
+    workflowOrganisation: 5,
+    improvementArea: '',
+  });
+
+  const questions = [
+    { id: 'financeManagement', title: 'Financial Management', description: 'How well do you manage your personal or business finances?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Struggle Significantly', maxLabel: 'Very In Control' },
+    { id: 'timeManagement', title: 'Time Management', description: 'How effectively do you manage your time across tasks and priorities?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Often Behind', maxLabel: 'Always On Top' },
+    { id: 'decisionConfidence', title: 'Decision-Making Confidence', description: 'How confident are you when making important decisions?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Very Uncertain', maxLabel: 'Very Confident' },
+    { id: 'workflowOrganisation', title: 'Workflow Organisation', description: 'How organised is your daily workflow?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Quite Chaotic', maxLabel: 'Highly Structured' },
+    { id: 'improvementArea', title: 'Top Improvement Area', description: 'What practical area of your work life needs the most improvement right now?', type: 'textarea' as const, placeholder: 'Describe what you would most like to improve...' },
+  ];
+
+  const currentQ = questions[currentQuestion];
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
+  const sliderValue = formData[currentQ.id as keyof typeof formData] as number;
+  const sliderMin = currentQ.min ?? 1;
+  const sliderMax = currentQ.max ?? 10;
+
+  const handleNext = () => {
+    if (currentQuestion < questions.length - 1) { setCurrentQuestion(currentQuestion + 1); } else { onNext(); }
+  };
+  const handlePrevious = () => {
+    if (currentQuestion > 0) { setCurrentQuestion(currentQuestion - 1); } else { onBack(); }
+  };
+  const isAnswered = () => {
+    const value = formData[currentQ.id as keyof typeof formData];
+    if (currentQ.type === 'slider') return true;
+    return (value as string) !== '';
+  };
+
+  return (
+    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '32px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontSize: '14px', fontWeight: '600', color: '#4F46E5' }}>Assessment</span>
+          <span style={{ fontSize: '14px', fontWeight: '500', color: '#6B7280' }}>Question {currentQuestion + 1} of {questions.length}</span>
+        </div>
+        <div style={{ height: '8px', backgroundColor: '#F3F4F6', borderRadius: '4px', overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(to right, #4F46E5, #7C3AED)', borderRadius: '4px', transition: 'width 0.5s ease' }} />
+        </div>
+      </div>
+
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <div style={{ marginBottom: '32px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#111827', marginBottom: '8px' }}>{currentQ.title}</h2>
+          <p style={{ color: '#6B7280', fontSize: '15px' }}>{currentQ.description}</p>
+        </div>
+
+        <div style={{ marginBottom: '48px' }}>
+          {currentQ.type === 'slider' && (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
+                <div style={{ width: '72px', height: '72px', backgroundColor: '#4F46E5', color: 'white', fontSize: '28px', fontWeight: 'bold', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{sliderValue}</div>
+              </div>
+              <input type="range" min={sliderMin} max={sliderMax} value={sliderValue} onChange={(e) => setFormData({ ...formData, [currentQ.id]: parseInt(e.target.value) })}
+                style={{ width: '100%', height: '8px', borderRadius: '4px', appearance: 'none', cursor: 'pointer', accentColor: '#4F46E5', background: `linear-gradient(to right, #4F46E5 0%, #4F46E5 ${((sliderValue - sliderMin) / (sliderMax - sliderMin)) * 100}%, #e5e7eb ${((sliderValue - sliderMin) / (sliderMax - sliderMin)) * 100}%, #e5e7eb 100%)` }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
+                <span style={{ fontSize: '13px', color: '#9CA3AF' }}>{currentQ.minLabel}</span>
+                <span style={{ fontSize: '13px', color: '#9CA3AF' }}>{currentQ.maxLabel}</span>
+              </div>
+            </div>
+          )}
+          {currentQ.type === 'textarea' && (
+            <textarea value={formData[currentQ.id as keyof typeof formData] as string} onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })} placeholder={currentQ.placeholder} rows={5}
+              style={{ width: '100%', padding: '16px 20px', fontSize: '15px', color: '#111827', border: '2px solid #E5E7EB', borderRadius: '12px', outline: 'none', resize: 'none', lineHeight: '1.6', boxSizing: 'border-box' }} />
+          )}
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
+          <button onClick={handlePrevious} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 20px', color: '#374151', fontWeight: '600', borderRadius: '12px', border: 'none', cursor: 'pointer', backgroundColor: 'transparent', fontSize: '15px' }}>← Back</button>
+          <button onClick={handleNext} disabled={!isAnswered()} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', border: 'none', cursor: isAnswered() ? 'pointer' : 'not-allowed', background: isAnswered() ? 'linear-gradient(to right, #4F46E5, #7C3AED)' : '#E5E7EB', color: isAnswered() ? 'white' : '#9CA3AF' }}>
+            {currentQuestion === questions.length - 1 ? 'Continue' : 'Next'} →
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [goals, setGoals] = useState({ financialHabit: '', timeManagementTechnique: '', decisionProcess: '' });
+
+  const questions = [
+    { id: 'financialHabit', title: 'Financial Habit', description: 'What financial habit will you build this week?', type: 'text' as const, placeholder: 'e.g., Review my monthly budget every Monday morning' },
+    { id: 'timeManagementTechnique', title: 'Time Management Technique', description: 'What time management technique will you implement?', type: 'textarea' as const, placeholder: 'Describe the technique and how you will use it...' },
+    { id: 'decisionProcess', title: 'Decision-Making Process', description: 'How will you improve your decision-making process?', type: 'text' as const, placeholder: 'e.g., Use a pros/cons list before any major decision' },
+  ];
+
+  const currentQ = questions[currentQuestion];
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
+
+  const handleNext = () => {
+    if (currentQuestion < questions.length - 1) { setCurrentQuestion(currentQuestion + 1); } else { completeModule(moduleId); onNext(); }
+  };
+  const handlePrevious = () => {
+    if (currentQuestion > 0) { setCurrentQuestion(currentQuestion - 1); } else { onBack(); }
+  };
+  const isAnswered = () => goals[currentQ.id as keyof typeof goals].trim() !== '';
+
+  return (
+    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '32px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontSize: '14px', fontWeight: '600', color: '#4F46E5' }}>Goal Setting</span>
+          <span style={{ fontSize: '14px', fontWeight: '500', color: '#6B7280' }}>Question {currentQuestion + 1} of {questions.length}</span>
+        </div>
+        <div style={{ height: '8px', backgroundColor: '#F3F4F6', borderRadius: '4px', overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(to right, #4F46E5, #7C3AED)', borderRadius: '4px', transition: 'width 0.5s ease' }} />
+        </div>
+      </div>
+
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <div style={{ marginBottom: '32px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#111827', marginBottom: '8px' }}>{currentQ.title}</h2>
+          <p style={{ color: '#6B7280', fontSize: '15px' }}>{currentQ.description}</p>
+        </div>
+        <div style={{ marginBottom: '48px' }}>
+          {currentQ.type === 'text' && (
+            <input type="text" value={goals[currentQ.id as keyof typeof goals]} onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })} placeholder={currentQ.placeholder}
+              style={{ width: '100%', padding: '14px 20px', fontSize: '15px', color: '#111827', border: '2px solid #E5E7EB', borderRadius: '12px', outline: 'none', boxSizing: 'border-box' }} />
+          )}
+          {currentQ.type === 'textarea' && (
+            <textarea value={goals[currentQ.id as keyof typeof goals]} onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })} placeholder={currentQ.placeholder} rows={5}
+              style={{ width: '100%', padding: '16px 20px', fontSize: '15px', color: '#111827', border: '2px solid #E5E7EB', borderRadius: '12px', outline: 'none', resize: 'none', lineHeight: '1.6', boxSizing: 'border-box' }} />
+          )}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
+          <button onClick={handlePrevious} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 20px', color: '#374151', fontWeight: '600', borderRadius: '12px', border: 'none', cursor: 'pointer', backgroundColor: 'transparent', fontSize: '15px' }}>← Back</button>
+          <button onClick={handleNext} disabled={!isAnswered()} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', border: 'none', cursor: isAnswered() ? 'pointer' : 'not-allowed', background: isAnswered() ? 'linear-gradient(to right, #4F46E5, #7C3AED)' : '#E5E7EB', color: isAnswered() ? 'white' : '#9CA3AF' }}>
+            {currentQuestion === questions.length - 1 ? 'Complete' : 'Next'} →
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
-const Overview = memo(({ onNext }: { onNext: () => void }) => (
-  <div className="bg-[#3A4F63] rounded-3xl p-12 border border-white/10">
-    <h2 className="text-4xl font-bold text-white mb-6">Welcome to Emotional Intelligence</h2>
-    {/* 🤖 AI Integration: Personalized EQ insights based on baseline */}
-    <div className="mb-6 p-4 bg-purple-900/30 rounded-xl border border-purple-500/50">
-      <p className="text-white"><strong className="text-purple-300">🤖 AI Insight:</strong> Based on your profile, focus on social awareness</p>
-    </div>
-    <p className="text-xl text-white mb-6">EQ is the ability to understand and manage emotions - yours and others'. High EQ = better leadership, teamwork, and stress management.</p>
-    <div className="grid md:grid-cols-2 gap-6 mb-8">
-      <div className="bg-[#2D3E50] p-6 rounded-xl">
-        <h3 className="font-bold text-white mb-3">4 Pillars of EQ</h3>
-        <ul className="text-white space-y-2">
-          <li>• Self-Awareness</li>
-          <li>• Self-Management</li>
-          <li>• Social Awareness</li>
-          <li>• Relationship Management</li>
-        </ul>
-      </div>
-      <div className="bg-[#2D3E50] p-6 rounded-xl">
-        <h3 className="font-bold text-white mb-3">This Week</h3>
-        <ul className="text-white space-y-2">
-          <li>• Assess your EQ</li>
-          <li>• Practice emotion labeling</li>
-          <li>• Create development plan</li>
-        </ul>
-      </div>
-    </div>
-    <button onClick={onNext} className="px-8 py-4 rounded-xl text-white font-bold" style={{background: GRADIENT}}>Begin Assessment →</button>
-  </div>
-));
-
-const Assessment = memo(({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
-  const [scores, setScores] = useState({ selfAware: 5, selfManage: 5, social: 5, relationships: 5 });
-
+function CompleteStep({ moduleId, nextModuleId }: { moduleId: number; nextModuleId: number }) {
   return (
-    <div className="bg-[#3A4F63] rounded-3xl p-12">
-      <h2 className="text-3xl font-bold text-white mb-6">Assess Your EQ</h2>
-      {Object.entries(scores).map(([key, val]) => (
-        <div key={key} className="mb-6 bg-[#2D3E50] p-4 rounded-xl">
-          <label className="text-white font-bold block mb-2">{key}: {val}/10</label>
-          <input type="range" min="1" max="10" value={val} onChange={(e) => setScores({...scores, [key]: parseInt(e.target.value)})}
-            className="w-full h-3 bg-white/20 rounded-lg cursor-pointer" />
+    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+      <div style={{ background: 'linear-gradient(to right, #7C3AED, #DB2777, #F472B6)', borderRadius: '20px', padding: '50px', marginBottom: '40px', textAlign: 'center' }}>
+        <div style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.2)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+          <span style={{ color: 'white', fontSize: '24px' }}>✓</span>
         </div>
-      ))}
-      {/* 🤖 AI: Analyze scores and suggest focus areas */}
-      <div className="p-4 bg-purple-900/20 rounded-xl mb-6">
-        <p className="text-white text-sm"><strong className="text-purple-300">🤖 AI:</strong> Focus on your lowest scoring area</p>
+        <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: 'white', marginBottom: '12px' }}>Module {moduleId} Complete!</h2>
+        <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.8)', maxWidth: '500px', margin: '0 auto', lineHeight: '1.6' }}>
+          You have laid the practical foundations. Apply your new habits to finances, time, and decisions this week.
+        </p>
       </div>
-      <div className="flex justify-between">
-        <button onClick={onBack} className="px-8 py-4 rounded-xl text-white font-bold" style={{background: GRADIENT}}>← Back</button>
-        <button onClick={onNext} className="px-8 py-4 rounded-xl text-white font-bold" style={{background: GRADIENT}}>Practice →</button>
+
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px' }}>
+        <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '20px', marginBottom: '24px' }}>What's Next?</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {[
+            { num: '1', title: 'Start your financial habit', desc: 'Even one small step this week builds momentum' },
+            { num: '2', title: 'Trial your time management technique', desc: 'Apply it to tomorrow\'s schedule' },
+            { num: '3', title: `Prepare for Module ${nextModuleId}`, desc: 'Effective Communication' },
+          ].map((item) => (
+            <div key={item.num} style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+              <div style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <span style={{ color: '#4F46E5', fontSize: '12px', fontWeight: '600' }}>{item.num}</span>
+              </div>
+              <div>
+                <p style={{ fontWeight: '500', color: '#111827', fontSize: '15px', marginBottom: '2px' }}>{item.title}</p>
+                <p style={{ color: '#6B7280', fontSize: '13px' }}>{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
+        <Link href="/dashboard" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', backgroundColor: '#4F46E5', color: 'white', fontWeight: '500', borderRadius: '12px', textDecoration: 'none' }}>View Dashboard →</Link>
+        <Link href="/modules" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', backgroundColor: 'transparent', color: '#374151', fontWeight: '500', borderRadius: '12px', textDecoration: 'none', border: '1px solid #E5E7EB' }}>← Browse Modules</Link>
       </div>
     </div>
   );
-});
-
-const Practice = memo(({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
-  const [data, setData] = useState({ emotion: '', trigger: '', response: '' });
-  const complete = data.emotion && data.trigger && data.response;
-
-  return (
-    <div className="bg-[#3A4F63] rounded-3xl p-12">
-      <h2 className="text-3xl font-bold text-white mb-6">Emotion Labeling Practice</h2>
-      <div className="space-y-6">
-        <div>
-          <label className="text-white font-bold block mb-2">Name the Emotion</label>
-          <input value={data.emotion} onChange={(e) => setData({...data, emotion: e.target.value})}
-            className="w-full px-4 py-3 bg-[#2D3E50] text-white border-2 border-white/20 rounded-xl"
-            placeholder="e.g., frustrated, anxious..." />
-        </div>
-        <div>
-          <label className="text-white font-bold block mb-2">What Triggered It?</label>
-          <textarea value={data.trigger} onChange={(e) => setData({...data, trigger: e.target.value})}
-            className="w-full px-4 py-3 bg-[#2D3E50] text-white border-2 border-white/20 rounded-xl"
-            rows={3} placeholder="Describe the situation..." />
-        </div>
-        <div>
-          <label className="text-white font-bold block mb-2">How Did You Respond?</label>
-          <textarea value={data.response} onChange={(e) => setData({...data, response: e.target.value})}
-            className="w-full px-4 py-3 bg-[#2D3E50] text-white border-2 border-white/20 rounded-xl"
-            rows={3} placeholder="Your response..." />
-        </div>
-      </div>
-      <div className="flex justify-between mt-8">
-        <button onClick={onBack} className="px-8 py-4 rounded-xl text-white font-bold" style={{background: GRADIENT}}>← Back</button>
-        <button onClick={onNext} disabled={!complete} className={`px-8 py-4 rounded-xl text-white font-bold ${!complete && 'opacity-50'}`}
-          style={complete ? {background: GRADIENT} : {}}>Complete →</button>
-      </div>
-    </div>
-  );
-});
-
-const Complete = memo(() => (
-  <div className="bg-[#3A4F63] rounded-3xl p-12 text-center">
-    <h2 className="text-5xl font-bold text-white mb-6">Module 4 Complete! 💪</h2>
-    <p className="text-xl text-white mb-8">You're developing emotional intelligence - a key to success!</p>
-    <div className="flex gap-4 justify-center">
-      <Link href="/dashboard" className="px-10 py-5 rounded-2xl text-white font-bold" style={{background: GRADIENT}}>Dashboard →</Link>
-      <Link href="/modules" className="px-10 py-5 rounded-2xl text-white font-bold" style={{background: GRADIENT}}>All Modules</Link>
-    </div>
-  </div>
-));
+}

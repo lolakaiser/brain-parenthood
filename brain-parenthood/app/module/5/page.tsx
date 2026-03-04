@@ -1,136 +1,312 @@
 "use client";
+
 import Link from "next/link";
-import { useState, useEffect, memo } from "react";
+import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import AppLayout from "@/components/AppLayout";
+import { completeModule } from "@/lib/storage";
 
-const GRADIENT = 'linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)';
+type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
 
-export default function Module5() {
-  const [step, setStep] = useState(0);
+const STEPS = [
+  { id: 'overview' as const, label: 'Overview' },
+  { id: 'assessment' as const, label: 'Assessment' },
+  { id: 'goals' as const, label: 'Goals' },
+  { id: 'complete' as const, label: 'Complete' },
+];
+
+export default function Module5Page() {
+  const [currentStep, setCurrentStep] = useState<StepType>('overview');
   const { isAuthenticated } = useAuth();
   const router = useRouter();
 
-  useEffect(() => { if (!isAuthenticated) router.push('/login'); }, [isAuthenticated, router]);
+  useEffect(() => {
+    if (!isAuthenticated) { router.push('/login'); }
+  }, [isAuthenticated, router]);
+
+  const handleSetStep = useCallback((step: StepType) => { setCurrentStep(step); }, []);
+
   if (!isAuthenticated) return null;
 
-  return (
-    <div className="min-h-screen pt-32 bg-[#2D3E50] px-8">
-      <div className="max-w-4xl mx-auto">
-        <Link href="/modules" className="text-white hover:text-gray-300 mb-4 inline-block">← Back</Link>
-        <h1 className="text-5xl font-bold text-white mb-2">Module 5: Team Dynamics</h1>
-        <p className="text-xl text-white mb-8">Week 5 - Build Psychological Safety</p>
+  const currentStepIndex = STEPS.findIndex(s => s.id === currentStep);
 
-        <div className="flex gap-4 mb-8">
-          {['Overview', 'Assess', 'Strategies', 'Complete'].map((s, i) => (
-            <div key={i} className={`flex-1 h-2 rounded ${i <= step ? 'bg-purple-500' : 'bg-gray-600'}`} />
-          ))}
+  return (
+    <AppLayout>
+      <div style={{ background: 'linear-gradient(to right, #4F46E5, #7C3AED, #EC4899)', width: '100%' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
+          <Link href="/modules" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', color: 'rgba(255,255,255,0.7)', fontWeight: '500', marginBottom: '24px', textDecoration: 'none', fontSize: '14px' }}>
+            ← Back to Modules
+          </Link>
+          <h1 style={{ fontSize: '36px', fontWeight: 'bold', color: 'white', marginBottom: '8px' }}>Module 5: Effective Communication</h1>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '18px' }}>Week 5 &bull; 'I' statements and active listening</p>
+        </div>
+      </div>
+
+      <div style={{ backgroundColor: 'white', borderBottom: '1px solid #E5E7EB' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 80px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+            {STEPS.map((step, index) => (
+              <div key={step.id} style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
+                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', fontWeight: '600', marginBottom: '8px', backgroundColor: index <= currentStepIndex ? '#4F46E5' : '#E5E7EB', color: index <= currentStepIndex ? 'white' : '#6B7280' }}>
+                    {index + 1}
+                  </div>
+                  <span style={{ fontSize: '12px', fontWeight: '500', color: index <= currentStepIndex ? '#111827' : '#9CA3AF' }}>{step.label}</span>
+                </div>
+                {index < STEPS.length - 1 && (
+                  <div style={{ flex: 1, height: '2px', marginTop: '-24px', marginLeft: '8px', marginRight: '8px' }}>
+                    <div style={{ height: '100%', backgroundColor: index < currentStepIndex ? '#4F46E5' : '#E5E7EB' }} />
+                  </div>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ backgroundColor: '#F5F7FA', minHeight: 'calc(100vh - 300px)' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
+          {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('assessment')} />}
+          {currentStep === 'assessment' && <AssessmentStep onNext={() => handleSetStep('goals')} onBack={() => handleSetStep('overview')} />}
+          {currentStep === 'goals' && <GoalsStep onNext={() => handleSetStep('complete')} onBack={() => handleSetStep('assessment')} moduleId={5} />}
+          {currentStep === 'complete' && <CompleteStep moduleId={5} nextModuleId={6} />}
+        </div>
+      </div>
+    </AppLayout>
+  );
+}
+
+const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void }) {
+  return (
+    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#111827', marginBottom: '12px' }}>Effective Communication</h2>
+        <p style={{ fontSize: '16px', color: '#6B7280', marginBottom: '24px', lineHeight: '1.6' }}>'I' statements and active listening for real connection</p>
+        <p style={{ fontSize: '15px', color: '#374151', lineHeight: '1.7' }}>
+          The difference between a conversation that creates conflict and one that builds understanding
+          often comes down to a few specific techniques. This module dives deep into two of the most
+          powerful: 'I' statements that express your feelings without triggering defensiveness, and
+          active listening that makes people feel truly heard.
+        </p>
+      </div>
+
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <h3 style={{ fontSize: '20px', fontWeight: '600', color: '#111827', marginBottom: '12px' }}>What You'll Learn</h3>
+        <p style={{ fontSize: '15px', color: '#6B7280', lineHeight: '1.7' }}>
+          You will practise constructing 'I' statements to express needs and feelings clearly, and
+          learn active listening techniques that transform how you engage in conversations. You will
+          also explore how to give and receive feedback in ways that strengthen rather than damage relationships.
+        </p>
+      </div>
+
+      <div style={{ display: 'flex', gap: '40px', marginBottom: '40px' }}>
+        <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ color: '#4F46E5', fontSize: '16px' }}>⚡</span></div>
+            <h4 style={{ fontWeight: '600', color: '#111827', fontSize: '16px' }}>Why This Matters</h4>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {[
+              { title: "'I' Statements Reduce Defensiveness:", body: "Own your experience without blaming others" },
+              { title: "Active Listening Builds Trust:", body: "People open up to those who truly listen" },
+              { title: "Clear Communication Prevents Conflict:", body: "Misunderstandings become rare when language is precise" },
+            ].map((item, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#4F46E5', marginTop: '8px', flexShrink: 0 }} />
+                <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}><strong style={{ color: '#111827' }}>{item.title}</strong> {item.body}</p>
+              </div>
+            ))}
+          </div>
         </div>
 
-        {step === 0 && <Overview onNext={() => setStep(1)} />}
-        {step === 1 && <Assessment onNext={() => setStep(2)} onBack={() => setStep(0)} />}
-        {step === 2 && <Strategies onNext={() => setStep(3)} onBack={() => setStep(1)} />}
-        {step === 3 && <Complete />}
+        <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><span style={{ color: '#4F46E5', fontSize: '16px' }}>📋</span></div>
+            <h4 style={{ fontWeight: '600', color: '#111827', fontSize: '16px' }}>Module 5 Objectives</h4>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            {[
+              "Master the construction and use of 'I' statements",
+              "Practise active listening in real conversations",
+              "Give and receive constructive feedback effectively",
+            ].map((obj, i) => (
+              <div key={i} style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+                <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#9CA3AF', marginTop: '8px', flexShrink: 0 }} />
+                <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}>{obj}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <button onClick={onNext} style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: 'linear-gradient(to right, #4F46E5, #7C3AED)', color: 'white', padding: '16px 40px', borderRadius: '12px', fontWeight: 'bold', fontSize: '18px', border: 'none', cursor: 'pointer' }}>
+          Continue to Assessment <span>→</span>
+        </button>
+      </div>
+    </div>
+  );
+});
+
+const AssessmentStep = memo(function AssessmentStep({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [formData, setFormData] = useState({ iStatements: 5, activeListening: 5, givingFeedback: 5, receivingFeedback: 5, conversationChallenge: '' });
+
+  const questions = [
+    { id: 'iStatements', title: "Using 'I' Statements", description: "How often do you use 'I' statements rather than 'you' statements in conflict?", type: 'slider' as const, min: 1, max: 10, minLabel: 'Never', maxLabel: 'Always' },
+    { id: 'activeListening', title: 'Active Listening', description: 'How well do you actively listen when others speak?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Often Distracted', maxLabel: 'Fully Present' },
+    { id: 'givingFeedback', title: 'Giving Constructive Feedback', description: 'How comfortable are you giving constructive feedback to others?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Very Uncomfortable', maxLabel: 'Very Comfortable' },
+    { id: 'receivingFeedback', title: 'Receiving Critical Feedback', description: 'How well do you receive and act on critical feedback?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Take It Personally', maxLabel: 'Use It Constructively' },
+    { id: 'conversationChallenge', title: 'A Difficult Conversation', description: 'Describe a recent conversation that did not go as planned.', type: 'textarea' as const, placeholder: 'What happened and what would you do differently?' },
+  ];
+
+  const currentQ = questions[currentQuestion];
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
+  const sliderValue = formData[currentQ.id as keyof typeof formData] as number;
+  const sliderMin = currentQ.min ?? 1;
+  const sliderMax = currentQ.max ?? 10;
+
+  const handleNext = () => { if (currentQuestion < questions.length - 1) { setCurrentQuestion(currentQuestion + 1); } else { onNext(); } };
+  const handlePrevious = () => { if (currentQuestion > 0) { setCurrentQuestion(currentQuestion - 1); } else { onBack(); } };
+  const isAnswered = () => { const v = formData[currentQ.id as keyof typeof formData]; if (currentQ.type === 'slider') return true; return (v as string) !== ''; };
+
+  return (
+    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '32px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontSize: '14px', fontWeight: '600', color: '#4F46E5' }}>Assessment</span>
+          <span style={{ fontSize: '14px', fontWeight: '500', color: '#6B7280' }}>Question {currentQuestion + 1} of {questions.length}</span>
+        </div>
+        <div style={{ height: '8px', backgroundColor: '#F3F4F6', borderRadius: '4px', overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(to right, #4F46E5, #7C3AED)', borderRadius: '4px', transition: 'width 0.5s ease' }} />
+        </div>
+      </div>
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <div style={{ marginBottom: '32px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#111827', marginBottom: '8px' }}>{currentQ.title}</h2>
+          <p style={{ color: '#6B7280', fontSize: '15px' }}>{currentQ.description}</p>
+        </div>
+        <div style={{ marginBottom: '48px' }}>
+          {currentQ.type === 'slider' && (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
+                <div style={{ width: '72px', height: '72px', backgroundColor: '#4F46E5', color: 'white', fontSize: '28px', fontWeight: 'bold', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>{sliderValue}</div>
+              </div>
+              <input type="range" min={sliderMin} max={sliderMax} value={sliderValue} onChange={(e) => setFormData({ ...formData, [currentQ.id]: parseInt(e.target.value) })}
+                style={{ width: '100%', height: '8px', borderRadius: '4px', appearance: 'none', cursor: 'pointer', accentColor: '#4F46E5', background: `linear-gradient(to right, #4F46E5 0%, #4F46E5 ${((sliderValue - sliderMin) / (sliderMax - sliderMin)) * 100}%, #e5e7eb ${((sliderValue - sliderMin) / (sliderMax - sliderMin)) * 100}%, #e5e7eb 100%)` }} />
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
+                <span style={{ fontSize: '13px', color: '#9CA3AF' }}>{currentQ.minLabel}</span>
+                <span style={{ fontSize: '13px', color: '#9CA3AF' }}>{currentQ.maxLabel}</span>
+              </div>
+            </div>
+          )}
+          {currentQ.type === 'textarea' && (
+            <textarea value={formData[currentQ.id as keyof typeof formData] as string} onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })} placeholder={currentQ.placeholder} rows={5}
+              style={{ width: '100%', padding: '16px 20px', fontSize: '15px', color: '#111827', border: '2px solid #E5E7EB', borderRadius: '12px', outline: 'none', resize: 'none', lineHeight: '1.6', boxSizing: 'border-box' }} />
+          )}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
+          <button onClick={handlePrevious} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 20px', color: '#374151', fontWeight: '600', borderRadius: '12px', border: 'none', cursor: 'pointer', backgroundColor: 'transparent', fontSize: '15px' }}>← Back</button>
+          <button onClick={handleNext} disabled={!isAnswered()} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', border: 'none', cursor: isAnswered() ? 'pointer' : 'not-allowed', background: isAnswered() ? 'linear-gradient(to right, #4F46E5, #7C3AED)' : '#E5E7EB', color: isAnswered() ? 'white' : '#9CA3AF' }}>
+            {currentQuestion === questions.length - 1 ? 'Continue' : 'Next'} →
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [goals, setGoals] = useState({ iStatementPractice: '', activeListeningPlan: '', feedbackAction: '' });
+
+  const questions = [
+    { id: 'iStatementPractice', title: "Practise 'I' Statements", description: "Where will you practise using 'I' statements this week?", type: 'text' as const, placeholder: 'e.g., In the next disagreement with a colleague' },
+    { id: 'activeListeningPlan', title: 'Active Listening Plan', description: 'How will you demonstrate active listening this week?', type: 'textarea' as const, placeholder: 'Describe the specific techniques you will use...' },
+    { id: 'feedbackAction', title: 'Feedback Goal', description: 'What feedback will you give or request this week?', type: 'text' as const, placeholder: 'e.g., Ask my manager for feedback on my presentation style' },
+  ];
+
+  const currentQ = questions[currentQuestion];
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
+
+  const handleNext = () => { if (currentQuestion < questions.length - 1) { setCurrentQuestion(currentQuestion + 1); } else { completeModule(moduleId); onNext(); } };
+  const handlePrevious = () => { if (currentQuestion > 0) { setCurrentQuestion(currentQuestion - 1); } else { onBack(); } };
+  const isAnswered = () => goals[currentQ.id as keyof typeof goals].trim() !== '';
+
+  return (
+    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '32px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontSize: '14px', fontWeight: '600', color: '#4F46E5' }}>Goal Setting</span>
+          <span style={{ fontSize: '14px', fontWeight: '500', color: '#6B7280' }}>Question {currentQuestion + 1} of {questions.length}</span>
+        </div>
+        <div style={{ height: '8px', backgroundColor: '#F3F4F6', borderRadius: '4px', overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(to right, #4F46E5, #7C3AED)', borderRadius: '4px', transition: 'width 0.5s ease' }} />
+        </div>
+      </div>
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <div style={{ marginBottom: '32px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#111827', marginBottom: '8px' }}>{currentQ.title}</h2>
+          <p style={{ color: '#6B7280', fontSize: '15px' }}>{currentQ.description}</p>
+        </div>
+        <div style={{ marginBottom: '48px' }}>
+          {currentQ.type === 'text' && (
+            <input type="text" value={goals[currentQ.id as keyof typeof goals]} onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })} placeholder={currentQ.placeholder}
+              style={{ width: '100%', padding: '14px 20px', fontSize: '15px', color: '#111827', border: '2px solid #E5E7EB', borderRadius: '12px', outline: 'none', boxSizing: 'border-box' }} />
+          )}
+          {currentQ.type === 'textarea' && (
+            <textarea value={goals[currentQ.id as keyof typeof goals]} onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })} placeholder={currentQ.placeholder} rows={5}
+              style={{ width: '100%', padding: '16px 20px', fontSize: '15px', color: '#111827', border: '2px solid #E5E7EB', borderRadius: '12px', outline: 'none', resize: 'none', lineHeight: '1.6', boxSizing: 'border-box' }} />
+          )}
+        </div>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
+          <button onClick={handlePrevious} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 20px', color: '#374151', fontWeight: '600', borderRadius: '12px', border: 'none', cursor: 'pointer', backgroundColor: 'transparent', fontSize: '15px' }}>← Back</button>
+          <button onClick={handleNext} disabled={!isAnswered()} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', border: 'none', cursor: isAnswered() ? 'pointer' : 'not-allowed', background: isAnswered() ? 'linear-gradient(to right, #4F46E5, #7C3AED)' : '#E5E7EB', color: isAnswered() ? 'white' : '#9CA3AF' }}>
+            {currentQuestion === questions.length - 1 ? 'Complete' : 'Next'} →
+          </button>
+        </div>
       </div>
     </div>
   );
 }
 
-const Overview = memo(({ onNext }: { onNext: () => void }) => (
-  <div className="bg-[#3A4F63] rounded-3xl p-12">
-    <h2 className="text-4xl font-bold text-white mb-6">Team Dynamics & Psychological Safety</h2>
-    {/* 🤖 AI: Team pattern analysis based on collective data */}
-    <div className="mb-6 p-4 bg-purple-900/30 rounded-xl">
-      <p className="text-white"><strong className="text-purple-300">🤖 AI:</strong> Your team shows strong trust but could improve conflict resolution</p>
-    </div>
-    <p className="text-xl text-white mb-6">Psychological safety allows team members to take risks, speak up, and innovate without fear.</p>
-    <div className="grid md:grid-cols-2 gap-6 mb-8">
-      <div className="bg-[#2D3E50] p-6 rounded-xl">
-        <h3 className="font-bold text-white mb-3">Key Elements</h3>
-        <ul className="text-white space-y-2">
-          <li>• Trust & Respect</li>
-          <li>• Open Communication</li>
-          <li>• Healthy Conflict</li>
-          <li>• Shared Goals</li>
-        </ul>
-      </div>
-      <div className="bg-[#2D3E50] p-6 rounded-xl">
-        <h3 className="font-bold text-white mb-3">This Week</h3>
-        <ul className="text-white space-y-2">
-          <li>• Assess team health</li>
-          <li>• Learn collaboration strategies</li>
-          <li>• Create team agreements</li>
-        </ul>
-      </div>
-    </div>
-    <button onClick={onNext} className="px-8 py-4 rounded-xl text-white font-bold" style={{background: GRADIENT}}>Assess Team →</button>
-  </div>
-));
-
-const Assessment = memo(({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
-  const [scores, setScores] = useState({ trust: 5, communication: 5, conflict: 5, collaboration: 5 });
-
+function CompleteStep({ moduleId, nextModuleId }: { moduleId: number; nextModuleId: number }) {
   return (
-    <div className="bg-[#3A4F63] rounded-3xl p-12">
-      <h2 className="text-3xl font-bold text-white mb-6">Team Health Assessment</h2>
-      <p className="text-gray-300 mb-6">Rate your team on these dimensions (1-10)</p>
-      {Object.entries(scores).map(([key, val]) => (
-        <div key={key} className="mb-6 bg-[#2D3E50] p-4 rounded-xl">
-          <label className="text-white font-bold block mb-2 capitalize">{key}: {val}/10</label>
-          <input type="range" min="1" max="10" value={val} onChange={(e) => setScores({...scores, [key]: parseInt(e.target.value)})}
-            className="w-full h-3 bg-white/20 rounded-lg cursor-pointer" />
+    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+      <div style={{ background: 'linear-gradient(to right, #7C3AED, #DB2777, #F472B6)', borderRadius: '20px', padding: '50px', marginBottom: '40px', textAlign: 'center' }}>
+        <div style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.2)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+          <span style={{ color: 'white', fontSize: '24px' }}>✓</span>
         </div>
-      ))}
-      <div className="flex justify-between mt-8">
-        <button onClick={onBack} className="px-8 py-4 rounded-xl text-white font-bold" style={{background: GRADIENT}}>← Back</button>
-        <button onClick={onNext} className="px-8 py-4 rounded-xl text-white font-bold" style={{background: GRADIENT}}>Learn Strategies →</button>
+        <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: 'white', marginBottom: '12px' }}>Module {moduleId} Complete!</h2>
+        <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.8)', maxWidth: '500px', margin: '0 auto', lineHeight: '1.6' }}>
+          You have the tools for clearer, more empathetic communication. Use them in every conversation.
+        </p>
+      </div>
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px' }}>
+        <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '20px', marginBottom: '24px' }}>What's Next?</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {[
+            { num: '1', title: "Use an 'I' statement today", desc: 'Find a real opportunity to practise' },
+            { num: '2', title: 'Listen actively in your next meeting', desc: 'Summarise back what you hear' },
+            { num: '3', title: `Prepare for Module ${nextModuleId}`, desc: 'Stress Management' },
+          ].map((item) => (
+            <div key={item.num} style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+              <div style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <span style={{ color: '#4F46E5', fontSize: '12px', fontWeight: '600' }}>{item.num}</span>
+              </div>
+              <div>
+                <p style={{ fontWeight: '500', color: '#111827', fontSize: '15px', marginBottom: '2px' }}>{item.title}</p>
+                <p style={{ color: '#6B7280', fontSize: '13px' }}>{item.desc}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+      <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
+        <Link href="/dashboard" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', backgroundColor: '#4F46E5', color: 'white', fontWeight: '500', borderRadius: '12px', textDecoration: 'none' }}>View Dashboard →</Link>
+        <Link href="/modules" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', backgroundColor: 'transparent', color: '#374151', fontWeight: '500', borderRadius: '12px', textDecoration: 'none', border: '1px solid #E5E7EB' }}>← Browse Modules</Link>
       </div>
     </div>
   );
-});
-
-const Strategies = memo(({ onNext, onBack }: { onNext: () => void; onBack: () => void }) => {
-  const [agreement, setAgreement] = useState('');
-
-  return (
-    <div className="bg-[#3A4F63] rounded-3xl p-12">
-      <h2 className="text-3xl font-bold text-white mb-6">Collaboration Strategies</h2>
-      <div className="space-y-4 mb-6">
-        <div className="bg-[#2D3E50] p-4 rounded-xl">
-          <h3 className="font-bold text-white mb-2">1. Active Listening</h3>
-          <p className="text-gray-300">Listen to understand, not to respond. Paraphrase to confirm understanding.</p>
-        </div>
-        <div className="bg-[#2D3E50] p-4 rounded-xl">
-          <h3 className="font-bold text-white mb-2">2. Constructive Feedback</h3>
-          <p className="text-gray-300">Use SBI model: Situation, Behavior, Impact. Focus on growth.</p>
-        </div>
-        <div className="bg-[#2D3E50] p-4 rounded-xl">
-          <h3 className="font-bold text-white mb-2">3. Inclusive Decision Making</h3>
-          <p className="text-gray-300">Ensure all voices are heard. Use techniques like round-robin sharing.</p>
-        </div>
-      </div>
-      <div className="mb-6">
-        <label className="text-white font-bold block mb-2">Create a Team Agreement</label>
-        <textarea value={agreement} onChange={(e) => setAgreement(e.target.value)}
-          className="w-full px-4 py-3 bg-[#2D3E50] text-white border-2 border-white/20 rounded-xl"
-          rows={4} placeholder="E.g., 'We commit to respectful communication, timely responses, and supporting each other...'" />
-      </div>
-      <div className="flex justify-between">
-        <button onClick={onBack} className="px-8 py-4 rounded-xl text-white font-bold" style={{background: GRADIENT}}>← Back</button>
-        <button onClick={onNext} disabled={!agreement} className={`px-8 py-4 rounded-xl text-white font-bold ${!agreement && 'opacity-50'}`}
-          style={agreement ? {background: GRADIENT} : {}}>Complete →</button>
-      </div>
-    </div>
-  );
-});
-
-const Complete = memo(() => (
-  <div className="bg-[#3A4F63] rounded-3xl p-12 text-center">
-    <h2 className="text-5xl font-bold text-white mb-6">Module 5 Complete! 🤝</h2>
-    <p className="text-xl text-white mb-8">You're building a foundation for a high-performing team!</p>
-    <div className="flex gap-4 justify-center">
-      <Link href="/dashboard" className="px-10 py-5 rounded-2xl text-white font-bold" style={{background: GRADIENT}}>Dashboard →</Link>
-      <Link href="/modules" className="px-10 py-5 rounded-2xl text-white font-bold" style={{background: GRADIENT}}>All Modules</Link>
-    </div>
-  </div>
-));
+}

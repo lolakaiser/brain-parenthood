@@ -1,40 +1,39 @@
 import { NextResponse } from 'next/server';
+import { connectDB } from '@/lib/mongodb';
+import User from '@/lib/models/User';
 
 export async function GET(request: Request) {
   try {
     const authHeader = request.headers.get('Authorization');
 
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json(
-        { detail: 'Unauthorized' },
-        { status: 401 }
-      );
+      return NextResponse.json({ detail: 'Unauthorized' }, { status: 401 });
     }
 
     const token = authHeader.substring(7);
-
-    // Decode the simple token (in production, validate JWT)
     const decoded = Buffer.from(token, 'base64').toString('utf-8');
-    const [id, email] = decoded.split(':');
+    const [, email] = decoded.split(':');
 
-    if (!id || !email) {
-      return NextResponse.json(
-        { detail: 'Invalid token' },
-        { status: 401 }
-      );
+    if (!email) {
+      return NextResponse.json({ detail: 'Invalid token' }, { status: 401 });
     }
 
-    // Return user data (in production, fetch from database)
+    await connectDB();
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+
+    if (!user) {
+      return NextResponse.json({ detail: 'User not found' }, { status: 404 });
+    }
+
     return NextResponse.json({
-      id: parseInt(id),
-      email,
-      name: email.split('@')[0] // Simple name extraction
+      id: user._id.toString(),
+      email: user.email,
+      name: user.name,
+      isAdmin: user.isAdmin,
     });
   } catch (error) {
     console.error('Auth error:', error);
-    return NextResponse.json(
-      { detail: 'Unauthorized' },
-      { status: 401 }
-    );
+    return NextResponse.json({ detail: 'Unauthorized' }, { status: 401 });
   }
 }

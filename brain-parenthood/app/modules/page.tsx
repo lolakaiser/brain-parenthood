@@ -3,9 +3,11 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import AppLayout from "@/components/AppLayout";
+import { useAuth } from "@/context/AuthContext";
 import { getProgress } from "@/lib/storage";
 
 export default function ModulesPage() {
+  const { user } = useAuth();
   const [completedModules, setCompletedModules] = useState<number[]>([]);
 
   useEffect(() => {
@@ -53,30 +55,30 @@ export default function ModulesPage() {
 
         {/* Row 1 */}
         <div style={{ display: 'flex', gap: '40px', marginBottom: '40px' }}>
-          <ModuleCard module={modules[0]} completedModules={completedModules} currentModule={currentModule} />
-          <ModuleCard module={modules[1]} completedModules={completedModules} currentModule={currentModule} />
-          <ModuleCard module={modules[2]} completedModules={completedModules} currentModule={currentModule} />
+          <ModuleCard module={modules[0]} completedModules={completedModules} currentModule={currentModule} isAdmin={!!user?.isAdmin} />
+          <ModuleCard module={modules[1]} completedModules={completedModules} currentModule={currentModule} isAdmin={!!user?.isAdmin} />
+          <ModuleCard module={modules[2]} completedModules={completedModules} currentModule={currentModule} isAdmin={!!user?.isAdmin} />
         </div>
 
         {/* Row 2 */}
         <div style={{ display: 'flex', gap: '40px', marginBottom: '40px' }}>
-          <ModuleCard module={modules[3]} completedModules={completedModules} currentModule={currentModule} />
-          <ModuleCard module={modules[4]} completedModules={completedModules} currentModule={currentModule} />
-          <ModuleCard module={modules[5]} completedModules={completedModules} currentModule={currentModule} />
+          <ModuleCard module={modules[3]} completedModules={completedModules} currentModule={currentModule} isAdmin={!!user?.isAdmin} />
+          <ModuleCard module={modules[4]} completedModules={completedModules} currentModule={currentModule} isAdmin={!!user?.isAdmin} />
+          <ModuleCard module={modules[5]} completedModules={completedModules} currentModule={currentModule} isAdmin={!!user?.isAdmin} />
         </div>
 
         {/* Row 3 */}
         <div style={{ display: 'flex', gap: '40px', marginBottom: '40px' }}>
-          <ModuleCard module={modules[6]} completedModules={completedModules} currentModule={currentModule} />
-          <ModuleCard module={modules[7]} completedModules={completedModules} currentModule={currentModule} />
-          <ModuleCard module={modules[8]} completedModules={completedModules} currentModule={currentModule} />
+          <ModuleCard module={modules[6]} completedModules={completedModules} currentModule={currentModule} isAdmin={!!user?.isAdmin} />
+          <ModuleCard module={modules[7]} completedModules={completedModules} currentModule={currentModule} isAdmin={!!user?.isAdmin} />
+          <ModuleCard module={modules[8]} completedModules={completedModules} currentModule={currentModule} isAdmin={!!user?.isAdmin} />
         </div>
 
         {/* Row 4 */}
         <div style={{ display: 'flex', gap: '40px' }}>
-          <ModuleCard module={modules[9]} completedModules={completedModules} currentModule={currentModule} />
-          <ModuleCard module={modules[10]} completedModules={completedModules} currentModule={currentModule} />
-          <ModuleCard module={modules[11]} completedModules={completedModules} currentModule={currentModule} />
+          <ModuleCard module={modules[9]} completedModules={completedModules} currentModule={currentModule} isAdmin={!!user?.isAdmin} />
+          <ModuleCard module={modules[10]} completedModules={completedModules} currentModule={currentModule} isAdmin={!!user?.isAdmin} />
+          <ModuleCard module={modules[11]} completedModules={completedModules} currentModule={currentModule} isAdmin={!!user?.isAdmin} />
         </div>
 
       </div>
@@ -84,14 +86,15 @@ export default function ModulesPage() {
   );
 }
 
-function ModuleCard({ module, completedModules, currentModule }: {
+function ModuleCard({ module, completedModules, currentModule, isAdmin }: {
   module: typeof modules[0],
   completedModules: number[],
-  currentModule: number
+  currentModule: number,
+  isAdmin: boolean
 }) {
   const isCompleted = completedModules.includes(module.id);
   const isCurrent = module.id === currentModule;
-  const isLocked = module.id > currentModule;
+  const isLocked = !isAdmin && module.id > currentModule;
 
   return (
     <div style={{

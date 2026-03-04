@@ -1,10 +1,6 @@
 import { NextResponse } from 'next/server';
-
-// Simple in-memory user storage (in production, use a database)
-const users = new Map<string, { id: number; email: string; password: string; name: string }>();
-
-// Add a default test user
-users.set('test@test.com', { id: 1, email: 'test@test.com', password: 'test', name: 'Test User' });
+import { connectDB } from '@/lib/mongodb';
+import User from '@/lib/models/User';
 
 export async function POST(request: Request) {
   try {
@@ -17,7 +13,9 @@ export async function POST(request: Request) {
       );
     }
 
-    const user = users.get(email);
+    await connectDB();
+
+    const user = await User.findOne({ email: email.toLowerCase() });
 
     if (!user || user.password !== password) {
       return NextResponse.json(
@@ -26,23 +24,20 @@ export async function POST(request: Request) {
       );
     }
 
-    // Generate a simple token (in production, use JWT)
-    const token = Buffer.from(`${user.id}:${user.email}:${Date.now()}`).toString('base64');
+    const token = Buffer.from(`${user._id}:${user.email}:${Date.now()}`).toString('base64');
 
     return NextResponse.json({
       access_token: token,
-      token_type: "bearer",
+      token_type: 'bearer',
       user: {
-        id: user.id,
+        id: user._id.toString(),
         email: user.email,
-        name: user.name
-      }
+        name: user.name,
+        isAdmin: user.isAdmin,
+      },
     });
   } catch (error) {
     console.error('Login error:', error);
-    return NextResponse.json(
-      { detail: 'Internal server error' },
-      { status: 500 }
-    );
+    return NextResponse.json({ detail: 'Internal server error' }, { status: 500 });
   }
 }

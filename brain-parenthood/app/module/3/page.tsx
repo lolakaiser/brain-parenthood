@@ -4,52 +4,28 @@ import Link from "next/link";
 import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import AppLayout from "@/components/AppLayout";
+import { completeModule } from "@/lib/storage";
 
-type StepType = 'overview' | 'learning' | 'practice' | 'complete';
+type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
 
 const STEPS = [
   { id: 'overview' as const, label: 'Overview' },
-  { id: 'learning' as const, label: 'Learn' },
-  { id: 'practice' as const, label: 'Practice' },
+  { id: 'assessment' as const, label: 'Assessment' },
+  { id: 'goals' as const, label: 'Goals' },
   { id: 'complete' as const, label: 'Complete' },
 ];
 
-const GRADIENT_STYLE = 'linear-gradient(135deg, #9333ea 0%, #3b82f6 100%)';
-const ACTIVE_STEP_STYLE = {
-  filter: 'drop-shadow(0px 0px 2px #9333ea) drop-shadow(0px 0px 4px #3b82f6)',
-  fontWeight: '900' as const
-};
-
 export default function Module3Page() {
   const [currentStep, setCurrentStep] = useState<StepType>('overview');
-  const { user, isAuthenticated } = useAuth();
+  const { isAuthenticated } = useAuth();
   const router = useRouter();
-
-  // 🤖 AI Integration Point: Fetch personalized recommendations
-  const [aiRecommendations, setAiRecommendations] = useState<string[]>([]);
 
   useEffect(() => {
     if (!isAuthenticated) {
       router.push('/login');
     }
   }, [isAuthenticated, router]);
-
-  // 🤖 AI Integration: Load personalized content based on user's baseline
-  useEffect(() => {
-    const fetchPersonalizedContent = async () => {
-      // TODO: Call AI API to get personalized cognitive distortions to focus on
-      // Based on user's baseline stress levels and challenges
-      // Example: if user has high stress + catastrophizing tendencies
-      setAiRecommendations([
-        "Focus on catastrophizing patterns - your baseline suggests this may be a key area",
-        "Practice evidence-based thinking for work-related scenarios"
-      ]);
-    };
-
-    if (user) {
-      fetchPersonalizedContent();
-    }
-  }, [user]);
 
   const handleSetStep = useCallback((step: StepType) => {
     setCurrentStep(step);
@@ -59,307 +35,482 @@ export default function Module3Page() {
     return null;
   }
 
-  return (
-    <div className="min-h-screen pt-32 bg-[#2D3E50]">
-      <div className="mx-auto py-8" style={{ paddingLeft: '8vw', paddingRight: '8vw', maxWidth: '1600px' }}>
-        <div className="mb-8 animate-fade-in">
-          <Link href="/modules" className="inline-flex items-center gap-2 text-white hover:text-gray-300 font-medium mb-4 transition-colors group">
-            <span className="transform group-hover:-translate-x-1 transition-transform">←</span>
-            Back to Modules
-          </Link>
-          <h1 className="text-5xl font-extrabold text-white mb-2">
-            Module 3: Cognitive Restructuring
-          </h1>
-          <p className="text-xl text-white">Week 3 - Transform Your Thinking Patterns</p>
-        </div>
+  const currentStepIndex = STEPS.findIndex(s => s.id === currentStep);
 
-        <div className="mb-8 animate-slide-up">
-          <div className="flex items-center justify-between mb-2 max-w-3xl mx-auto">
+  return (
+    <AppLayout>
+      <div style={{ background: 'linear-gradient(to right, #4F46E5, #7C3AED, #EC4899)', width: '100%' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
+          <Link
+            href="/modules"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '8px',
+              color: 'rgba(255,255,255,0.7)',
+              fontWeight: '500',
+              marginBottom: '24px',
+              textDecoration: 'none',
+              fontSize: '14px',
+            }}
+          >
+            ← Back to Modules
+          </Link>
+          <h1 style={{ fontSize: '36px', fontWeight: 'bold', color: 'white', marginBottom: '8px' }}>
+            Module 3: How to Put Your Best Foot Forward
+          </h1>
+          <p style={{ color: 'rgba(255,255,255,0.7)', fontSize: '18px' }}>
+            Week 3 &bull; Mastering effective communication
+          </p>
+        </div>
+      </div>
+
+      <div style={{ backgroundColor: 'white', borderBottom: '1px solid #E5E7EB' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '24px 80px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
             {STEPS.map((step, index) => (
-              <div key={step.id} className="flex items-center flex-1">
-                <div className={`flex flex-col items-center w-full transition-all duration-300 ${currentStep === step.id ? 'scale-110' : ''}`}>
-                  <div className={`w-12 h-12 rounded-full flex items-center justify-center font-extrabold text-lg transition-all duration-300 shadow-lg bg-[#3A4F63]
-                      ${currentStep === step.id ? 'text-white' : STEPS.findIndex(s => s.id === currentStep) > index ? 'text-white' : 'text-gray-400'}`}
-                    style={currentStep === step.id ? ACTIVE_STEP_STYLE : undefined}>
+              <div key={step.id} style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
+                  <div
+                    style={{
+                      width: '36px',
+                      height: '36px',
+                      borderRadius: '50%',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: '14px',
+                      fontWeight: '600',
+                      marginBottom: '8px',
+                      backgroundColor: index <= currentStepIndex ? '#4F46E5' : '#E5E7EB',
+                      color: index <= currentStepIndex ? 'white' : '#6B7280',
+                    }}
+                  >
                     {index + 1}
                   </div>
-                  <span className={`text-xs mt-2 text-center font-bold transition-all duration-300 ${currentStep === step.id ? 'text-white' : STEPS.findIndex(s => s.id === currentStep) > index ? 'text-white' : 'text-gray-400'}`}
-                    style={currentStep === step.id ? ACTIVE_STEP_STYLE : undefined}>
+                  <span style={{ fontSize: '12px', fontWeight: '500', color: index <= currentStepIndex ? '#111827' : '#9CA3AF' }}>
                     {step.label}
                   </span>
                 </div>
                 {index < STEPS.length - 1 && (
-                  <div className={`h-1 flex-1 -mt-6 rounded transition-all duration-300 ${STEPS.findIndex(s => s.id === currentStep) > index ? 'bg-white/40' : 'bg-white/20'}`} />
+                  <div style={{ flex: 1, height: '2px', marginTop: '-24px', marginLeft: '8px', marginRight: '8px' }}>
+                    <div style={{ height: '100%', backgroundColor: index < currentStepIndex ? '#4F46E5' : '#E5E7EB' }} />
+                  </div>
                 )}
               </div>
             ))}
           </div>
         </div>
+      </div>
 
-        <div className="animate-fade-in">
-          {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('learning')} aiRecommendations={aiRecommendations} />}
-          {currentStep === 'learning' && <LearningStep onNext={() => handleSetStep('practice')} onBack={() => handleSetStep('overview')} />}
-          {currentStep === 'practice' && <PracticeStep onNext={() => handleSetStep('complete')} onBack={() => handleSetStep('learning')} />}
-          {currentStep === 'complete' && <CompleteStep />}
+      <div style={{ backgroundColor: '#F5F7FA', minHeight: 'calc(100vh - 300px)' }}>
+        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
+          {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('assessment')} />}
+          {currentStep === 'assessment' && (
+            <AssessmentStep onNext={() => handleSetStep('goals')} onBack={() => handleSetStep('overview')} />
+          )}
+          {currentStep === 'goals' && (
+            <GoalsStep onNext={() => handleSetStep('complete')} onBack={() => handleSetStep('assessment')} moduleId={3} />
+          )}
+          {currentStep === 'complete' && <CompleteStep moduleId={3} nextModuleId={4} />}
+        </div>
+      </div>
+    </AppLayout>
+  );
+}
+
+const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void }) {
+  return (
+    <div style={{ maxWidth: '800px', margin: '0 auto' }}>
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <h2 style={{ fontSize: '28px', fontWeight: 'bold', color: '#111827', marginBottom: '12px' }}>
+          How to Put Your Best Foot Forward
+        </h2>
+        <p style={{ fontSize: '16px', color: '#6B7280', marginBottom: '24px', lineHeight: '1.6' }}>
+          Verbal and non-verbal communication for personal and professional success
+        </p>
+        <p style={{ fontSize: '15px', color: '#374151', lineHeight: '1.7' }}>
+          Every interaction is an opportunity to build trust, credibility, and connection. Whether
+          you are pitching to investors, leading your team, or networking at an event, your
+          communication style shapes how others perceive and respond to you. This module gives
+          you the tools to show up confidently in every professional setting.
+        </p>
+      </div>
+
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <h3 style={{ fontSize: '20px', fontWeight: '600', color: '#111827', marginBottom: '12px' }}>What You'll Learn</h3>
+        <p style={{ fontSize: '15px', color: '#6B7280', lineHeight: '1.7' }}>
+          From first impressions to sustained professional presence, this module covers the verbal
+          and non-verbal skills that make communication powerful. You will practice adapting your
+          message to different audiences and situations, and leave with a clear plan for putting
+          your best foot forward every day.
+        </p>
+      </div>
+
+      <div style={{ display: 'flex', gap: '40px', marginBottom: '40px' }}>
+        <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ color: '#4F46E5', fontSize: '16px' }}>⚡</span>
+            </div>
+            <h4 style={{ fontWeight: '600', color: '#111827', fontSize: '16px' }}>Why This Matters</h4>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#4F46E5', marginTop: '8px', flexShrink: 0 }} />
+              <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}>
+                <strong style={{ color: '#111827' }}>First Impressions:</strong> Shape how others perceive you from the start
+              </p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#4F46E5', marginTop: '8px', flexShrink: 0 }} />
+              <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}>
+                <strong style={{ color: '#111827' }}>Professional Presence:</strong> Project confidence and authority in any room
+              </p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#4F46E5', marginTop: '8px', flexShrink: 0 }} />
+              <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}>
+                <strong style={{ color: '#111827' }}>Effective Communication:</strong> Get your message across clearly and persuasively
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <div style={{ flex: 1, backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px' }}>
+            <div style={{ width: '36px', height: '36px', borderRadius: '8px', backgroundColor: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <span style={{ color: '#4F46E5', fontSize: '16px' }}>📋</span>
+            </div>
+            <h4 style={{ fontWeight: '600', color: '#111827', fontSize: '16px' }}>Module 3 Objectives</h4>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#9CA3AF', marginTop: '8px', flexShrink: 0 }} />
+              <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}>Master verbal communication techniques for professional settings</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#9CA3AF', marginTop: '8px', flexShrink: 0 }} />
+              <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}>Improve non-verbal communication awareness</p>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'flex-start', gap: '12px' }}>
+              <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#9CA3AF', marginTop: '8px', flexShrink: 0 }} />
+              <p style={{ color: '#374151', fontSize: '14px', lineHeight: '1.6' }}>Build a strong and authentic professional presence</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <button
+          onClick={onNext}
+          style={{
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '12px',
+            background: 'linear-gradient(to right, #4F46E5, #7C3AED)',
+            color: 'white',
+            padding: '16px 40px',
+            borderRadius: '12px',
+            fontWeight: 'bold',
+            fontSize: '18px',
+            border: 'none',
+            cursor: 'pointer',
+          }}
+        >
+          Continue to Assessment
+          <span>→</span>
+        </button>
+      </div>
+    </div>
+  );
+});
+
+const AssessmentStep = memo(function AssessmentStep({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [formData, setFormData] = useState({
+    verbalSkills: 5,
+    nonVerbalAwareness: 5,
+    professionalConfidence: 5,
+    audienceAdaptation: 5,
+    communicationChallenge: '',
+  });
+
+  const questions = [
+    {
+      id: 'verbalSkills',
+      title: 'Verbal Communication Skills',
+      description: 'Rate your verbal communication skills in professional settings.',
+      type: 'slider' as const,
+      min: 1,
+      max: 10,
+      minLabel: 'Need Significant Work',
+      maxLabel: 'Very Strong',
+    },
+    {
+      id: 'nonVerbalAwareness',
+      title: 'Non-Verbal Communication Awareness',
+      description: 'Rate your awareness of non-verbal communication (body language, tone, eye contact).',
+      type: 'slider' as const,
+      min: 1,
+      max: 10,
+      minLabel: 'Very Low Awareness',
+      maxLabel: 'Highly Aware',
+    },
+    {
+      id: 'professionalConfidence',
+      title: 'Professional Confidence',
+      description: 'How confident are you in professional settings such as meetings, pitches, or networking?',
+      type: 'slider' as const,
+      min: 1,
+      max: 10,
+      minLabel: 'Not Confident',
+      maxLabel: 'Very Confident',
+    },
+    {
+      id: 'audienceAdaptation',
+      title: 'Adapting to Your Audience',
+      description: 'How well do you adapt your communication style depending on who you are talking to?',
+      type: 'slider' as const,
+      min: 1,
+      max: 10,
+      minLabel: 'One Size Fits All',
+      maxLabel: 'Highly Adaptable',
+    },
+    {
+      id: 'communicationChallenge',
+      title: 'A Communication Challenge',
+      description: 'Describe a communication challenge you recently experienced.',
+      type: 'textarea' as const,
+      placeholder: 'What happened and what made it difficult?',
+    },
+  ];
+
+  const currentQ = questions[currentQuestion];
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
+
+  const handleNext = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      onNext();
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
+    } else {
+      onBack();
+    }
+  };
+
+  const isAnswered = () => {
+    const value = formData[currentQ.id as keyof typeof formData];
+    if (currentQ.type === 'slider') return true;
+    return (value as string) !== '';
+  };
+
+  const sliderValue = formData[currentQ.id as keyof typeof formData] as number;
+  const sliderMin = currentQ.min ?? 1;
+  const sliderMax = currentQ.max ?? 10;
+
+  return (
+    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '32px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontSize: '14px', fontWeight: '600', color: '#4F46E5' }}>Assessment</span>
+          <span style={{ fontSize: '14px', fontWeight: '500', color: '#6B7280' }}>
+            Question {currentQuestion + 1} of {questions.length}
+          </span>
+        </div>
+        <div style={{ height: '8px', backgroundColor: '#F3F4F6', borderRadius: '4px', overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(to right, #4F46E5, #7C3AED)', borderRadius: '4px', transition: 'width 0.5s ease' }} />
+        </div>
+      </div>
+
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <div style={{ marginBottom: '32px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#111827', marginBottom: '8px' }}>{currentQ.title}</h2>
+          <p style={{ color: '#6B7280', fontSize: '15px' }}>{currentQ.description}</p>
+        </div>
+
+        <div style={{ marginBottom: '48px' }}>
+          {currentQ.type === 'slider' && (
+            <div>
+              <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
+                <div style={{ width: '72px', height: '72px', backgroundColor: '#4F46E5', color: 'white', fontSize: '28px', fontWeight: 'bold', borderRadius: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  {sliderValue}
+                </div>
+              </div>
+              <input
+                type="range"
+                min={sliderMin}
+                max={sliderMax}
+                value={sliderValue}
+                onChange={(e) => setFormData({ ...formData, [currentQ.id]: parseInt(e.target.value) })}
+                style={{
+                  width: '100%',
+                  height: '8px',
+                  borderRadius: '4px',
+                  appearance: 'none',
+                  cursor: 'pointer',
+                  accentColor: '#4F46E5',
+                  background: `linear-gradient(to right, #4F46E5 0%, #4F46E5 ${((sliderValue - sliderMin) / (sliderMax - sliderMin)) * 100}%, #e5e7eb ${((sliderValue - sliderMin) / (sliderMax - sliderMin)) * 100}%, #e5e7eb 100%)`,
+                }}
+              />
+              <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '8px' }}>
+                <span style={{ fontSize: '13px', color: '#9CA3AF' }}>{currentQ.minLabel}</span>
+                <span style={{ fontSize: '13px', color: '#9CA3AF' }}>{currentQ.maxLabel}</span>
+              </div>
+            </div>
+          )}
+
+          {currentQ.type === 'textarea' && (
+            <textarea
+              value={formData[currentQ.id as keyof typeof formData] as string}
+              onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })}
+              placeholder={currentQ.placeholder}
+              rows={5}
+              style={{ width: '100%', padding: '16px 20px', fontSize: '15px', color: '#111827', border: '2px solid #E5E7EB', borderRadius: '12px', outline: 'none', resize: 'none', lineHeight: '1.6', boxSizing: 'border-box' }}
+            />
+          )}
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
+          <button onClick={handlePrevious} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 20px', color: '#374151', fontWeight: '600', borderRadius: '12px', border: 'none', cursor: 'pointer', backgroundColor: 'transparent', fontSize: '15px' }}>
+            ← Back
+          </button>
+          <button
+            onClick={handleNext}
+            disabled={!isAnswered()}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', border: 'none', cursor: isAnswered() ? 'pointer' : 'not-allowed', background: isAnswered() ? 'linear-gradient(to right, #4F46E5, #7C3AED)' : '#E5E7EB', color: isAnswered() ? 'white' : '#9CA3AF' }}
+          >
+            {currentQuestion === questions.length - 1 ? 'Continue' : 'Next'} →
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+});
+
+function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [goals, setGoals] = useState({ verbalSkill: '', nonVerbalGoal: '', presenceGoal: '' });
+
+  const questions = [
+    { id: 'verbalSkill', title: 'Verbal Communication Goal', description: 'What verbal communication skill will you focus on improving this week?', type: 'text' as const, placeholder: 'e.g., Speak more concisely and avoid filler words in meetings' },
+    { id: 'nonVerbalGoal', title: 'Non-Verbal Communication Goal', description: 'How will you improve your non-verbal communication?', type: 'textarea' as const, placeholder: 'Describe what you will work on — body language, eye contact, tone...' },
+    { id: 'presenceGoal', title: 'Professional Presence Goal', description: 'What professional presence goal will you set for yourself this week?', type: 'text' as const, placeholder: 'e.g., Introduce myself confidently at the next networking event' },
+  ];
+
+  const currentQ = questions[currentQuestion];
+  const progress = ((currentQuestion + 1) / questions.length) * 100;
+
+  const handleNext = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      completeModule(moduleId);
+      onNext();
+    }
+  };
+
+  const handlePrevious = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
+    } else {
+      onBack();
+    }
+  };
+
+  const isAnswered = () => goals[currentQ.id as keyof typeof goals].trim() !== '';
+
+  return (
+    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+      <div style={{ marginBottom: '32px' }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <span style={{ fontSize: '14px', fontWeight: '600', color: '#4F46E5' }}>Goal Setting</span>
+          <span style={{ fontSize: '14px', fontWeight: '500', color: '#6B7280' }}>Question {currentQuestion + 1} of {questions.length}</span>
+        </div>
+        <div style={{ height: '8px', backgroundColor: '#F3F4F6', borderRadius: '4px', overflow: 'hidden' }}>
+          <div style={{ height: '100%', width: `${progress}%`, background: 'linear-gradient(to right, #4F46E5, #7C3AED)', borderRadius: '4px', transition: 'width 0.5s ease' }} />
+        </div>
+      </div>
+
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
+        <div style={{ marginBottom: '32px' }}>
+          <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: '#111827', marginBottom: '8px' }}>{currentQ.title}</h2>
+          <p style={{ color: '#6B7280', fontSize: '15px' }}>{currentQ.description}</p>
+        </div>
+
+        <div style={{ marginBottom: '48px' }}>
+          {currentQ.type === 'text' && (
+            <input type="text" value={goals[currentQ.id as keyof typeof goals]} onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })} placeholder={currentQ.placeholder}
+              style={{ width: '100%', padding: '14px 20px', fontSize: '15px', color: '#111827', border: '2px solid #E5E7EB', borderRadius: '12px', outline: 'none', boxSizing: 'border-box' }} />
+          )}
+          {currentQ.type === 'textarea' && (
+            <textarea value={goals[currentQ.id as keyof typeof goals]} onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })} placeholder={currentQ.placeholder} rows={5}
+              style={{ width: '100%', padding: '16px 20px', fontSize: '15px', color: '#111827', border: '2px solid #E5E7EB', borderRadius: '12px', outline: 'none', resize: 'none', lineHeight: '1.6', boxSizing: 'border-box' }} />
+          )}
+        </div>
+
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
+          <button onClick={handlePrevious} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 20px', color: '#374151', fontWeight: '600', borderRadius: '12px', border: 'none', cursor: 'pointer', backgroundColor: 'transparent', fontSize: '15px' }}>
+            ← Back
+          </button>
+          <button onClick={handleNext} disabled={!isAnswered()}
+            style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', border: 'none', cursor: isAnswered() ? 'pointer' : 'not-allowed', background: isAnswered() ? 'linear-gradient(to right, #4F46E5, #7C3AED)' : '#E5E7EB', color: isAnswered() ? 'white' : '#9CA3AF' }}>
+            {currentQuestion === questions.length - 1 ? 'Complete' : 'Next'} →
+          </button>
         </div>
       </div>
     </div>
   );
 }
 
-const OverviewStep = memo(function OverviewStep({ onNext, aiRecommendations }: { onNext: () => void; aiRecommendations: string[] }) {
+function CompleteStep({ moduleId, nextModuleId }: { moduleId: number; nextModuleId: number }) {
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-[#3A4F63] rounded-3xl shadow-2xl p-12 border border-white/10">
-        <h2 className="text-4xl font-bold mb-6 text-white text-center">Welcome to Cognitive Restructuring</h2>
-
-        {/* 🤖 AI Personalization Section */}
-        {aiRecommendations.length > 0 && (
-          <div className="mb-6 p-6 bg-purple-900/30 rounded-2xl border border-purple-500/50">
-            <h3 className="font-bold text-lg mb-3 text-[#A78BFA] flex items-center gap-2">
-              <span>🤖</span> Personalized for You
-            </h3>
-            <ul className="space-y-2 text-white">
-              {aiRecommendations.map((rec, i) => (
-                <li key={i} className="flex items-start gap-2">
-                  <span className="text-purple-400">•</span>
-                  <span>{rec}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        )}
-
-        <div className="prose max-w-none mb-8 space-y-6">
-          <p className="text-xl text-white leading-relaxed">
-            Our thoughts shape our reality. This week, you'll learn to identify and transform unhelpful thought patterns that increase stress and decrease performance.
-          </p>
-
-          <div className="bg-[#2D3E50] rounded-2xl p-8 border border-white/20">
-            <h3 className="text-2xl font-bold mb-4 text-[#A78BFA]">The Power of Thoughts</h3>
-            <p className="text-white leading-relaxed">
-              Cognitive restructuring helps you challenge automatic negative thoughts and replace them with more balanced, realistic thinking. Research shows this reduces stress by 35-45% and improves problem-solving.
-            </p>
-          </div>
-
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="bg-[#2D3E50] rounded-2xl p-6 shadow-lg border border-white/20">
-              <h4 className="font-bold text-lg mb-3 text-[#FB8989]">Why This Matters</h4>
-              <ul className="space-y-3 text-white">
-                <li className="flex items-start">
-                  <span className="text-[#FB8989] mr-2 text-xl">✓</span>
-                  <div><strong>Reduce Anxiety:</strong> Challenge catastrophic thinking</div>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-[#FB8989] mr-2 text-xl">✓</span>
-                  <div><strong>Better Decisions:</strong> See situations more clearly</div>
-                </li>
-                <li className="flex items-start">
-                  <span className="text-[#FB8989] mr-2 text-xl">✓</span>
-                  <div><strong>Improved Mood:</strong> Break negative thought cycles</div>
-                </li>
-              </ul>
-            </div>
-
-            <div className="bg-[#2D3E50] rounded-2xl p-6 shadow-lg border border-white/20">
-              <h4 className="font-bold text-lg mb-3 text-[#7DD3FC]">Module 3 Objectives</h4>
-              <ul className="space-y-3 text-white">
-                <li>Learn 7 common cognitive distortions</li>
-                <li>Practice thought challenging technique</li>
-                <li>Create balanced thought alternatives</li>
-              </ul>
-            </div>
-          </div>
+    <div style={{ maxWidth: '700px', margin: '0 auto' }}>
+      <div style={{ background: 'linear-gradient(to right, #7C3AED, #DB2777, #F472B6)', borderRadius: '20px', padding: '50px', marginBottom: '40px', textAlign: 'center' }}>
+        <div style={{ width: '56px', height: '56px', borderRadius: '50%', backgroundColor: 'rgba(255,255,255,0.2)', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', marginBottom: '20px' }}>
+          <span style={{ color: 'white', fontSize: '24px' }}>✓</span>
         </div>
-
-        <div className="text-center mt-10">
-          <button onClick={onNext} className="group relative inline-flex items-center gap-3 bg-gradient-to-r from-purple-600 to-blue-600 text-white px-12 py-5 rounded-2xl font-bold text-lg
-                   hover:from-purple-700 hover:to-blue-700 transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95"
-            style={{ background: GRADIENT_STYLE }}>
-            <span>Learn Cognitive Distortions</span>
-            <span className="text-2xl transform group-hover:translate-x-1 transition-transform">→</span>
-          </button>
-        </div>
+        <h2 style={{ fontSize: '32px', fontWeight: 'bold', color: 'white', marginBottom: '12px' }}>Module {moduleId} Complete!</h2>
+        <p style={{ fontSize: '16px', color: 'rgba(255,255,255,0.8)', maxWidth: '500px', margin: '0 auto', lineHeight: '1.6' }}>
+          You have taken steps to sharpen your communication skills and professional presence. Keep practising every interaction.
+        </p>
       </div>
-    </div>
-  );
-});
 
-const LearningStep = memo(function LearningStep({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
-  const [selectedDistortion, setSelectedDistortion] = useState<string | null>(null);
-
-  const distortions = [
-    { id: 'catastrophizing', name: 'Catastrophizing', icon: '😱', example: '"If I make one mistake, I\'ll get fired"', reframe: '"One mistake is a learning opportunity, not a career ender"' },
-    { id: 'blackwhite', name: 'All-or-Nothing', icon: '⚫⚪', example: '"I\'m either perfect or a total failure"', reframe: '"Success exists on a spectrum, not just extremes"' },
-    { id: 'overgeneralize', name: 'Overgeneralizing', icon: '🔄', example: '"I failed once, so I always fail"', reframe: '"This one situation doesn\'t define all situations"' },
-    { id: 'mindreading', name: 'Mind Reading', icon: '🔮', example: '"They think I\'m incompetent"', reframe: '"I don\'t know what they think unless they tell me"' },
-    { id: 'shouldstatements', name: 'Should Statements', icon: '👉', example: '"I should always be productive"', reframe: '"I prefer to be productive, but rest is also valuable"' },
-    { id: 'labeling', name: 'Labeling', icon: '🏷️', example: '"I\'m such an idiot"', reframe: '"I made a mistake, but that doesn\'t define who I am"' },
-    { id: 'fortune', name: 'Fortune Telling', icon: '🔮', example: '"This project will definitely fail"', reframe: '"I can\'t predict the future, but I can do my best"' },
-  ];
-
-  return (
-    <div className="max-w-5xl mx-auto">
-      <div className="bg-[#3A4F63] rounded-3xl shadow-2xl p-10 border border-white/10">
-        <h2 className="text-3xl font-bold mb-6 text-center text-white">7 Common Cognitive Distortions</h2>
-        <p className="text-center text-gray-300 mb-8">Click each to see examples and reframes</p>
-
-        <div className="grid md:grid-cols-3 lg:grid-cols-4 gap-4 mb-8">
-          {distortions.map((dist) => (
-            <div key={dist.id} onClick={() => setSelectedDistortion(dist.id)}
-              className={`bg-[#2D3E50] rounded-xl p-4 cursor-pointer transition-all duration-300 border-2 text-center
-                ${selectedDistortion === dist.id ? 'border-purple-500 shadow-xl scale-105' : 'border-white/20 hover:border-white/40'}`}>
-              <div className="text-4xl mb-2">{dist.icon}</div>
-              <h3 className="font-bold text-sm text-white">{dist.name}</h3>
+      <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px' }}>
+        <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '20px', marginBottom: '24px' }}>What's Next?</h3>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {[
+            { num: '1', title: 'Practise your verbal goal', desc: 'Apply it in your next meeting or conversation' },
+            { num: '2', title: 'Check your non-verbal signals', desc: 'Be mindful of body language in real situations' },
+            { num: '3', title: `Prepare for Module ${nextModuleId}`, desc: 'The Nuts and Bolts' },
+          ].map((item) => (
+            <div key={item.num} style={{ display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+              <div style={{ width: '28px', height: '28px', borderRadius: '8px', backgroundColor: '#EEF2FF', display: 'flex', alignItems: 'center', justifyContent: 'center', flexShrink: 0 }}>
+                <span style={{ color: '#4F46E5', fontSize: '12px', fontWeight: '600' }}>{item.num}</span>
+              </div>
+              <div>
+                <p style={{ fontWeight: '500', color: '#111827', fontSize: '15px', marginBottom: '2px' }}>{item.title}</p>
+                <p style={{ color: '#6B7280', fontSize: '13px' }}>{item.desc}</p>
+              </div>
             </div>
           ))}
         </div>
+      </div>
 
-        {selectedDistortion && (
-          <div className="bg-[#2D3E50] rounded-2xl p-8 border border-purple-500/50 animate-fade-in">
-            <h3 className="font-bold text-2xl mb-4 text-[#A78BFA]">
-              {distortions.find(d => d.id === selectedDistortion)?.name}
-            </h3>
-            <div className="space-y-4">
-              <div className="p-4 bg-red-900/20 rounded-xl border border-red-500/30">
-                <p className="text-sm font-bold text-red-300 mb-2">❌ Distorted Thinking:</p>
-                <p className="text-white italic">{distortions.find(d => d.id === selectedDistortion)?.example}</p>
-              </div>
-              <div className="p-4 bg-green-900/20 rounded-xl border border-green-500/30">
-                <p className="text-sm font-bold text-green-300 mb-2">✅ Balanced Alternative:</p>
-                <p className="text-white italic">{distortions.find(d => d.id === selectedDistortion)?.reframe}</p>
-              </div>
-
-              {/* 🤖 AI Integration Point */}
-              <div className="p-4 bg-purple-900/20 rounded-xl border border-purple-500/30">
-                <p className="text-sm font-bold text-purple-300 mb-2">🤖 AI Coach Tip:</p>
-                <p className="text-white text-sm">
-                  {/* TODO: Generate personalized tip based on user's specific situation */}
-                  Notice when this pattern appears in your daily work. Keep a thought log to track frequency.
-                </p>
-              </div>
-            </div>
-          </div>
-        )}
-
-        <div className="flex justify-between items-center mt-10 pt-8 border-t border-white/10">
-          <button onClick={onBack} className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 group"
-            style={{ background: GRADIENT_STYLE }}>
-            <span className="transform group-hover:-translate-x-1 transition-transform">←</span>
-            <span>Back</span>
-          </button>
-          <button onClick={onNext} className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 group"
-            style={{ background: GRADIENT_STYLE }}>
-            <span>Practice Reframing</span>
-            <span className="transform group-hover:translate-x-1 transition-transform">→</span>
-          </button>
-        </div>
+      <div style={{ display: 'flex', gap: '16px', justifyContent: 'center' }}>
+        <Link href="/dashboard" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', backgroundColor: '#4F46E5', color: 'white', fontWeight: '500', borderRadius: '12px', textDecoration: 'none' }}>
+          View Dashboard →
+        </Link>
+        <Link href="/modules" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 24px', backgroundColor: 'transparent', color: '#374151', fontWeight: '500', borderRadius: '12px', textDecoration: 'none', border: '1px solid #E5E7EB' }}>
+          ← Browse Modules
+        </Link>
       </div>
     </div>
   );
-});
-
-const PracticeStep = memo(function PracticeStep({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
-  const [thoughts, setThoughts] = useState({ negative: '', evidence: '', alternative: '' });
-  const isComplete = Object.values(thoughts).every(val => val.trim().length > 0);
-
-  return (
-    <div className="max-w-3xl mx-auto">
-      <div className="bg-[#3A4F63] rounded-3xl shadow-2xl p-10 border border-white/10">
-        <h2 className="text-3xl font-bold mb-6 text-center text-white">Practice Thought Challenging</h2>
-        <p className="text-center text-gray-300 mb-8">Use the ABC technique to restructure your thoughts</p>
-
-        <div className="space-y-6">
-          <div className="bg-[#2D3E50] rounded-2xl p-6 border border-white/20">
-            <h3 className="font-bold text-lg text-white mb-3 flex items-center gap-2">
-              <span>🧠</span> A: Identify the Automatic Thought
-            </h3>
-            <textarea value={thoughts.negative} onChange={(e) => setThoughts({ ...thoughts, negative: e.target.value })}
-              className="w-full px-4 py-3 text-lg bg-[#2D3E50] text-white border-2 border-white/20 rounded-xl focus:ring-4 focus:ring-purple-500/50 focus:border-purple-500 transition-all shadow-lg resize-none placeholder-gray-400"
-              rows={3} placeholder="What negative thought came up? E.g., 'I'm going to fail this presentation...'" />
-
-            {/* 🤖 AI Integration Point */}
-            {thoughts.negative.length > 20 && (
-              <div className="mt-3 p-3 bg-purple-900/20 rounded-lg border border-purple-500/30">
-                <p className="text-sm text-purple-300">🤖 <strong>AI Detected Distortion:</strong> This appears to be catastrophizing. Let's challenge it below.</p>
-              </div>
-            )}
-          </div>
-
-          <div className="bg-[#2D3E50] rounded-2xl p-6 border border-white/20">
-            <h3 className="font-bold text-lg text-white mb-3 flex items-center gap-2">
-              <span>🔍</span> B: Examine the Evidence
-            </h3>
-            <textarea value={thoughts.evidence} onChange={(e) => setThoughts({ ...thoughts, evidence: e.target.value })}
-              className="w-full px-4 py-3 text-lg bg-[#2D3E50] text-white border-2 border-white/20 rounded-xl focus:ring-4 focus:ring-purple-500/50 focus:border-purple-500 transition-all shadow-lg resize-none placeholder-gray-400"
-              rows={3} placeholder="What evidence supports or contradicts this thought? Be objective..." />
-          </div>
-
-          <div className="bg-[#2D3E50] rounded-2xl p-6 border border-white/20">
-            <h3 className="font-bold text-lg text-white mb-3 flex items-center gap-2">
-              <span>✨</span> C: Create a Balanced Alternative
-            </h3>
-            <textarea value={thoughts.alternative} onChange={(e) => setThoughts({ ...thoughts, alternative: e.target.value })}
-              className="w-full px-4 py-3 text-lg bg-[#2D3E50] text-white border-2 border-white/20 rounded-xl focus:ring-4 focus:ring-purple-500/50 focus:border-purple-500 transition-all shadow-lg resize-none placeholder-gray-400"
-              rows={3} placeholder="What's a more balanced, realistic thought? E.g., 'I've prepared well and can handle this...'" />
-          </div>
-        </div>
-
-        <div className="flex justify-between items-center mt-10 pt-8 border-t border-white/10">
-          <button onClick={onBack} className="inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95 group"
-            style={{ background: GRADIENT_STYLE }}>
-            <span className="transform group-hover:-translate-x-1 transition-transform">←</span>
-            <span>Back</span>
-          </button>
-          <button onClick={onNext} disabled={!isComplete}
-            className={`inline-flex items-center gap-2 px-8 py-4 rounded-xl font-semibold text-white transition-all duration-200 shadow-lg group
-                     ${isComplete ? 'hover:shadow-xl hover:scale-105 active:scale-95' : 'opacity-50 cursor-not-allowed'}`}
-            style={isComplete ? { background: GRADIENT_STYLE } : undefined}>
-            <span>Complete Module</span>
-            <span className="transform group-hover:translate-x-1 transition-transform">→</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  );
-});
-
-const CompleteStep = memo(function CompleteStep() {
-  return (
-    <div className="max-w-4xl mx-auto">
-      <div className="bg-[#3A4F63] rounded-3xl shadow-2xl p-12 border border-white/10 text-center animate-fade-in">
-        <h2 className="text-5xl font-bold mb-6 text-white">Module 3 Complete! 🧠</h2>
-        <p className="text-xl text-white mb-10 max-w-2xl mx-auto leading-relaxed">
-          You've learned to identify and challenge cognitive distortions. This powerful skill will reduce stress and improve your decision-making every day.
-        </p>
-
-        <div className="bg-[#2D3E50] rounded-2xl p-8 mb-10 text-left max-w-2xl mx-auto border border-white/20">
-          <h3 className="font-bold text-2xl mb-6 text-[#6EE7B7]">Practice This Week</h3>
-          <ul className="space-y-4 text-white">
-            <li className="flex items-start gap-3 bg-[#3A4F63] rounded-xl p-4">
-              <div><strong className="text-[#A78BFA]">Daily thought log</strong><p className="text-sm text-gray-300">Catch and challenge 1-2 negative thoughts each day</p></div>
-            </li>
-            <li className="flex items-start gap-3 bg-[#3A4F63] rounded-xl p-4">
-              <div><strong className="text-[#FB8989]">Notice patterns</strong><p className="text-sm text-gray-300">Which distortions show up most for you?</p></div>
-            </li>
-            <li className="flex items-start gap-3 bg-[#3A4F63] rounded-xl p-4">
-              <div><strong className="text-[#7DD3FC]">Next: Module 4</strong><p className="text-sm text-gray-300">Emotional Intelligence - Master your emotions</p></div>
-            </li>
-          </ul>
-        </div>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Link href="/dashboard" className="group inline-flex items-center gap-3 px-10 py-5 rounded-2xl font-bold text-lg text-white transition-all duration-300 shadow-xl hover:shadow-2xl hover:scale-105 active:scale-95"
-            style={{ background: GRADIENT_STYLE }}>
-            <span>View Dashboard</span>
-            <span className="transform group-hover:translate-x-1 transition-transform">→</span>
-          </Link>
-          <Link href="/modules" className="inline-flex items-center gap-3 px-10 py-5 rounded-2xl font-bold text-lg text-white transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 active:scale-95"
-            style={{ background: GRADIENT_STYLE }}>
-            <span>All Modules</span>
-          </Link>
-        </div>
-      </div>
-    </div>
-  );
-});
+}
