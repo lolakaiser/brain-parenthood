@@ -45,6 +45,7 @@ export function saveBaseline(data: BaselineData): void {
       completedAt: new Date().toISOString(),
     };
     localStorage.setItem(STORAGE_KEYS.BASELINE, JSON.stringify(dataWithTimestamp));
+    saveModuleAnswers(1, 'assessment', data);
   } catch (error) {
     console.error('Error saving baseline data:', error);
   }
@@ -68,6 +69,7 @@ export function saveGoals(data: GoalsData): void {
       completedAt: new Date().toISOString(),
     };
     localStorage.setItem(STORAGE_KEYS.GOALS, JSON.stringify(dataWithTimestamp));
+    saveModuleAnswers(1, 'goals', data);
   } catch (error) {
     console.error('Error saving goals data:', error);
   }
@@ -120,6 +122,32 @@ export function completeModule(moduleId: number): void {
   saveProgress(progress);
   // Fire-and-forget sync to MongoDB
   syncProgressToDB(progress);
+}
+
+// Module Answers (assessment + goals per module)
+export function saveModuleAnswers(
+  moduleId: number,
+  step: 'assessment' | 'goals',
+  answers: Record<string, unknown>
+): void {
+  // Save to localStorage
+  try {
+    const key = `brainParenthood_module${moduleId}_${step}`;
+    localStorage.setItem(key, JSON.stringify({ ...answers, savedAt: new Date().toISOString() }));
+  } catch (error) {
+    console.error('Error saving module answers to localStorage:', error);
+  }
+  // Fire-and-forget sync to MongoDB
+  const token = getAuthToken();
+  if (!token) return;
+  fetch('/api/answers', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify({ moduleId, step, answers }),
+  }).catch((error) => console.error('Error syncing answers to DB:', error));
 }
 
 // --- MongoDB sync helpers ---

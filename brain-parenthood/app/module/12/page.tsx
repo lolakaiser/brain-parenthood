@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { completeModule } from "@/lib/storage";
+import { completeModule, saveModuleAnswers } from "@/lib/storage";
 
 type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
 
@@ -68,7 +68,7 @@ export default function Module12Page() {
       <div style={{ backgroundColor: '#F5F7FA', minHeight: 'calc(100vh - 300px)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
           {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('assessment')} />}
-          {currentStep === 'assessment' && <AssessmentStep onNext={() => handleSetStep('goals')} onBack={() => handleSetStep('overview')} />}
+          {currentStep === 'assessment' && <AssessmentStep onNext={() => handleSetStep('goals')} onBack={() => handleSetStep('overview')} moduleId={12} />}
           {currentStep === 'goals' && <GoalsStep onNext={() => handleSetStep('complete')} onBack={() => handleSetStep('assessment')} moduleId={12} />}
           {currentStep === 'complete' && <CompleteStep moduleId={12} />}
         </div>
@@ -151,7 +151,7 @@ const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void
   );
 });
 
-const AssessmentStep = memo(function AssessmentStep({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
+const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [formData, setFormData] = useState({ angerInMoment: 5, deEscalation: 5, triggerAwareness: 5, constructiveExpression: 5, angerReaction: '' });
 
@@ -169,7 +169,7 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack }: { onNext
   const sliderMin = currentQ.min ?? 1;
   const sliderMax = currentQ.max ?? 10;
 
-  const handleNext = () => { if (currentQuestion < questions.length - 1) { setCurrentQuestion(currentQuestion + 1); } else { onNext(); } };
+  const handleNext = () => { if (currentQuestion < questions.length - 1) { setCurrentQuestion(currentQuestion + 1); } else { saveModuleAnswers(moduleId, 'assessment', formData); onNext(); } };
   const handlePrevious = () => { if (currentQuestion > 0) { setCurrentQuestion(currentQuestion - 1); } else { onBack(); } };
   const isAnswered = () => { const v = formData[currentQ.id as keyof typeof formData]; if (currentQ.type === 'slider') return true; return (v as string) !== ''; };
 
@@ -232,7 +232,7 @@ function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: (
   const currentQ = questions[currentQuestion];
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
-  const handleNext = () => { if (currentQuestion < questions.length - 1) { setCurrentQuestion(currentQuestion + 1); } else { completeModule(moduleId); onNext(); } };
+  const handleNext = () => { if (currentQuestion < questions.length - 1) { setCurrentQuestion(currentQuestion + 1); } else { saveModuleAnswers(moduleId, 'goals', goals); completeModule(moduleId); onNext(); } };
   const handlePrevious = () => { if (currentQuestion > 0) { setCurrentQuestion(currentQuestion - 1); } else { onBack(); } };
   const isAnswered = () => goals[currentQ.id as keyof typeof goals].trim() !== '';
 

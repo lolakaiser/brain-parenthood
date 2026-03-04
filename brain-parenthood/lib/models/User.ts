@@ -26,6 +26,15 @@ const UserSchema = new Schema<IUser>({
     currentModule:    { type: Number, default: 1 },
     lastActivity:     { type: Date },
   },
+  moduleAnswers: {
+    type: Map,
+    of: new mongoose.Schema({
+      assessment: { type: mongoose.Schema.Types.Mixed },
+      goals:      { type: mongoose.Schema.Types.Mixed },
+      savedAt:    { type: Date },
+    }, { _id: false }),
+    default: {},
+  },
 });
 
 // Prevent model re-compilation during hot reloads
