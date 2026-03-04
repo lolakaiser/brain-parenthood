@@ -116,7 +116,7 @@ export default function Module3Page() {
           {currentStep === 'goals' && (
             <GoalsStep onNext={() => handleSetStep('review')} onBack={() => handleSetStep('assessment')} moduleId={3} />
           )}
-          {currentStep === 'review' && <ReviewStep moduleId={3} onConfirm={() => handleSetStep('complete')} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} />}
+          {currentStep === 'review' && <ReviewStep moduleId={3} onConfirm={() => { completeModule(3); handleSetStep('complete'); }} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} />}
           {currentStep === 'complete' && <CompleteStep moduleId={3} nextModuleId={4} />}
         </div>
       </div>

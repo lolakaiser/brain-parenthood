@@ -135,7 +135,7 @@ export default function Module1Page() {
             onBack={() => handleSetStep('baseline')}
           />
         )}
-        {currentStep === 'review' && <ReviewStep moduleId={1} onConfirm={() => handleSetStep('complete')} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} />}
+        {currentStep === 'review' && <ReviewStep moduleId={1} onConfirm={() => { completeModule(1); handleSetStep('complete'); }} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} />}
         {currentStep === 'complete' && <CompleteStep />}
       </div>
       </div>
@@ -639,7 +639,6 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
       localStorage.setItem(`brainParenthood_module1_goals`, JSON.stringify({ ...goals, _labeled }));
       saveGoals(goalsData);
       saveModuleAnswers(1, 'goals', { ...goals, _labeled });
-      completeModule(1);
       onNext();
     }
   };

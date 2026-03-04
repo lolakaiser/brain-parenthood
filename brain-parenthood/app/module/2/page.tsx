@@ -138,7 +138,7 @@ export default function Module2Page() {
               moduleId={2}
             />
           )}
-          {currentStep === 'review' && <ReviewStep moduleId={2} onConfirm={() => handleSetStep('complete')} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} />}
+          {currentStep === 'review' && <ReviewStep moduleId={2} onConfirm={() => { completeModule(2); handleSetStep('complete'); }} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} />}
           {currentStep === 'complete' && <CompleteStep moduleId={2} nextModuleId={3} />}
         </div>
       </div>
