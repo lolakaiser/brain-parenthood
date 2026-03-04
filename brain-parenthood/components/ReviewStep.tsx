@@ -90,7 +90,7 @@ export default function ReviewStep({ moduleId, onConfirm, onBack, isReadOnly }: 
             onClick={onConfirm}
             style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', border: 'none', cursor: 'pointer', background: 'linear-gradient(to right, #4F46E5, #7C3AED)', color: 'white' }}
           >
-            Confirm & Complete Module
+            Submit
           </button>
         </div>
       )}

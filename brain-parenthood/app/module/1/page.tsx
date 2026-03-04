@@ -19,7 +19,7 @@ const STEPS = [
 ];
 
 export default function Module1Page() {
-  const [currentStep, setCurrentStep] = useState<StepType>('overview');
+  const [currentStep, setCurrentStep] = useState<StepType>(() => { try { return isModuleCompleted(1) ? 'review' : 'overview'; } catch { return 'overview'; } });
   const { isAuthenticated } = useAuth();
   const isCompleted = isModuleCompleted(1);
   const router = useRouter();
