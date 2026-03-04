@@ -5,14 +5,16 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { completeModule, saveModuleAnswers, getModuleAnswers } from "@/lib/storage";
+import { completeModule, saveModuleAnswers, getModuleAnswers, isModuleCompleted } from "@/lib/storage";
+import ReviewStep from "@/components/ReviewStep";
 
-type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
+type StepType = 'overview' | 'assessment' | 'goals' | 'review' | 'complete';
 
 const STEPS = [
   { id: 'overview' as const, label: 'Overview' },
   { id: 'assessment' as const, label: 'Assessment' },
   { id: 'goals' as const, label: 'Goals' },
+  { id: 'review' as const, label: 'Review' },
   { id: 'complete' as const, label: 'Complete' },
 ];
 
@@ -20,6 +22,7 @@ export default function Module12Page() {
   const [currentStep, setCurrentStep] = useState<StepType>('overview');
   const { isAuthenticated } = useAuth();
   const router = useRouter();
+  const isCompleted = isModuleCompleted(12);
 
   useEffect(() => {
     if (!isAuthenticated) { router.push('/login'); }
@@ -67,9 +70,10 @@ export default function Module12Page() {
 
       <div style={{ backgroundColor: '#F5F7FA', minHeight: 'calc(100vh - 300px)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
-          {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('assessment')} />}
+          {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep(isCompleted ? 'review' : 'assessment')} isCompleted={isCompleted} />}
           {currentStep === 'assessment' && <AssessmentStep onNext={() => handleSetStep('goals')} onBack={() => handleSetStep('overview')} moduleId={12} />}
-          {currentStep === 'goals' && <GoalsStep onNext={() => handleSetStep('complete')} onBack={() => handleSetStep('assessment')} moduleId={12} />}
+          {currentStep === 'goals' && <GoalsStep onNext={() => handleSetStep('review')} onBack={() => handleSetStep('assessment')} moduleId={12} />}
+          {currentStep === 'review' && <ReviewStep moduleId={12} onConfirm={() => handleSetStep('complete')} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} />}
           {currentStep === 'complete' && <CompleteStep moduleId={12} />}
         </div>
       </div>
@@ -77,7 +81,7 @@ export default function Module12Page() {
   );
 }
 
-const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void }) {
+const OverviewStep = memo(function OverviewStep({ onNext, isCompleted }: { onNext: () => void; isCompleted?: boolean }) {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
@@ -144,7 +148,7 @@ const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void
 
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <button onClick={onNext} style={{ display: 'inline-flex', alignItems: 'center', gap: '12px', background: 'linear-gradient(to right, #4F46E5, #7C3AED)', color: 'white', padding: '16px 40px', borderRadius: '12px', fontWeight: 'bold', fontSize: '18px', border: 'none', cursor: 'pointer' }}>
-          Continue to Assessment <span>→</span>
+          {isCompleted ? 'View My Answers' : 'Continue to Assessment'} <span>→</span>
         </button>
       </div>
     </div>
@@ -174,7 +178,7 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
   const sliderMin = currentQ.min ?? 1;
   const sliderMax = currentQ.max ?? 10;
 
-  const handleNext = () => { if (currentQuestion < questions.length - 1) { setCurrentQuestion(currentQuestion + 1); } else { saveModuleAnswers(moduleId, 'assessment', formData); onNext(); } };
+  const handleNext = () => { const _labeled = questions.map(q => ({ title: q.title, answer: formData[q.id as keyof typeof formData] })); localStorage.setItem(`brainParenthood_module${moduleId}_assessment`, JSON.stringify({ ...formData, _labeled })); if (currentQuestion < questions.length - 1) { setCurrentQuestion(currentQuestion + 1); } else { saveModuleAnswers(moduleId, 'assessment', { ...formData, _labeled }); onNext(); } };
   const handlePrevious = () => { if (currentQuestion > 0) { setCurrentQuestion(currentQuestion - 1); } else { onBack(); } };
   const isAnswered = () => { const v = formData[currentQ.id as keyof typeof formData]; if (currentQ.type === 'slider') return true; return (v as string) !== ''; };
 
@@ -242,7 +246,7 @@ function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: (
   const currentQ = questions[currentQuestion];
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
-  const handleNext = () => { if (currentQuestion < questions.length - 1) { setCurrentQuestion(currentQuestion + 1); } else { saveModuleAnswers(moduleId, 'goals', goals); completeModule(moduleId); onNext(); } };
+  const handleNext = () => { const _labeled = questions.map(q => ({ title: q.title, answer: goals[q.id as keyof typeof goals] })); localStorage.setItem(`brainParenthood_module${moduleId}_goals`, JSON.stringify({ ...goals, _labeled })); if (currentQuestion < questions.length - 1) { setCurrentQuestion(currentQuestion + 1); } else { saveModuleAnswers(moduleId, 'goals', { ...goals, _labeled }); completeModule(moduleId); onNext(); } };
   const handlePrevious = () => { if (currentQuestion > 0) { setCurrentQuestion(currentQuestion - 1); } else { onBack(); } };
   const isAnswered = () => goals[currentQ.id as keyof typeof goals].trim() !== '';
 

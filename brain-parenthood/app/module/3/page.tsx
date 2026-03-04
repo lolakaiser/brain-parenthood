@@ -5,20 +5,24 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { completeModule, saveModuleAnswers, getModuleAnswers } from "@/lib/storage";
+import { completeModule, saveModuleAnswers, getModuleAnswers, isModuleCompleted } from "@/lib/storage";
+import ReviewStep from "@/components/ReviewStep";
 
-type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
+type StepType = 'overview' | 'assessment' | 'goals' | 'review' | 'complete';
 
 const STEPS = [
   { id: 'overview' as const, label: 'Overview' },
   { id: 'assessment' as const, label: 'Assessment' },
   { id: 'goals' as const, label: 'Goals' },
+  { id: 'review' as const, label: 'Review' },
   { id: 'complete' as const, label: 'Complete' },
 ];
 
 export default function Module3Page() {
   const [currentStep, setCurrentStep] = useState<StepType>('overview');
   const { isAuthenticated } = useAuth();
+  const moduleId = 3;
+  const isCompleted = isModuleCompleted(3);
   const router = useRouter();
 
   useEffect(() => {
@@ -105,13 +109,14 @@ export default function Module3Page() {
 
       <div style={{ backgroundColor: '#F5F7FA', minHeight: 'calc(100vh - 300px)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
-          {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('assessment')} />}
+          {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep(isCompleted ? 'review' : 'assessment')} isCompleted={isCompleted} />}
           {currentStep === 'assessment' && (
             <AssessmentStep onNext={() => handleSetStep('goals')} onBack={() => handleSetStep('overview')} moduleId={3} />
           )}
           {currentStep === 'goals' && (
-            <GoalsStep onNext={() => handleSetStep('complete')} onBack={() => handleSetStep('assessment')} moduleId={3} />
+            <GoalsStep onNext={() => handleSetStep('review')} onBack={() => handleSetStep('assessment')} moduleId={3} />
           )}
+          {currentStep === 'review' && <ReviewStep moduleId={3} onConfirm={() => handleSetStep('complete')} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} />}
           {currentStep === 'complete' && <CompleteStep moduleId={3} nextModuleId={4} />}
         </div>
       </div>
@@ -119,7 +124,7 @@ export default function Module3Page() {
   );
 }
 
-const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void }) {
+const OverviewStep = memo(function OverviewStep({ onNext, isCompleted }: { onNext: () => void; isCompleted?: boolean }) {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
@@ -218,8 +223,7 @@ const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void
             cursor: 'pointer',
           }}
         >
-          Continue to Assessment
-          <span>→</span>
+          {isCompleted ? 'View My Answers' : 'Continue to Assessment'} <span>→</span>
         </button>
       </div>
     </div>
@@ -295,10 +299,12 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   const handleNext = () => {
+    const _labeled = questions.map(q => ({ title: q.title, answer: formData[q.id as keyof typeof formData] }));
+    localStorage.setItem(`brainParenthood_module${moduleId}_assessment`, JSON.stringify({ ...formData, _labeled }));
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      saveModuleAnswers(moduleId, 'assessment', formData);
+      saveModuleAnswers(moduleId, 'assessment', { ...formData, _labeled });
       onNext();
     }
   };
@@ -419,10 +425,12 @@ function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: (
   const progress = ((currentQuestion + 1) / questions.length) * 100;
 
   const handleNext = () => {
+    const _labeled = questions.map(q => ({ title: q.title, answer: goals[q.id as keyof typeof goals] }));
+    localStorage.setItem(`brainParenthood_module${moduleId}_goals`, JSON.stringify({ ...goals, _labeled }));
     if (currentQuestion < questions.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
     } else {
-      saveModuleAnswers(moduleId, 'goals', goals);
+      saveModuleAnswers(moduleId, 'goals', { ...goals, _labeled });
       completeModule(moduleId);
       onNext();
     }

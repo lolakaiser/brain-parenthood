@@ -5,20 +5,23 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { saveBaseline, saveGoals, completeModule, getBaseline, getGoals, type BaselineData, type GoalsData } from "@/lib/storage";
+import { saveBaseline, saveGoals, completeModule, getBaseline, getGoals, isModuleCompleted, saveModuleAnswers, getModuleAnswers, type BaselineData, type GoalsData } from "@/lib/storage";
+import ReviewStep from "@/components/ReviewStep";
 
-type StepType = 'overview' | 'baseline' | 'goals' | 'complete';
+type StepType = 'overview' | 'baseline' | 'goals' | 'review' | 'complete';
 
 const STEPS = [
   { id: 'overview' as const, label: 'Overview' },
   { id: 'baseline' as const, label: 'Assessment' },
   { id: 'goals' as const, label: 'Goals' },
+  { id: 'review' as const, label: 'Review' },
   { id: 'complete' as const, label: 'Complete' },
 ];
 
 export default function Module1Page() {
   const [currentStep, setCurrentStep] = useState<StepType>('overview');
   const { isAuthenticated } = useAuth();
+  const isCompleted = isModuleCompleted(1);
   const router = useRouter();
 
   useEffect(() => {
@@ -119,7 +122,7 @@ export default function Module1Page() {
       {/* Content Area */}
       <div style={{ backgroundColor: '#F5F7FA', minHeight: 'calc(100vh - 300px)' }}>
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
-        {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep('baseline')} />}
+        {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep(isCompleted ? 'review' : 'baseline')} isCompleted={isCompleted} />}
         {currentStep === 'baseline' && (
           <BaselineStep
             onNext={() => handleSetStep('goals')}
@@ -128,10 +131,11 @@ export default function Module1Page() {
         )}
         {currentStep === 'goals' && (
           <GoalsStep
-            onNext={() => handleSetStep('complete')}
+            onNext={() => handleSetStep('review')}
             onBack={() => handleSetStep('baseline')}
           />
         )}
+        {currentStep === 'review' && <ReviewStep moduleId={1} onConfirm={() => handleSetStep('complete')} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} />}
         {currentStep === 'complete' && <CompleteStep />}
       </div>
       </div>
@@ -139,7 +143,7 @@ export default function Module1Page() {
   );
 }
 
-const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void }) {
+const OverviewStep = memo(function OverviewStep({ onNext, isCompleted }: { onNext: () => void; isCompleted?: boolean }) {
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       {/* Welcome Card */}
@@ -258,8 +262,7 @@ const OverviewStep = memo(function OverviewStep({ onNext }: { onNext: () => void
             cursor: 'pointer',
           }}
         >
-          Continue to Assessment
-          <span>→</span>
+          {isCompleted ? 'View My Answers' : 'Continue to Assessment'} <span>→</span>
         </button>
       </div>
     </div>
@@ -366,7 +369,10 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
         teamSize: formData.teamSize,
         primaryChallenges: formData.primaryChallenges,
       };
+      const _labeled = questions.map(q => ({ title: q.title, answer: formData[q.id as keyof typeof formData] }));
+      localStorage.setItem(`brainParenthood_module1_assessment`, JSON.stringify({ ...formData, _labeled }));
       saveBaseline(baselineData);
+      saveModuleAnswers(1, 'assessment', { ...formData, _labeled });
       onNext();
     }
   };
@@ -629,7 +635,10 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
         teamGoal: goals.teamGoal,
         successMetrics: goals.successMetrics,
       };
+      const _labeled = questions.map(q => ({ title: q.title, answer: goals[q.id as keyof typeof goals] }));
+      localStorage.setItem(`brainParenthood_module1_goals`, JSON.stringify({ ...goals, _labeled }));
       saveGoals(goalsData);
+      saveModuleAnswers(1, 'goals', { ...goals, _labeled });
       completeModule(1);
       onNext();
     }

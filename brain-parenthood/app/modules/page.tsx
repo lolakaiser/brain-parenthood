@@ -167,7 +167,7 @@ function ModuleCard({ module, completedModules, currentModule, isAdmin }: {
               textDecoration: 'none'
             }}
           >
-            {isCompleted ? "Review" : "Start"} →
+            {isCompleted ? "Review Now" : "Start"} →
           </Link>
         ) : (
           <span style={{ color: '#D1D5DB', fontSize: '14px' }}>Locked</span>
