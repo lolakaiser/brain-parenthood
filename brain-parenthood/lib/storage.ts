@@ -124,6 +124,20 @@ export function completeModule(moduleId: number): void {
   syncProgressToDB(progress);
 }
 
+// Get saved module answers from localStorage
+export function getModuleAnswers(
+  moduleId: number,
+  step: 'assessment' | 'goals'
+): Record<string, unknown> | null {
+  try {
+    const key = `brainParenthood_module${moduleId}_${step}`;
+    const data = localStorage.getItem(key);
+    return data ? JSON.parse(data) : null;
+  } catch {
+    return null;
+  }
+}
+
 // Module Answers (assessment + goals per module)
 export function saveModuleAnswers(
   moduleId: number,

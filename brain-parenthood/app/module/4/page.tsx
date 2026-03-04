@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { completeModule, saveModuleAnswers } from "@/lib/storage";
+import { completeModule, saveModuleAnswers, getModuleAnswers } from "@/lib/storage";
 
 type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
 
@@ -177,6 +177,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
     improvementArea: '',
   });
 
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'assessment');
+    if (saved) setFormData(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
+
   const questions = [
     { id: 'financeManagement', title: 'Financial Management', description: 'How well do you manage your personal or business finances?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Struggle Significantly', maxLabel: 'Very In Control' },
     { id: 'timeManagement', title: 'Time Management', description: 'How effectively do you manage your time across tasks and priorities?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Often Behind', maxLabel: 'Always On Top' },
@@ -255,6 +260,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
 function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [goals, setGoals] = useState({ financialHabit: '', timeManagementTechnique: '', decisionProcess: '' });
+
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'goals');
+    if (saved) setGoals(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
 
   const questions = [
     { id: 'financialHabit', title: 'Financial Habit', description: 'What financial habit will you build this week?', type: 'text' as const, placeholder: 'e.g., Review my monthly budget every Monday morning' },

@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { completeModule, saveModuleAnswers } from "@/lib/storage";
+import { completeModule, saveModuleAnswers, getModuleAnswers } from "@/lib/storage";
 
 type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
 
@@ -154,6 +154,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [formData, setFormData] = useState({ styleAwareness: 5, styleAdaptation: 5, writtenEffectiveness: 5, difficultConversations: 5, styleDescription: '' });
 
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'assessment');
+    if (saved) setFormData(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
+
   const questions = [
     { id: 'styleAwareness', title: 'Communication Style Awareness', description: 'How aware are you of your dominant communication style?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Not Aware', maxLabel: 'Very Self-Aware' },
     { id: 'styleAdaptation', title: 'Adapting Your Style', description: 'How well do you adapt your communication style to different situations?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Always the Same', maxLabel: 'Highly Adaptive' },
@@ -221,6 +226,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
 function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [goals, setGoals] = useState({ styleShift: '', writtenGoal: '', difficultConversation: '' });
+
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'goals');
+    if (saved) setGoals(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
 
   const questions = [
     { id: 'styleShift', title: 'Communication Style Shift', description: 'What communication style shift will you make this week?', type: 'text' as const, placeholder: 'e.g., Practise being more assertive instead of passive in team meetings' },

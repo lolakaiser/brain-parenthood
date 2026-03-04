@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { completeModule, saveModuleAnswers } from "@/lib/storage";
+import { completeModule, saveModuleAnswers, getModuleAnswers } from "@/lib/storage";
 
 type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
 
@@ -236,6 +236,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
     communicationChallenge: '',
   });
 
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'assessment');
+    if (saved) setFormData(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
+
   const questions = [
     {
       id: 'verbalSkills',
@@ -398,6 +403,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
 function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [goals, setGoals] = useState({ verbalSkill: '', nonVerbalGoal: '', presenceGoal: '' });
+
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'goals');
+    if (saved) setGoals(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
 
   const questions = [
     { id: 'verbalSkill', title: 'Verbal Communication Goal', description: 'What verbal communication skill will you focus on improving this week?', type: 'text' as const, placeholder: 'e.g., Speak more concisely and avoid filler words in meetings' },

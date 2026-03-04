@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { completeModule, saveModuleAnswers } from "@/lib/storage";
+import { completeModule, saveModuleAnswers, getModuleAnswers } from "@/lib/storage";
 
 type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
 
@@ -153,6 +153,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [formData, setFormData] = useState({ workFamilyBalance: 5, parentingApproach: 5, workHomeBoundaries: 5, homeSupport: 5, balanceChallenge: '' });
 
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'assessment');
+    if (saved) setFormData(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
+
   const questions = [
     { id: 'workFamilyBalance', title: 'Work and Family Balance', description: 'How well do you balance your work and family responsibilities?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Work Dominates Everything', maxLabel: 'Well Balanced' },
     { id: 'parentingApproach', title: 'Parenting or Caregiving Approach', description: 'How positive and connected is your parenting or caregiving approach?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Often Reactive', maxLabel: 'Consistently Positive' },
@@ -220,6 +225,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
 function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [goals, setGoals] = useState({ workHomeBoundary: '', parentingTechnique: '', integrationPlan: '' });
+
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'goals');
+    if (saved) setGoals(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
 
   const questions = [
     { id: 'workHomeBoundary', title: 'Work-Home Boundary', description: 'What boundary will you set between work and home this week?', type: 'text' as const, placeholder: 'e.g., No work calls after 7pm on weekdays' },

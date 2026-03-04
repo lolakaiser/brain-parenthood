@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { completeModule, saveModuleAnswers } from "@/lib/storage";
+import { completeModule, saveModuleAnswers, getModuleAnswers } from "@/lib/storage";
 
 type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
 
@@ -153,6 +153,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [formData, setFormData] = useState({ stressFrequency: 5, reliefEffectiveness: 5, triggerAwareness: 5, stressRecovery: 5, stressTriggers: '' });
 
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'assessment');
+    if (saved) setFormData(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
+
   const questions = [
     { id: 'stressFrequency', title: 'Stress Frequency', description: 'How frequently do you experience significant stress?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Rarely', maxLabel: 'Constantly' },
     { id: 'reliefEffectiveness', title: 'Current Stress Relief', description: 'How effective are your current stress relief methods?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Not Effective', maxLabel: 'Very Effective' },
@@ -220,6 +225,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
 function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [goals, setGoals] = useState({ relaxationTechnique: '', triggerReduction: '', stressRoutine: '' });
+
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'goals');
+    if (saved) setGoals(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
 
   const questions = [
     { id: 'relaxationTechnique', title: 'Daily Relaxation Technique', description: 'What relaxation technique will you practise daily this week?', type: 'text' as const, placeholder: 'e.g., 4-7-8 breathing for 5 minutes every morning' },

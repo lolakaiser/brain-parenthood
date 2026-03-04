@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { completeModule, saveModuleAnswers } from "@/lib/storage";
+import { completeModule, saveModuleAnswers, getModuleAnswers } from "@/lib/storage";
 
 type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
 
@@ -153,6 +153,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [formData, setFormData] = useState({ iStatements: 5, activeListening: 5, givingFeedback: 5, receivingFeedback: 5, conversationChallenge: '' });
 
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'assessment');
+    if (saved) setFormData(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
+
   const questions = [
     { id: 'iStatements', title: "Using 'I' Statements", description: "How often do you use 'I' statements rather than 'you' statements in conflict?", type: 'slider' as const, min: 1, max: 10, minLabel: 'Never', maxLabel: 'Always' },
     { id: 'activeListening', title: 'Active Listening', description: 'How well do you actively listen when others speak?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Often Distracted', maxLabel: 'Fully Present' },
@@ -220,6 +225,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
 function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [goals, setGoals] = useState({ iStatementPractice: '', activeListeningPlan: '', feedbackAction: '' });
+
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'goals');
+    if (saved) setGoals(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
 
   const questions = [
     { id: 'iStatementPractice', title: "Practise 'I' Statements", description: "Where will you practise using 'I' statements this week?", type: 'text' as const, placeholder: 'e.g., In the next disagreement with a colleague' },

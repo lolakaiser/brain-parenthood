@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { completeModule, saveModuleAnswers } from "@/lib/storage";
+import { completeModule, saveModuleAnswers, getModuleAnswers } from "@/lib/storage";
 
 type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
 
@@ -155,6 +155,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [formData, setFormData] = useState({ angerInMoment: 5, deEscalation: 5, triggerAwareness: 5, constructiveExpression: 5, angerReaction: '' });
 
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'assessment');
+    if (saved) setFormData(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
+
   const questions = [
     { id: 'angerInMoment', title: 'Managing Anger in the Moment', description: 'How well do you manage anger when it flares up in the moment?', type: 'slider' as const, min: 1, max: 10, minLabel: 'React Impulsively', maxLabel: 'Stay In Control' },
     { id: 'deEscalation', title: 'De-Escalating Conflict', description: 'How quickly can you de-escalate a conflict situation?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Escalate Further', maxLabel: 'De-escalate Quickly' },
@@ -222,6 +227,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
 function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [goals, setGoals] = useState({ angerTrigger: '', deEscalationTechnique: '', conflictPlan: '' });
+
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'goals');
+    if (saved) setGoals(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
 
   const questions = [
     { id: 'angerTrigger', title: 'Anger Trigger to Work On', description: 'What anger trigger will you focus on managing this week?', type: 'text' as const, placeholder: 'e.g., Feeling ignored in meetings — I will pause and breathe before reacting' },

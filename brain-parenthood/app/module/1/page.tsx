@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { saveBaseline, saveGoals, completeModule, type BaselineData, type GoalsData } from "@/lib/storage";
+import { saveBaseline, saveGoals, completeModule, getBaseline, getGoals, type BaselineData, type GoalsData } from "@/lib/storage";
 
 type StepType = 'overview' | 'baseline' | 'goals' | 'complete';
 
@@ -277,6 +277,11 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
     teamSize: '',
     primaryChallenges: '',
   });
+
+  useEffect(() => {
+    const saved = getBaseline();
+    if (saved) setFormData(prev => ({ ...prev, ...saved }));
+  }, []);
 
   const questions = [
     {
@@ -558,6 +563,11 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
     teamGoal: '',
     successMetrics: '',
   });
+
+  useEffect(() => {
+    const saved = getGoals();
+    if (saved) setGoals(prev => ({ ...prev, ...saved }));
+  }, []);
 
   const questions = [
     {

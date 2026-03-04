@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { completeModule, saveModuleAnswers } from "@/lib/storage";
+import { completeModule, saveModuleAnswers, getModuleAnswers } from "@/lib/storage";
 
 type StepType = 'overview' | 'assessment' | 'goals' | 'complete';
 
@@ -154,6 +154,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [formData, setFormData] = useState({ decisionConfidence: 5, analysisParalysis: 5, systematicEvaluation: 5, badDecisionRecovery: 5, difficultDecision: '' });
 
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'assessment');
+    if (saved) setFormData(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
+
   const questions = [
     { id: 'decisionConfidence', title: 'Decision-Making Confidence', description: 'How confident are you in your decision-making overall?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Very Unconfident', maxLabel: 'Very Confident' },
     { id: 'analysisParalysis', title: 'Analysis Paralysis', description: 'How often do you experience analysis paralysis — overthinking to the point of not deciding?', type: 'slider' as const, min: 1, max: 10, minLabel: 'Rarely', maxLabel: 'Constantly' },
@@ -221,6 +226,11 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
 function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
   const [currentQuestion, setCurrentQuestion] = useState(0);
   const [goals, setGoals] = useState({ framework: '', pendingDecision: '', uncertaintyApproach: '' });
+
+  useEffect(() => {
+    const saved = getModuleAnswers(moduleId, 'goals');
+    if (saved) setGoals(prev => ({ ...prev, ...(saved as typeof prev) }));
+  }, [moduleId]);
 
   const questions = [
     { id: 'framework', title: 'Decision-Making Framework', description: 'What decision-making framework will you try this week?', type: 'text' as const, placeholder: 'e.g., The 10/10/10 rule: How will I feel in 10 minutes, 10 months, 10 years?' },
