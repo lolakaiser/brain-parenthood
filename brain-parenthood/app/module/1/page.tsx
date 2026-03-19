@@ -20,6 +20,8 @@ const STEPS = [
 
 export default function Module1Page() {
   const [currentStep, setCurrentStep] = useState<StepType>('overview');
+  const [baselineStartQ, setBaselineStartQ] = useState(0);
+  const [goalsStartQ, setGoalsStartQ] = useState(0);
   const { isAuthenticated } = useAuth();
   const isCompleted = isModuleCompleted(1);
   const router = useRouter();
@@ -32,6 +34,16 @@ export default function Module1Page() {
 
   const handleSetStep = useCallback((step: StepType) => {
     setCurrentStep(step);
+  }, []);
+
+  const handleEdit = useCallback((section: 'assessment' | 'goals', questionIndex: number) => {
+    if (section === 'assessment') {
+      setBaselineStartQ(questionIndex);
+      setCurrentStep('baseline');
+    } else {
+      setGoalsStartQ(questionIndex);
+      setCurrentStep('goals');
+    }
   }, []);
 
   if (!isAuthenticated) {
@@ -125,17 +137,19 @@ export default function Module1Page() {
         {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep(isCompleted ? 'review' : 'baseline')} isCompleted={isCompleted} />}
         {currentStep === 'baseline' && (
           <BaselineStep
-            onNext={() => handleSetStep('goals')}
-            onBack={() => handleSetStep('overview')}
+            onNext={() => { setGoalsStartQ(0); handleSetStep('goals'); }}
+            onBack={() => { setBaselineStartQ(0); handleSetStep('overview'); }}
+            initialQuestion={baselineStartQ}
           />
         )}
         {currentStep === 'goals' && (
           <GoalsStep
-            onNext={() => handleSetStep('review')}
-            onBack={() => handleSetStep('baseline')}
+            onNext={() => { setGoalsStartQ(0); handleSetStep('review'); }}
+            onBack={() => { setGoalsStartQ(0); setBaselineStartQ(0); handleSetStep('baseline'); }}
+            initialQuestion={goalsStartQ}
           />
         )}
-        {currentStep === 'review' && <ReviewStep moduleId={1} onConfirm={() => { completeModule(1); handleSetStep('complete'); }} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} />}
+        {currentStep === 'review' && <ReviewStep moduleId={1} onConfirm={() => { completeModule(1); handleSetStep('complete'); }} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} onEdit={handleEdit} />}
         {currentStep === 'complete' && <CompleteStep />}
       </div>
       </div>
@@ -269,8 +283,8 @@ const OverviewStep = memo(function OverviewStep({ onNext, isCompleted }: { onNex
   );
 });
 
-const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+const BaselineStep = memo(function BaselineStep({ onNext, onBack, initialQuestion = 0 }: { onNext: () => void; onBack: () => void; initialQuestion?: number }) {
+  const [currentQuestion, setCurrentQuestion] = useState(initialQuestion);
   const [formData, setFormData] = useState({
     teamStressLevel: 5,
     individualStressLevel: 5,
@@ -583,8 +597,8 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
   );
 });
 
-function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void }) {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+function GoalsStep({ onNext, onBack, initialQuestion = 0 }: { onNext: () => void; onBack: () => void; initialQuestion?: number }) {
+  const [currentQuestion, setCurrentQuestion] = useState(initialQuestion);
   const [goals, setGoals] = useState({
     stressReduction: '',
     productivityGoal: '',

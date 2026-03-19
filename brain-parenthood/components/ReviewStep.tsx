@@ -12,14 +12,26 @@ interface ReviewStepProps {
   onConfirm: () => void;
   onBack: () => void;
   isReadOnly?: boolean;
+  onEdit?: (section: 'assessment' | 'goals', questionIndex: number) => void;
 }
 
-export default function ReviewStep({ moduleId, onConfirm, onBack, isReadOnly }: ReviewStepProps) {
+export default function ReviewStep({ moduleId, onConfirm, onBack, isReadOnly, onEdit }: ReviewStepProps) {
   const assessmentSaved = getModuleAnswers(moduleId, 'assessment');
   const goalsSaved = getModuleAnswers(moduleId, 'goals');
 
   const assessmentLabeled = (assessmentSaved?._labeled as LabeledAnswer[]) || [];
   const goalsLabeled = (goalsSaved?._labeled as LabeledAnswer[]) || [];
+
+  const editButtonStyle = {
+    padding: '4px 10px',
+    fontSize: '12px',
+    fontWeight: '500' as const,
+    color: '#4F46E5',
+    backgroundColor: '#EEF2FF',
+    border: 'none',
+    borderRadius: '6px',
+    cursor: 'pointer',
+  };
 
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto' }}>
@@ -38,15 +50,29 @@ export default function ReviewStep({ moduleId, onConfirm, onBack, isReadOnly }: 
       {/* Assessment Answers */}
       {assessmentLabeled.length > 0 && (
         <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '32px 40px', border: '1px solid #E5E7EB', marginBottom: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
-          <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#4F46E5', marginBottom: '24px', paddingBottom: '12px', borderBottom: '1px solid #E5E7EB' }}>
-            Assessment
-          </h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', paddingBottom: '12px', borderBottom: '1px solid #E5E7EB' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#4F46E5', margin: 0 }}>
+              Assessment
+            </h3>
+            {!isReadOnly && onEdit && (
+              <button style={editButtonStyle} onClick={() => onEdit('assessment', 0)}>
+                Edit Section
+              </button>
+            )}
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {assessmentLabeled.map((item, i) => (
               <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <p style={{ fontSize: '13px', fontWeight: '600', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  {item.title}
-                </p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <p style={{ fontSize: '13px', fontWeight: '600', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
+                    {item.title}
+                  </p>
+                  {!isReadOnly && onEdit && (
+                    <button style={editButtonStyle} onClick={() => onEdit('assessment', i)}>
+                      Edit
+                    </button>
+                  )}
+                </div>
                 <p style={{ fontSize: '15px', color: '#111827', backgroundColor: '#F9FAFB', padding: '12px 16px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
                   {typeof item.answer === 'number' ? `${item.answer} / 10` : item.answer || '—'}
                 </p>
@@ -59,15 +85,29 @@ export default function ReviewStep({ moduleId, onConfirm, onBack, isReadOnly }: 
       {/* Goals Answers */}
       {goalsLabeled.length > 0 && (
         <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '32px 40px', border: '1px solid #E5E7EB', marginBottom: '24px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
-          <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#7C3AED', marginBottom: '24px', paddingBottom: '12px', borderBottom: '1px solid #E5E7EB' }}>
-            Your Goals
-          </h3>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px', paddingBottom: '12px', borderBottom: '1px solid #E5E7EB' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: '600', color: '#7C3AED', margin: 0 }}>
+              Your Goals
+            </h3>
+            {!isReadOnly && onEdit && (
+              <button style={editButtonStyle} onClick={() => onEdit('goals', 0)}>
+                Edit Section
+              </button>
+            )}
+          </div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             {goalsLabeled.map((item, i) => (
               <div key={i} style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <p style={{ fontSize: '13px', fontWeight: '600', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                  {item.title}
-                </p>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <p style={{ fontSize: '13px', fontWeight: '600', color: '#6B7280', textTransform: 'uppercase', letterSpacing: '0.05em', margin: 0 }}>
+                    {item.title}
+                  </p>
+                  {!isReadOnly && onEdit && (
+                    <button style={editButtonStyle} onClick={() => onEdit('goals', i)}>
+                      Edit
+                    </button>
+                  )}
+                </div>
                 <p style={{ fontSize: '15px', color: '#111827', backgroundColor: '#F9FAFB', padding: '12px 16px', borderRadius: '8px', border: '1px solid #E5E7EB' }}>
                   {typeof item.answer === 'number' ? `${item.answer} / 10` : item.answer || '—'}
                 </p>
