@@ -514,6 +514,30 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack }: { onNext: ()
           )}
         </div>
 
+        {/* Question Number Dots */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', paddingBottom: '24px' }}>
+          {questions.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentQuestion(index)}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: '600',
+                backgroundColor: index === currentQuestion ? '#4F46E5' : index < currentQuestion ? '#C7D2FE' : '#F3F4F6',
+                color: index === currentQuestion ? 'white' : index < currentQuestion ? '#4F46E5' : '#9CA3AF',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
+
         {/* Navigation */}
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
           <button
@@ -730,6 +754,30 @@ function GoalsStep({ onNext, onBack }: { onNext: () => void; onBack: () => void 
               }}
             />
           )}
+        </div>
+
+        {/* Question Number Dots */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', paddingBottom: '24px' }}>
+          {questions.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentQuestion(index)}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: '600',
+                backgroundColor: index === currentQuestion ? '#4F46E5' : index < currentQuestion ? '#C7D2FE' : '#F3F4F6',
+                color: index === currentQuestion ? 'white' : index < currentQuestion ? '#4F46E5' : '#9CA3AF',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {index + 1}
+            </button>
+          ))}
         </div>
 
         {/* Navigation */}
