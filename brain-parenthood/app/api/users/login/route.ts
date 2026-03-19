@@ -16,7 +16,11 @@ export async function POST(request: Request) {
 
     await connectDB();
 
-    const user = await User.findOne({ email: email.toLowerCase() });
+    // Accept either email or username
+    const isEmail = email.includes('@');
+    const user = isEmail
+      ? await User.findOne({ email: email.toLowerCase() })
+      : await User.findOne({ username: email.trim() });
 
     const passwordMatch = user && await bcrypt.compare(password, user.password);
     if (!passwordMatch) {

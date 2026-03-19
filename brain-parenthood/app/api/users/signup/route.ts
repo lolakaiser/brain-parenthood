@@ -14,6 +14,15 @@ export async function POST(request: Request) {
       );
     }
 
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      return NextResponse.json(
+        { detail: 'Please enter a valid email address' },
+        { status: 400 }
+      );
+    }
+
     // Password validation: 8+ chars, 2 of 3: uppercase, number, special char
     const hasUpper = /[A-Z]/.test(password);
     const hasNumber = /[0-9]/.test(password);
