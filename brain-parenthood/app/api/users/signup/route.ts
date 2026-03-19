@@ -1,29 +1,45 @@
 import { NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
 import { connectDB } from '@/lib/mongodb';
 import User from '@/lib/models/User';
 
 export async function POST(request: Request) {
   try {
-    const { email, password, name } = await request.json();
+    const { email, password, name, username } = await request.json();
 
-    if (!email || !password || !name) {
+    if (!email || !password || !name || !username) {
       return NextResponse.json(
-        { detail: 'Email, password, and name are required' },
+        { detail: 'All fields are required' },
+        { status: 400 }
+      );
+    }
+
+    // Password validation: 8+ chars, 2 of 3: uppercase, number, special char
+    const hasUpper = /[A-Z]/.test(password);
+    const hasNumber = /[0-9]/.test(password);
+    const hasSpecial = /[^A-Za-z0-9]/.test(password);
+    const criteriaMet = [hasUpper, hasNumber, hasSpecial].filter(Boolean).length;
+    if (password.length < 8 || criteriaMet < 2) {
+      return NextResponse.json(
+        { detail: 'Password must be at least 8 characters and meet 2 of 3 complexity requirements (uppercase letter, number, special character)' },
         { status: 400 }
       );
     }
 
     await connectDB();
 
-    const existing = await User.findOne({ email: email.toLowerCase() });
-    if (existing) {
-      return NextResponse.json(
-        { detail: 'User already exists' },
-        { status: 409 }
-      );
+    const existingEmail = await User.findOne({ email: email.toLowerCase() });
+    if (existingEmail) {
+      return NextResponse.json({ detail: 'It looks like you already have an account with this email. Please sign in instead.' }, { status: 409 });
     }
 
-    const newUser = await User.create({ email, password, name, isAdmin: false });
+    const existingUsername = await User.findOne({ username: username.trim() });
+    if (existingUsername) {
+      return NextResponse.json({ detail: 'That username is already taken' }, { status: 409 });
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 12);
+    const newUser = await User.create({ email, password: hashedPassword, name, username: username.trim(), isAdmin: false });
 
     const token = Buffer.from(`${newUser._id}:${newUser.email}:${Date.now()}`).toString('base64');
 

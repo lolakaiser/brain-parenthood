@@ -16,18 +16,24 @@ export interface IUser extends Document {
   email: string;
   password: string;
   name: string;
+  username: string;
   isAdmin: boolean;
   createdAt: Date;
   moduleProgress: IModuleProgress;
   moduleAnswers: Map<string, IModuleAnswerEntry>;
+  resetPasswordToken?: string;
+  resetPasswordExpiry?: Date;
 }
 
 const UserSchema = new Schema<IUser>({
   email:    { type: String, required: true, unique: true, lowercase: true, trim: true },
   password: { type: String, required: true },
   name:     { type: String, required: true, trim: true },
-  isAdmin:  { type: Boolean, default: false },
-  createdAt:{ type: Date, default: Date.now },
+  username: { type: String, required: true, unique: true, trim: true },
+  isAdmin:              { type: Boolean, default: false },
+  createdAt:            { type: Date, default: Date.now },
+  resetPasswordToken:   { type: String },
+  resetPasswordExpiry:  { type: Date },
   moduleProgress: {
     completedModules: { type: [Number], default: [] },
     currentModule:    { type: Number, default: 1 },

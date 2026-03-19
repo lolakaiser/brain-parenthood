@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import bcrypt from 'bcryptjs';
 import { connectDB } from '@/lib/mongodb';
 import User from '@/lib/models/User';
 
@@ -17,7 +18,8 @@ export async function POST(request: Request) {
 
     const user = await User.findOne({ email: email.toLowerCase() });
 
-    if (!user || user.password !== password) {
+    const passwordMatch = user && await bcrypt.compare(password, user.password);
+    if (!passwordMatch) {
       return NextResponse.json(
         { detail: 'Invalid credentials' },
         { status: 401 }

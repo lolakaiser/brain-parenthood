@@ -1,4 +1,5 @@
 import mongoose from 'mongoose';
+import bcrypt from 'bcryptjs';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 import { readFileSync } from 'fs';
@@ -21,6 +22,7 @@ const UserSchema = new mongoose.Schema({
   email:    { type: String, required: true, unique: true, lowercase: true },
   password: { type: String, required: true },
   name:     { type: String, required: true },
+  username: { type: String, required: true, unique: true },
   isAdmin:  { type: Boolean, default: false },
   createdAt:{ type: Date, default: Date.now },
 });
@@ -32,15 +34,18 @@ async function seed() {
   console.log('Connected to MongoDB');
 
   // Remove old admin if exists, then create fresh
+  await User.deleteOne({ email: 'admin@sensym.ai' });
   await User.deleteOne({ email: 'admin@sensym.com' });
+  const hashedPassword = await bcrypt.hash('admin123', 12);
   await User.create({
-    email: 'admin@sensym.com',
-    password: 'admin123',
+    email: 'admin@sensym.ai',
+    password: hashedPassword,
     name: 'Admin',
+    username: 'admin',
     isAdmin: true,
   });
 
-  console.log('✓ Admin account created: admin@sensym.com / admin123');
+  console.log('✓ Admin account created: admin@sensym.ai / admin123');
   await mongoose.disconnect();
 }
 

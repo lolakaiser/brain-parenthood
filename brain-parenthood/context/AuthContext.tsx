@@ -1,6 +1,7 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect, ReactNode } from 'react';
+import { loadProgressFromDB, saveProgress } from '@/lib/storage';
 
 interface User {
   id: number;
@@ -12,7 +13,7 @@ interface User {
 interface AuthContextType {
   user: User | null;
   login: (email: string, password: string) => Promise<{success: boolean; error?: string}>;
-  signup: (email: string, password: string, name: string) => Promise<{success: boolean; error?: string}>;
+  signup: (email: string, password: string, name: string, username: string) => Promise<{success: boolean; error?: string}>;
   logout: () => void;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -42,6 +43,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (response.ok) {
             const userData = await response.json();
             setUser(userData);
+            // Hydrate localStorage with progress from MongoDB
+            const dbProgress = await loadProgressFromDB();
+            if (dbProgress) saveProgress(dbProgress);
           } else {
             // Token invalid, clear it
             localStorage.removeItem('authToken');
@@ -84,6 +88,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (userResponse.ok) {
           const userData = await userResponse.json();
           setUser(userData);
+          // Hydrate localStorage with progress from MongoDB
+          const dbProgress = await loadProgressFromDB();
+          if (dbProgress) saveProgress(dbProgress);
           return { success: true };
         }
       }
@@ -101,14 +108,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const signup = async (email: string, password: string, name: string): Promise<{success: boolean; error?: string}> => {
+  const signup = async (email: string, password: string, name: string, username: string): Promise<{success: boolean; error?: string}> => {
     try {
       const response = await fetch(`${API_URL}/api/users/signup`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ email, password, name }),
+        body: JSON.stringify({ email, password, name, username }),
       });
 
       const data = await response.json();
