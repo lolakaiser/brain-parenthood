@@ -4,23 +4,15 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import AppLayout from "@/components/AppLayout";
 import { useAuth } from "@/context/AuthContext";
-import { getProgress, saveProgress, loadProgressFromDB } from "@/lib/storage";
+import { getProgress } from "@/lib/storage";
 
 export default function DashboardPage() {
   const { user } = useAuth();
   const [completedModules, setCompletedModules] = useState<number[]>([]);
 
   useEffect(() => {
-    // Show localStorage immediately, then update from DB
-    const localProgress = getProgress();
-    setCompletedModules(localProgress?.completedModules || []);
-
-    loadProgressFromDB().then((dbProgress) => {
-      if (dbProgress) {
-        setCompletedModules(dbProgress.completedModules);
-        saveProgress(dbProgress);
-      }
-    });
+    const progress = getProgress();
+    setCompletedModules(progress?.completedModules || []);
   }, []);
 
   const totalModules = 12;
@@ -66,70 +58,6 @@ export default function DashboardPage() {
             <p style={{ fontSize: '42px', fontWeight: 'bold', color: '#111827', marginBottom: '16px' }}>{overallProgress}%</p>
             <div style={{ height: '8px', backgroundColor: '#F3F4F6', borderRadius: '4px', overflow: 'hidden' }}>
               <div style={{ height: '100%', width: `${overallProgress}%`, backgroundColor: '#D1D5DB', borderRadius: '4px' }} />
-            </div>
-          </div>
-        </div>
-
-        {/* New to Platform Banner */}
-        <div style={{
-          background: 'linear-gradient(to right, #7C3AED, #DB2777, #F472B6)',
-          borderRadius: '20px',
-          padding: '50px',
-          marginBottom: '80px',
-          position: 'relative',
-          overflow: 'hidden'
-        }}>
-          <div style={{ display: 'flex', alignItems: 'flex-start', gap: '24px', position: 'relative', zIndex: 1 }}>
-            {/* Icon */}
-            <div style={{
-              width: '56px',
-              height: '56px',
-              borderRadius: '12px',
-              backgroundColor: '#FBBF24',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              flexShrink: 0
-            }}>
-              <span style={{ color: '#92400E', fontSize: '24px' }}>W</span>
-            </div>
-            <div>
-              <h2 style={{ fontSize: '24px', fontWeight: 'bold', color: 'white', marginBottom: '12px' }}>
-                New to the Platform?
-              </h2>
-              <p style={{ color: 'rgba(255,255,255,0.8)', marginBottom: '32px', maxWidth: '600px', lineHeight: '1.6' }}>
-                Take our interactive training module to learn how to use all the features! Practice with sample exercises before starting the real modules.
-              </p>
-              <div style={{ display: 'flex', gap: '16px' }}>
-                <Link
-                  href="/modules"
-                  style={{
-                    display: 'inline-flex',
-                    alignItems: 'center',
-                    gap: '8px',
-                    padding: '14px 24px',
-                    backgroundColor: 'white',
-                    color: '#7C3AED',
-                    fontWeight: '500',
-                    borderRadius: '12px',
-                    textDecoration: 'none'
-                  }}
-                >
-                  <span style={{ fontSize: '18px' }}>+</span>
-                  Start Training Module
-                </Link>
-                <button style={{
-                  padding: '14px 24px',
-                  backgroundColor: 'rgba(255,255,255,0.2)',
-                  color: 'white',
-                  fontWeight: '500',
-                  borderRadius: '12px',
-                  border: 'none',
-                  cursor: 'pointer'
-                }}>
-                  Maybe Later
-                </button>
-              </div>
             </div>
           </div>
         </div>
