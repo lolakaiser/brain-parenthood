@@ -1,2 +1,13 @@
+# Excel/generated reports
+*.xlsx
+
 # Assignment documents
 CustomerFeedback.md
+DESIGN_SYSTEM.md
+
+# Developer guides
+Ben_Developer_Guide.md
+Ben_Developer_Guide.docx
+Ben_Module_Completion_Guide.md
+
+
