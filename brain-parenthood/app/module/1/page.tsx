@@ -287,11 +287,6 @@ function countWords(str: string) {
   return str.trim().split(/\s+/).filter(Boolean).length;
 }
 
-const MIN_WORDS: Record<string, number> = {
-  text: 3,
-  textarea: 10,
-};
-
 const BaselineStep = memo(function BaselineStep({ onNext, onBack, initialQuestion = 0 }: { onNext: () => void; onBack: () => void; initialQuestion?: number }) {
   const [currentQuestion, setCurrentQuestion] = useState(initialQuestion);
   const [formData, setFormData] = useState({
@@ -373,6 +368,7 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack, initialQuestio
       description: 'What are the main challenges your team is facing right now?',
       type: 'textarea' as const,
       placeholder: 'Describe your team\'s challenges...',
+      minWords: 25,
     },
   ];
 
@@ -412,7 +408,7 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack, initialQuestio
     const value = formData[currentQ.id as keyof typeof formData];
     if (currentQ.type === 'slider') return true;
     if (currentQ.type === 'number') return String(value) !== '';
-    const minWords = MIN_WORDS[currentQ.type] ?? 1;
+    const minWords = currentQ.minWords ?? 1;
     return countWords(String(value)) >= minWords;
   };
 
@@ -520,7 +516,7 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack, initialQuestio
           {currentQ.type === 'textarea' && (() => {
             const val = String(formData[currentQ.id as keyof typeof formData]);
             const words = countWords(val);
-            const minW = MIN_WORDS.textarea;
+            const minW = currentQ.minWords ?? 10;
             const met = words >= minW;
             return (
               <>
@@ -643,21 +639,24 @@ function GoalsStep({ onNext, onBack, initialQuestion = 0 }: { onNext: () => void
       title: 'Stress Reduction Goal',
       description: 'What specific stress reduction goal do you want to achieve?',
       type: 'text' as const,
-      placeholder: 'e.g., Reduce team stress level from 7 to 4',
+      placeholder: 'e.g., Reduce team stress level from 7 to 4 by building daily check-in habits',
+      minWords: 8,
     },
     {
       id: 'productivityGoal',
       title: 'Productivity Goal',
       description: 'How do you want to improve your team\'s productivity?',
       type: 'text' as const,
-      placeholder: 'e.g., Increase team productivity by 25%',
+      placeholder: 'e.g., Increase sprint velocity by 20% through better task prioritisation',
+      minWords: 8,
     },
     {
       id: 'communicationGoal',
       title: 'Communication Goal',
       description: 'What communication improvements do you want to see?',
       type: 'text' as const,
-      placeholder: 'e.g., Daily check-ins and weekly retrospectives',
+      placeholder: 'e.g., Introduce weekly retrospectives and async daily standups for the team',
+      minWords: 8,
     },
     {
       id: 'personalGoal',
@@ -665,6 +664,7 @@ function GoalsStep({ onNext, onBack, initialQuestion = 0 }: { onNext: () => void
       description: 'What do you personally want to achieve in the next 12 weeks?',
       type: 'textarea' as const,
       placeholder: 'Describe your personal development goals...',
+      minWords: 30,
     },
     {
       id: 'teamGoal',
@@ -672,6 +672,7 @@ function GoalsStep({ onNext, onBack, initialQuestion = 0 }: { onNext: () => void
       description: 'What does your team want to achieve together?',
       type: 'textarea' as const,
       placeholder: 'Describe your team\'s collective goals...',
+      minWords: 30,
     },
     {
       id: 'successMetrics',
@@ -679,6 +680,7 @@ function GoalsStep({ onNext, onBack, initialQuestion = 0 }: { onNext: () => void
       description: 'How will you measure success at the end of 12 weeks?',
       type: 'textarea' as const,
       placeholder: 'Define specific metrics or indicators...',
+      minWords: 25,
     },
   ];
 
@@ -715,7 +717,7 @@ function GoalsStep({ onNext, onBack, initialQuestion = 0 }: { onNext: () => void
 
   const isAnswered = () => {
     const value = goals[currentQ.id as keyof typeof goals];
-    const minWords = MIN_WORDS[currentQ.type] ?? 1;
+    const minWords = currentQ.minWords ?? 1;
     return countWords(value) >= minWords;
   };
 
@@ -757,7 +759,7 @@ function GoalsStep({ onNext, onBack, initialQuestion = 0 }: { onNext: () => void
           {currentQ.type === 'text' && (() => {
             const val = goals[currentQ.id as keyof typeof goals];
             const words = countWords(val);
-            const minW = MIN_WORDS.text;
+            const minW = currentQ.minWords ?? 5;
             const met = words >= minW;
             return (
               <>
@@ -789,7 +791,7 @@ function GoalsStep({ onNext, onBack, initialQuestion = 0 }: { onNext: () => void
           {currentQ.type === 'textarea' && (() => {
             const val = goals[currentQ.id as keyof typeof goals];
             const words = countWords(val);
-            const minW = MIN_WORDS.textarea;
+            const minW = currentQ.minWords ?? 20;
             const met = words >= minW;
             return (
               <>
