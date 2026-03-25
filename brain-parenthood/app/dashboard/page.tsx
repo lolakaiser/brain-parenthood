@@ -3,17 +3,32 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import AppLayout from "@/components/AppLayout";
+import AIInsightCard from "@/components/AIInsightCard";
 import { useAuth } from "@/context/AuthContext";
-import { getProgress } from "@/lib/storage";
+import { getProgress, getBaseline, getGoals } from "@/lib/storage";
 
 export default function DashboardPage() {
   const { user } = useAuth();
   const [completedModules, setCompletedModules] = useState<number[]>([]);
+  const [aiData, setAiData] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
     const progress = getProgress();
-    setCompletedModules(progress?.completedModules || []);
-  }, []);
+    const completed = progress?.completedModules || [];
+    setCompletedModules(completed);
+
+    // Only load AI data if module 1 is done
+    if (completed.includes(1)) {
+      const assessment = getBaseline();
+      const goals = getGoals();
+      setAiData({
+        userName: user?.name,
+        assessment,
+        goals,
+        completedModules: completed,
+      });
+    }
+  }, [user?.name]);
 
   const totalModules = 12;
   const modulesStarted = Math.min(completedModules.length + 1, totalModules);
@@ -37,6 +52,17 @@ export default function DashboardPage() {
 
       {/* Content Area */}
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
+
+        {/* AI Insight Card - shown after module 1 complete */}
+        {aiData && (
+          <div style={{ marginBottom: '48px' }}>
+            <AIInsightCard
+              type="dashboard"
+              userData={aiData}
+              title="Your AI Coach"
+            />
+          </div>
+        )}
 
         {/* Stats Row - 3 cards side by side */}
         <div style={{ display: 'flex', gap: '40px', marginBottom: '80px' }}>
@@ -73,7 +99,7 @@ export default function DashboardPage() {
             borderRadius: '16px',
             padding: '40px',
             border: '1px solid #E5E7EB',
-            marginBottom: '80px',
+            marginBottom: '40px',
             textDecoration: 'none'
           }}
         >
@@ -106,7 +132,7 @@ export default function DashboardPage() {
             borderRadius: '16px',
             padding: '40px',
             border: '1px solid #E5E7EB',
-            marginBottom: '80px',
+            marginBottom: '40px',
             textDecoration: 'none'
           }}
         >
