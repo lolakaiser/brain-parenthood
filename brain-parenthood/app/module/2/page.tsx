@@ -5,7 +5,8 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { completeModule, saveModuleAnswers, getModuleAnswers, isModuleCompleted } from "@/lib/storage";
+import { completeModule, saveModuleAnswers, getModuleAnswers, isModuleCompleted, getBaseline, getGoals } from "@/lib/storage";
+import AIInsightCard from "@/components/AIInsightCard";
 import ReviewStep from "@/components/ReviewStep";
 
 type StepType = 'overview' | 'assessment' | 'goals' | 'review' | 'complete';
@@ -147,6 +148,9 @@ export default function Module2Page() {
 }
 
 const OverviewStep = memo(function OverviewStep({ onNext, isCompleted }: { onNext: () => void; isCompleted?: boolean }) {
+  const { user } = useAuth();
+  const baseline = getBaseline();
+  const goals = getGoals();
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
@@ -225,6 +229,16 @@ const OverviewStep = memo(function OverviewStep({ onNext, isCompleted }: { onNex
           </div>
         </div>
       </div>
+
+      {baseline && (
+        <div style={{ marginBottom: '40px' }}>
+          <AIInsightCard
+            type="module_intro"
+            userData={{ moduleId: 2, moduleName: 'Module 2: How to Handle the Tough Stuff', assessment: baseline, goals, userName: user?.name }}
+            title="Your AI Coach"
+          />
+        </div>
+      )}
 
       <div style={{ display: 'flex', justifyContent: 'center' }}>
         <button
@@ -673,6 +687,8 @@ function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: (
 }
 
 function CompleteStep({ moduleId, nextModuleId }: { moduleId: number; nextModuleId: number }) {
+  const { user } = useAuth();
+  const moduleAnswers = getModuleAnswers(moduleId, 'assessment');
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto' }}>
       <div style={{
@@ -701,6 +717,16 @@ function CompleteStep({ moduleId, nextModuleId }: { moduleId: number; nextModule
           You've built your coping toolkit for conflict, anger, and stress. Keep practising these strategies every day.
         </p>
       </div>
+
+      {moduleAnswers && (
+        <div style={{ marginBottom: '40px' }}>
+          <AIInsightCard
+            type="module_complete"
+            userData={{ moduleId, moduleName: 'Module 2: How to Handle the Tough Stuff', answers: moduleAnswers, userName: user?.name }}
+            title="Your Personalized Feedback"
+          />
+        </div>
+      )}
 
       <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px' }}>
         <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '20px', marginBottom: '24px' }}>

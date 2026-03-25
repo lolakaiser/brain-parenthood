@@ -5,7 +5,8 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { completeModule, saveModuleAnswers, getModuleAnswers, isModuleCompleted } from "@/lib/storage";
+import { completeModule, saveModuleAnswers, getModuleAnswers, isModuleCompleted, getBaseline, getGoals } from "@/lib/storage";
+import AIInsightCard from "@/components/AIInsightCard";
 import ReviewStep from "@/components/ReviewStep";
 
 type StepType = 'overview' | 'assessment' | 'goals' | 'review' | 'complete';
@@ -93,6 +94,9 @@ export default function Module4Page() {
 }
 
 const OverviewStep = memo(function OverviewStep({ onNext, isCompleted }: { onNext: () => void; isCompleted?: boolean }) {
+  const { user } = useAuth();
+  const baseline = getBaseline();
+  const goals = getGoals();
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
@@ -331,6 +335,8 @@ function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: (
 }
 
 function CompleteStep({ moduleId, nextModuleId }: { moduleId: number; nextModuleId: number }) {
+  const { user } = useAuth();
+  const moduleAnswers = getModuleAnswers(moduleId, 'assessment');
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto' }}>
       <div style={{ background: 'linear-gradient(to right, #7C3AED, #DB2777, #F472B6)', borderRadius: '20px', padding: '50px', marginBottom: '40px', textAlign: 'center' }}>
