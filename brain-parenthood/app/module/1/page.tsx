@@ -283,6 +283,15 @@ const OverviewStep = memo(function OverviewStep({ onNext, isCompleted }: { onNex
   );
 });
 
+function countWords(str: string) {
+  return str.trim().split(/\s+/).filter(Boolean).length;
+}
+
+const MIN_WORDS: Record<string, number> = {
+  text: 3,
+  textarea: 10,
+};
+
 const BaselineStep = memo(function BaselineStep({ onNext, onBack, initialQuestion = 0 }: { onNext: () => void; onBack: () => void; initialQuestion?: number }) {
   const [currentQuestion, setCurrentQuestion] = useState(initialQuestion);
   const [formData, setFormData] = useState({
@@ -402,7 +411,9 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack, initialQuestio
   const isAnswered = () => {
     const value = formData[currentQ.id as keyof typeof formData];
     if (currentQ.type === 'slider') return true;
-    return value !== '';
+    if (currentQ.type === 'number') return String(value) !== '';
+    const minWords = MIN_WORDS[currentQ.type] ?? 1;
+    return countWords(String(value)) >= minWords;
   };
 
   return (
@@ -506,26 +517,39 @@ const BaselineStep = memo(function BaselineStep({ onNext, onBack, initialQuestio
             </div>
           )}
 
-          {currentQ.type === 'textarea' && (
-            <textarea
-              value={formData[currentQ.id as keyof typeof formData]}
-              onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })}
-              placeholder={currentQ.placeholder}
-              rows={5}
-              style={{
-                width: '100%',
-                padding: '16px 20px',
-                fontSize: '15px',
-                color: '#111827',
-                border: '2px solid #E5E7EB',
-                borderRadius: '12px',
-                outline: 'none',
-                resize: 'none',
-                lineHeight: '1.6',
-                boxSizing: 'border-box',
-              }}
-            />
-          )}
+          {currentQ.type === 'textarea' && (() => {
+            const val = String(formData[currentQ.id as keyof typeof formData]);
+            const words = countWords(val);
+            const minW = MIN_WORDS.textarea;
+            const met = words >= minW;
+            return (
+              <>
+                <textarea
+                  value={val}
+                  onChange={(e) => setFormData({ ...formData, [currentQ.id]: e.target.value })}
+                  placeholder={currentQ.placeholder}
+                  rows={5}
+                  style={{
+                    width: '100%',
+                    padding: '16px 20px',
+                    fontSize: '15px',
+                    color: '#111827',
+                    border: `2px solid ${val.length > 0 && !met ? '#FBBF24' : met ? '#86EFAC' : '#E5E7EB'}`,
+                    borderRadius: '12px',
+                    outline: 'none',
+                    resize: 'none',
+                    lineHeight: '1.6',
+                    boxSizing: 'border-box',
+                  }}
+                />
+                {val.length > 0 && (
+                  <p style={{ fontSize: '12px', marginTop: '6px', color: met ? '#16A34A' : '#B45309', textAlign: 'right' }}>
+                    {met ? `✓ ${words} words` : `${words} / ${minW} words minimum`}
+                  </p>
+                )}
+              </>
+            );
+          })()}
         </div>
 
         {/* Question Number Dots */}
@@ -691,7 +715,8 @@ function GoalsStep({ onNext, onBack, initialQuestion = 0 }: { onNext: () => void
 
   const isAnswered = () => {
     const value = goals[currentQ.id as keyof typeof goals];
-    return value.trim() !== '';
+    const minWords = MIN_WORDS[currentQ.type] ?? 1;
+    return countWords(value) >= minWords;
   };
 
   return (
@@ -729,45 +754,71 @@ function GoalsStep({ onNext, onBack, initialQuestion = 0 }: { onNext: () => void
         </div>
 
         <div style={{ marginBottom: '48px' }}>
-          {currentQ.type === 'text' && (
-            <input
-              type="text"
-              value={goals[currentQ.id as keyof typeof goals]}
-              onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })}
-              placeholder={currentQ.placeholder}
-              style={{
-                width: '100%',
-                padding: '14px 20px',
-                fontSize: '15px',
-                color: '#111827',
-                border: '2px solid #E5E7EB',
-                borderRadius: '12px',
-                outline: 'none',
-                boxSizing: 'border-box',
-              }}
-            />
-          )}
+          {currentQ.type === 'text' && (() => {
+            const val = goals[currentQ.id as keyof typeof goals];
+            const words = countWords(val);
+            const minW = MIN_WORDS.text;
+            const met = words >= minW;
+            return (
+              <>
+                <input
+                  type="text"
+                  value={val}
+                  onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })}
+                  placeholder={currentQ.placeholder}
+                  style={{
+                    width: '100%',
+                    padding: '14px 20px',
+                    fontSize: '15px',
+                    color: '#111827',
+                    border: `2px solid ${val.length > 0 && !met ? '#FBBF24' : met ? '#86EFAC' : '#E5E7EB'}`,
+                    borderRadius: '12px',
+                    outline: 'none',
+                    boxSizing: 'border-box',
+                  }}
+                />
+                {val.length > 0 && (
+                  <p style={{ fontSize: '12px', marginTop: '6px', color: met ? '#16A34A' : '#B45309', textAlign: 'right' }}>
+                    {met ? `✓ ${words} words` : `${words} / ${minW} words minimum`}
+                  </p>
+                )}
+              </>
+            );
+          })()}
 
-          {currentQ.type === 'textarea' && (
-            <textarea
-              value={goals[currentQ.id as keyof typeof goals]}
-              onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })}
-              placeholder={currentQ.placeholder}
-              rows={5}
-              style={{
-                width: '100%',
-                padding: '16px 20px',
-                fontSize: '15px',
-                color: '#111827',
-                border: '2px solid #E5E7EB',
-                borderRadius: '12px',
-                outline: 'none',
-                resize: 'none',
-                lineHeight: '1.6',
-                boxSizing: 'border-box',
-              }}
-            />
-          )}
+          {currentQ.type === 'textarea' && (() => {
+            const val = goals[currentQ.id as keyof typeof goals];
+            const words = countWords(val);
+            const minW = MIN_WORDS.textarea;
+            const met = words >= minW;
+            return (
+              <>
+                <textarea
+                  value={val}
+                  onChange={(e) => setGoals({ ...goals, [currentQ.id]: e.target.value })}
+                  placeholder={currentQ.placeholder}
+                  rows={5}
+                  style={{
+                    width: '100%',
+                    padding: '16px 20px',
+                    fontSize: '15px',
+                    color: '#111827',
+                    border: `2px solid ${val.length > 0 && !met ? '#FBBF24' : met ? '#86EFAC' : '#E5E7EB'}`,
+                    borderRadius: '12px',
+                    outline: 'none',
+                    resize: 'none',
+                    lineHeight: '1.6',
+                    boxSizing: 'border-box',
+                  }}
+                />
+                {val.length > 0 && (
+                  <p style={{ fontSize: '12px', marginTop: '6px', color: met ? '#16A34A' : '#B45309', textAlign: 'right' }}>
+                    {met ? `✓ ${words} words` : `${words} / ${minW} words minimum`}
+                  </p>
+                )}
+              </>
+            );
+          })()}
         </div>
 
         {/* Question Number Dots */}
