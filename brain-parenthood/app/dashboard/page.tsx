@@ -17,9 +17,9 @@ export default function DashboardPage() {
     const completed = progress?.completedModules || [];
     setCompletedModules(completed);
 
-    // Only load AI data if module 1 is done
-    if (completed.includes(1)) {
-      const assessment = getBaseline();
+    // Load AI data if baseline exists (handles accounts created before AI was added)
+    const assessment = getBaseline();
+    if (assessment) {
       const goals = getGoals();
       setAiData({
         userName: user?.name,

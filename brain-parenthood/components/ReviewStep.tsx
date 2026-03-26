@@ -1,6 +1,6 @@
 "use client";
 
-import { getModuleAnswers } from "@/lib/storage";
+import { getModuleAnswers, getBaseline, getGoals } from "@/lib/storage";
 
 interface LabeledAnswer {
   title: string;
@@ -15,12 +15,52 @@ interface ReviewStepProps {
   onEdit?: (section: 'assessment' | 'goals', questionIndex: number) => void;
 }
 
+const ASSESSMENT_FIELDS = [
+  { id: 'teamStressLevel', title: 'Overall Team Stress Level' },
+  { id: 'individualStressLevel', title: 'Your Individual Stress Level' },
+  { id: 'productivity', title: 'Team Productivity' },
+  { id: 'communication', title: 'Team Communication Quality' },
+  { id: 'workLifeBalance', title: 'Work-Life Balance' },
+  { id: 'teamSize', title: 'Team Size' },
+  { id: 'primaryChallenges', title: 'Primary Challenges' },
+];
+
+const GOALS_FIELDS = [
+  { id: 'stressReduction', title: 'Stress Reduction Goal' },
+  { id: 'productivityGoal', title: 'Productivity Goal' },
+  { id: 'communicationGoal', title: 'Communication Goal' },
+  { id: 'personalGoal', title: 'Personal Development Goal' },
+  { id: 'teamGoal', title: 'Team Development Goal' },
+  { id: 'successMetrics', title: 'Success Metrics' },
+];
+
 export default function ReviewStep({ moduleId, onConfirm, onBack, isReadOnly, onEdit }: ReviewStepProps) {
   const assessmentSaved = getModuleAnswers(moduleId, 'assessment');
   const goalsSaved = getModuleAnswers(moduleId, 'goals');
 
-  const assessmentLabeled = (assessmentSaved?._labeled as LabeledAnswer[]) || [];
-  const goalsLabeled = (goalsSaved?._labeled as LabeledAnswer[]) || [];
+  // Use _labeled if present, otherwise fall back to raw baseline/goals data
+  let assessmentLabeled: LabeledAnswer[] = (assessmentSaved?._labeled as LabeledAnswer[]) || [];
+  let goalsLabeled: LabeledAnswer[] = (goalsSaved?._labeled as LabeledAnswer[]) || [];
+
+  if (assessmentLabeled.length === 0 && moduleId === 1) {
+    const baseline = getBaseline();
+    if (baseline) {
+      assessmentLabeled = ASSESSMENT_FIELDS.map(f => ({
+        title: f.title,
+        answer: (baseline as unknown as Record<string, string | number>)[f.id] ?? '—',
+      }));
+    }
+  }
+
+  if (goalsLabeled.length === 0 && moduleId === 1) {
+    const goals = getGoals();
+    if (goals) {
+      goalsLabeled = GOALS_FIELDS.map(f => ({
+        title: f.title,
+        answer: (goals as unknown as Record<string, string | number>)[f.id] ?? '—',
+      }));
+    }
+  }
 
   const editButtonStyle = {
     padding: '4px 10px',
