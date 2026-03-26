@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import AppLayout from "@/components/AppLayout";
 import AIInsightCard from "@/components/AIInsightCard";
 import { useAuth } from "@/context/AuthContext";
-import { getProgress, getBaseline, getGoals } from "@/lib/storage";
+import { getProgress, getBaseline, getGoals, getModuleAnswers } from "@/lib/storage";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -17,15 +17,25 @@ export default function DashboardPage() {
     const completed = progress?.completedModules || [];
     setCompletedModules(completed);
 
-    // Load AI data if baseline exists (handles accounts created before AI was added)
     const assessment = getBaseline();
     if (assessment) {
       const goals = getGoals();
+
+      // Collect goal answers from each completed module for richer AI context
+      const moduleHistory: Record<string, Record<string, unknown>> = {};
+      completed.forEach((moduleId: number) => {
+        const moduleGoals = getModuleAnswers(moduleId, 'goals');
+        if (moduleGoals) {
+          moduleHistory[moduleId] = moduleGoals;
+        }
+      });
+
       setAiData({
         userName: user?.name,
         assessment,
         goals,
         completedModules: completed,
+        moduleHistory,
       });
     }
   }, [user?.name]);
@@ -53,10 +63,11 @@ export default function DashboardPage() {
       {/* Content Area */}
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
 
-        {/* AI Insight Card - shown after module 1 complete */}
+        {/* AI Insight Card — re-mounts (and re-fetches) each time a module is completed */}
         {aiData && (
           <div style={{ marginBottom: '48px' }}>
             <AIInsightCard
+              key={modulesCompleted}
               type="dashboard"
               userData={aiData}
               title="Your AI Coach"

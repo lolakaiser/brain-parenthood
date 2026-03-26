@@ -14,9 +14,20 @@ export async function POST(request: Request) {
     let prompt = '';
 
     if (type === 'dashboard') {
-      const { assessment, goals, userName, completedModules } = userData;
+      const { assessment, goals, userName, completedModules, moduleHistory } = userData;
+      const modulesCount = completedModules?.length ?? 0;
+
+      // Build a brief summary of completed module goals if available
+      let moduleSummary = '';
+      if (moduleHistory && Object.keys(moduleHistory).length > 0) {
+        moduleSummary = '\n\nWhat they\'ve worked on in completed modules:\n' +
+          Object.entries(moduleHistory as Record<string, Record<string, string>>)
+            .map(([id, data]) => `- Module ${id}: ${Object.values(data).filter(Boolean).slice(0, 2).join('; ')}`)
+            .join('\n');
+      }
+
       prompt = `You are a warm, direct resilience coach for early-stage startup founders.
-A user named ${userName || 'this founder'} just completed Module 1 of Brain Parenthood, a 12-week resilience program.
+${userName || 'This founder'} is on their Brain Parenthood resilience journey — they have completed ${modulesCount} of 12 modules.
 
 Their baseline assessment scores (1-10):
 - Team stress level: ${assessment?.teamStressLevel ?? 'N/A'}
@@ -24,23 +35,18 @@ Their baseline assessment scores (1-10):
 - Team productivity: ${assessment?.productivity ?? 'N/A'}
 - Team communication: ${assessment?.communication ?? 'N/A'}
 - Work-life balance: ${assessment?.workLifeBalance ?? 'N/A'}
-- Team size: ${assessment?.teamSize ?? 'N/A'}
 - Primary challenges: ${assessment?.primaryChallenges ?? 'N/A'}
 
-Their goals for the 12 weeks:
+Their 12-week goals:
 - Stress reduction: ${goals?.stressReduction ?? 'N/A'}
-- Productivity goal: ${goals?.productivityGoal ?? 'N/A'}
-- Communication goal: ${goals?.communicationGoal ?? 'N/A'}
 - Personal goal: ${goals?.personalGoal ?? 'N/A'}
 - Team goal: ${goals?.teamGoal ?? 'N/A'}
-- Success metrics: ${goals?.successMetrics ?? 'N/A'}
+- Success metrics: ${goals?.successMetrics ?? 'N/A'}${moduleSummary}
 
-They have completed ${completedModules?.length ?? 0} of 12 modules.
-
-Write a short, personalized insight (3-4 sentences max) for their dashboard.
-- Reference their specific numbers or challenges — make it feel personal, not generic
-- Highlight their #1 priority area based on their scores
-- Be encouraging but honest
+Write a short, personalized insight (3-4 sentences) for their dashboard that reflects where they are RIGHT NOW in their journey.
+- If they've completed multiple modules, acknowledge their progress and point to what's ahead
+- Reference their specific scores or challenges — make it feel personal
+- Give one concrete focus or action for this week based on their data
 - Do NOT use bullet points, headers, or markdown — just plain flowing text
 - Do NOT start with "Great job" or similar generic openers`;
     }
@@ -66,23 +72,49 @@ Write 2 sentences personalizing why THIS module matters specifically for them ba
     }
 
     if (type === 'module_complete') {
-      const { moduleId, moduleName, answers, userName } = userData;
+      const { moduleId, moduleName, answers, userName, baseline, userGoals, priorModuleGoals } = userData;
+
+      // Format current module answers (skip internal fields)
       const answerSummary = answers
-        ? Object.entries(answers)
-            .filter(([k]) => k !== '_labeled')
+        ? (answers._labeled as Array<{title: string; answer: string | number}>)
+            ?.map((item: {title: string; answer: string | number}) => `${item.title}: ${item.answer}`)
+            .join('\n') ||
+          Object.entries(answers as Record<string, unknown>)
+            .filter(([k]) => !['_labeled', 'savedAt'].includes(k))
             .map(([k, v]) => `${k}: ${v}`)
-            .join(', ')
+            .join('\n')
         : 'N/A';
+
+      // Build prior modules context
+      let priorContext = '';
+      if (priorModuleGoals && Object.keys(priorModuleGoals).length > 0) {
+        priorContext = '\n\nWhat they committed to in prior modules:\n' +
+          Object.entries(priorModuleGoals as Record<string, Record<string, unknown>>)
+            .map(([id, goals]) => {
+              const labeled = (goals as Record<string, unknown>)._labeled as Array<{title: string; answer: string}> | undefined;
+              const summary = labeled
+                ? labeled.map(l => l.answer).filter(Boolean).slice(0, 2).join('; ')
+                : Object.values(goals).filter(v => typeof v === 'string' && v.length > 0).slice(0, 2).join('; ');
+              return `- Module ${id}: ${summary}`;
+            })
+            .join('\n');
+      }
+
+      const baselineContext = baseline
+        ? `\nBaseline scores: stress ${baseline.teamStressLevel ?? 'N/A'}/10, productivity ${baseline.productivity ?? 'N/A'}/10, communication ${baseline.communication ?? 'N/A'}/10`
+        : '';
 
       prompt = `You are a resilience coach for startup founders.
 
-${userName || 'This founder'} just completed Module ${moduleId} — ${moduleName}.
+${userName || 'This founder'} just completed Module ${moduleId} — ${moduleName}.${baselineContext}${priorContext}
 
-Their responses this module: ${answerSummary}
+Their responses this module:
+${answerSummary}
 
 Write a 2-3 sentence personalized completion message that:
-- References something specific from their answers
-- Gives one concrete next step or thing to watch for this week
+- References something specific from their answers in this module
+- If they have prior module history, acknowledge their progress and connect it to what they've been building
+- Gives one concrete next step to apply this week
 - Is warm but not over the top
 Plain text only, no markdown, no bullet points.`;
     }
@@ -93,7 +125,7 @@ Plain text only, no markdown, no bullet points.`;
 
     const message = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
-      max_tokens: 256,
+      max_tokens: 300,
       messages: [{ role: 'user', content: prompt }],
     });
 
