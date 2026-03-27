@@ -21,6 +21,8 @@ const STEPS = [
 
 export default function Module9Page() {
   const [currentStep, setCurrentStep] = useState<StepType>('overview');
+  const [assessmentStartQ, setAssessmentStartQ] = useState(0);
+  const [goalsStartQ, setGoalsStartQ] = useState(0);
   const { isAuthenticated } = useAuth();
   const moduleId = 9;
   const isCompleted = isModuleCompleted(9);
@@ -31,6 +33,16 @@ export default function Module9Page() {
   }, [isAuthenticated, router]);
 
   const handleSetStep = useCallback((step: StepType) => { setCurrentStep(step); }, []);
+
+  const handleEdit = useCallback((section: 'assessment' | 'goals', questionIndex: number) => {
+    if (section === 'assessment') {
+      setAssessmentStartQ(questionIndex);
+      setCurrentStep('assessment');
+    } else {
+      setGoalsStartQ(questionIndex);
+      setCurrentStep('goals');
+    }
+  }, []);
 
   if (!isAuthenticated) return null;
 
@@ -73,9 +85,9 @@ export default function Module9Page() {
       <div style={{ backgroundColor: '#F5F7FA', minHeight: 'calc(100vh - 300px)' }}>
         <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
           {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep(isCompleted ? 'review' : 'assessment')} isCompleted={isCompleted} />}
-          {currentStep === 'assessment' && <AssessmentStep onNext={() => handleSetStep('goals')} onBack={() => handleSetStep('overview')} moduleId={9} />}
-          {currentStep === 'goals' && <GoalsStep onNext={() => handleSetStep('review')} onBack={() => handleSetStep('assessment')} moduleId={9} />}
-          {currentStep === 'review' && <ReviewStep moduleId={9} onConfirm={() => { completeModule(9); handleSetStep('complete'); }} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} />}
+          {currentStep === 'assessment' && <AssessmentStep onNext={() => { setAssessmentStartQ(0); handleSetStep('goals'); }} onBack={() => { setAssessmentStartQ(0); handleSetStep('overview'); }} moduleId={9} initialQuestion={assessmentStartQ} />}
+          {currentStep === 'goals' && <GoalsStep onNext={() => { setGoalsStartQ(0); handleSetStep('review'); }} onBack={() => { setGoalsStartQ(0); handleSetStep('assessment'); }} moduleId={9} initialQuestion={goalsStartQ} />}
+          {currentStep === 'review' && <ReviewStep moduleId={9} onConfirm={() => { completeModule(9); handleSetStep('complete'); }} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} onEdit={handleEdit} />}
           {currentStep === 'complete' && <CompleteStep moduleId={9} nextModuleId={10} />}
         </div>
       </div>
@@ -159,8 +171,8 @@ const OverviewStep = memo(function OverviewStep({ onNext, isCompleted }: { onNex
   );
 });
 
-const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId, initialQuestion = 0 }: { onNext: () => void; onBack: () => void; moduleId: number; initialQuestion?: number }) {
+  const [currentQuestion, setCurrentQuestion] = useState(initialQuestion);
   const [formData, setFormData] = useState({ styleAwareness: 5, styleAdaptation: 5, writtenEffectiveness: 5, difficultConversations: 5, styleDescription: '' });
 
   useEffect(() => {
@@ -221,6 +233,29 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
               style={{ width: '100%', padding: '16px 20px', fontSize: '15px', color: '#111827', border: '2px solid #E5E7EB', borderRadius: '12px', outline: 'none', resize: 'none', lineHeight: '1.6', boxSizing: 'border-box' }} />
           )}
         </div>
+        {/* Question Number Dots */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', paddingBottom: '24px' }}>
+          {questions.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentQuestion(index)}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: '600',
+                backgroundColor: index === currentQuestion ? '#4F46E5' : index < currentQuestion ? '#C7D2FE' : '#F3F4F6',
+                color: index === currentQuestion ? 'white' : index < currentQuestion ? '#4F46E5' : '#9CA3AF',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
           <button onClick={handlePrevious} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 20px', color: '#374151', fontWeight: '600', borderRadius: '12px', border: 'none', cursor: 'pointer', backgroundColor: 'transparent', fontSize: '15px' }}>← Back</button>
           <button onClick={handleNext} disabled={!isAnswered()} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', border: 'none', cursor: isAnswered() ? 'pointer' : 'not-allowed', background: isAnswered() ? 'linear-gradient(to right, #4F46E5, #7C3AED)' : '#E5E7EB', color: isAnswered() ? 'white' : '#9CA3AF' }}>
@@ -232,8 +267,8 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
   );
 });
 
-function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+function GoalsStep({ onNext, onBack, moduleId, initialQuestion = 0 }: { onNext: () => void; onBack: () => void; moduleId: number; initialQuestion?: number }) {
+  const [currentQuestion, setCurrentQuestion] = useState(initialQuestion);
   const [goals, setGoals] = useState({ styleShift: '', writtenGoal: '', difficultConversation: '' });
 
   useEffect(() => {
@@ -280,6 +315,29 @@ function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: (
               style={{ width: '100%', padding: '16px 20px', fontSize: '15px', color: '#111827', border: '2px solid #E5E7EB', borderRadius: '12px', outline: 'none', resize: 'none', lineHeight: '1.6', boxSizing: 'border-box' }} />
           )}
         </div>
+        {/* Question Number Dots */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', paddingBottom: '24px' }}>
+          {questions.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentQuestion(index)}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: '600',
+                backgroundColor: index === currentQuestion ? '#4F46E5' : index < currentQuestion ? '#C7D2FE' : '#F3F4F6',
+                color: index === currentQuestion ? 'white' : index < currentQuestion ? '#4F46E5' : '#9CA3AF',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
           <button onClick={handlePrevious} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '12px 20px', color: '#374151', fontWeight: '600', borderRadius: '12px', border: 'none', cursor: 'pointer', backgroundColor: 'transparent', fontSize: '15px' }}>← Back</button>
           <button onClick={handleNext} disabled={!isAnswered()} style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', padding: '14px 32px', borderRadius: '12px', fontWeight: 'bold', fontSize: '16px', border: 'none', cursor: isAnswered() ? 'pointer' : 'not-allowed', background: isAnswered() ? 'linear-gradient(to right, #4F46E5, #7C3AED)' : '#E5E7EB', color: isAnswered() ? 'white' : '#9CA3AF' }}>
@@ -294,6 +352,14 @@ function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: (
 function CompleteStep({ moduleId, nextModuleId }: { moduleId: number; nextModuleId: number }) {
   const { user } = useAuth();
   const moduleAnswers = getModuleAnswers(moduleId, 'assessment');
+  const baseline = getBaseline();
+  const userGoals = getGoals();
+  // Collect goal answers from all prior modules for context
+  const priorModuleGoals: Record<number, Record<string, unknown>> = {};
+  for (let i = 1; i < moduleId; i++) {
+    const g = getModuleAnswers(i, 'goals');
+    if (g) priorModuleGoals[i] = g;
+  }
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto' }}>
       <div style={{ background: 'linear-gradient(to right, #7C3AED, #DB2777, #F472B6)', borderRadius: '20px', padding: '50px', marginBottom: '40px', textAlign: 'center' }}>
@@ -305,6 +371,15 @@ function CompleteStep({ moduleId, nextModuleId }: { moduleId: number; nextModule
           You now understand your communication style more deeply. Use that self-awareness to communicate with greater impact.
         </p>
       </div>
+      {moduleAnswers && (
+        <div style={{ marginBottom: '40px' }}>
+          <AIInsightCard
+            type="module_complete"
+            userData={{ moduleId, moduleName: 'Module 9: Communication', answers: moduleAnswers, userName: user?.name, baseline, userGoals, priorModuleGoals }}
+            title="Your Personalized Feedback"
+          />
+        </div>
+      )}
       <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px' }}>
         <h3 style={{ fontWeight: '600', color: '#111827', fontSize: '20px', marginBottom: '24px' }}>What's Next?</h3>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>

@@ -21,6 +21,8 @@ const STEPS = [
 
 export default function Module2Page() {
   const [currentStep, setCurrentStep] = useState<StepType>('overview');
+  const [assessmentStartQ, setAssessmentStartQ] = useState(0);
+  const [goalsStartQ, setGoalsStartQ] = useState(0);
   const { isAuthenticated } = useAuth();
   const moduleId = 2;
   const isCompleted = isModuleCompleted(2);
@@ -34,6 +36,16 @@ export default function Module2Page() {
 
   const handleSetStep = useCallback((step: StepType) => {
     setCurrentStep(step);
+  }, []);
+
+  const handleEdit = useCallback((section: 'assessment' | 'goals', questionIndex: number) => {
+    if (section === 'assessment') {
+      setAssessmentStartQ(questionIndex);
+      setCurrentStep('assessment');
+    } else {
+      setGoalsStartQ(questionIndex);
+      setCurrentStep('goals');
+    }
   }, []);
 
   if (!isAuthenticated) {
@@ -127,19 +139,21 @@ export default function Module2Page() {
           {currentStep === 'overview' && <OverviewStep onNext={() => handleSetStep(isCompleted ? 'review' : 'assessment')} isCompleted={isCompleted} />}
           {currentStep === 'assessment' && (
             <AssessmentStep
-              onNext={() => handleSetStep('goals')}
-              onBack={() => handleSetStep('overview')}
+              onNext={() => { setAssessmentStartQ(0); handleSetStep('goals'); }}
+              onBack={() => { setAssessmentStartQ(0); handleSetStep('overview'); }}
               moduleId={2}
+              initialQuestion={assessmentStartQ}
             />
           )}
           {currentStep === 'goals' && (
             <GoalsStep
-              onNext={() => handleSetStep('review')}
-              onBack={() => handleSetStep('assessment')}
+              onNext={() => { setGoalsStartQ(0); handleSetStep('review'); }}
+              onBack={() => { setGoalsStartQ(0); handleSetStep('assessment'); }}
               moduleId={2}
+              initialQuestion={goalsStartQ}
             />
           )}
-          {currentStep === 'review' && <ReviewStep moduleId={2} onConfirm={() => { completeModule(2); handleSetStep('complete'); }} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} />}
+          {currentStep === 'review' && <ReviewStep moduleId={2} onConfirm={() => { completeModule(2); handleSetStep('complete'); }} onBack={() => handleSetStep(isCompleted ? 'overview' : 'goals')} isReadOnly={isCompleted} onEdit={handleEdit} />}
           {currentStep === 'complete' && <CompleteStep moduleId={2} nextModuleId={3} />}
         </div>
       </div>
@@ -264,8 +278,8 @@ const OverviewStep = memo(function OverviewStep({ onNext, isCompleted }: { onNex
   );
 });
 
-const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId, initialQuestion = 0 }: { onNext: () => void; onBack: () => void; moduleId: number; initialQuestion?: number }) {
+  const [currentQuestion, setCurrentQuestion] = useState(initialQuestion);
   const [formData, setFormData] = useState({
     conflictHandling: 5,
     angerManagement: 5,
@@ -459,6 +473,29 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
           )}
         </div>
 
+        {/* Question Number Dots */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', paddingBottom: '24px' }}>
+          {questions.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentQuestion(index)}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: '600',
+                backgroundColor: index === currentQuestion ? '#4F46E5' : index < currentQuestion ? '#C7D2FE' : '#F3F4F6',
+                color: index === currentQuestion ? 'white' : index < currentQuestion ? '#4F46E5' : '#9CA3AF',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
           <button
             onClick={handlePrevious}
@@ -503,8 +540,8 @@ const AssessmentStep = memo(function AssessmentStep({ onNext, onBack, moduleId }
   );
 });
 
-function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: () => void; moduleId: number }) {
-  const [currentQuestion, setCurrentQuestion] = useState(0);
+function GoalsStep({ onNext, onBack, moduleId, initialQuestion = 0 }: { onNext: () => void; onBack: () => void; moduleId: number; initialQuestion?: number }) {
+  const [currentQuestion, setCurrentQuestion] = useState(initialQuestion);
   const [goals, setGoals] = useState({
     conflictApproach: '',
     angerStrategy: '',
@@ -550,7 +587,6 @@ function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: (
       setCurrentQuestion(currentQuestion + 1);
     } else {
       saveModuleAnswers(moduleId, 'goals', { ...goals, _labeled });
-      completeModule(moduleId);
       onNext();
     }
   };
@@ -642,6 +678,29 @@ function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: (
           )}
         </div>
 
+        {/* Question Number Dots */}
+        <div style={{ display: 'flex', justifyContent: 'center', gap: '8px', paddingBottom: '24px' }}>
+          {questions.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrentQuestion(index)}
+              style={{
+                width: '32px',
+                height: '32px',
+                borderRadius: '50%',
+                border: 'none',
+                cursor: 'pointer',
+                fontSize: '13px',
+                fontWeight: '600',
+                backgroundColor: index === currentQuestion ? '#4F46E5' : index < currentQuestion ? '#C7D2FE' : '#F3F4F6',
+                color: index === currentQuestion ? 'white' : index < currentQuestion ? '#4F46E5' : '#9CA3AF',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              {index + 1}
+            </button>
+          ))}
+        </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingTop: '24px', borderTop: '1px solid #E5E7EB' }}>
           <button
             onClick={handlePrevious}
@@ -689,6 +748,14 @@ function GoalsStep({ onNext, onBack, moduleId }: { onNext: () => void; onBack: (
 function CompleteStep({ moduleId, nextModuleId }: { moduleId: number; nextModuleId: number }) {
   const { user } = useAuth();
   const moduleAnswers = getModuleAnswers(moduleId, 'assessment');
+  const baseline = getBaseline();
+  const userGoals = getGoals();
+  // Collect goal answers from all prior modules for context
+  const priorModuleGoals: Record<number, Record<string, unknown>> = {};
+  for (let i = 1; i < moduleId; i++) {
+    const g = getModuleAnswers(i, 'goals');
+    if (g) priorModuleGoals[i] = g;
+  }
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto' }}>
       <div style={{
@@ -722,7 +789,7 @@ function CompleteStep({ moduleId, nextModuleId }: { moduleId: number; nextModule
         <div style={{ marginBottom: '40px' }}>
           <AIInsightCard
             type="module_complete"
-            userData={{ moduleId, moduleName: 'Module 2: How to Handle the Tough Stuff', answers: moduleAnswers, userName: user?.name }}
+            userData={{ moduleId, moduleName: 'Module 2: How to Handle the Tough Stuff', answers: moduleAnswers, userName: user?.name, baseline, userGoals, priorModuleGoals }}
             title="Your Personalized Feedback"
           />
         </div>
