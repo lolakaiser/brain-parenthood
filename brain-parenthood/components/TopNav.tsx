@@ -46,9 +46,9 @@ export default function TopNav() {
           <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img
-              src="/BPlogo.png"
+              src="/BPlogo2.png"
               alt="Brain Parenthood Logo"
-              style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover', objectPosition: 'center top' }}
+              style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover', objectPosition: "center" }}
             />
             <span style={{ fontWeight: '600', color: '#4F46E5', fontSize: '18px' }}>Brain Parenthood</span>
           </Link>

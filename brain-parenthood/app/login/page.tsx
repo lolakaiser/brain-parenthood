@@ -62,7 +62,7 @@ export default function LoginPage() {
         {/* Logo */}
         <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/BPlogo.png" alt="Brain Parenthood Logo" style={{ width: '48px', height: '48px', borderRadius: '10px', objectFit: 'cover', objectPosition: 'center top' }} />
+          <img src="/BPlogo2.png" alt="Brain Parenthood Logo" style={{ width: '48px', height: '48px', borderRadius: '10px', objectFit: 'cover', objectPosition: "center" }} />
         </div>
 
         {/* Header */}

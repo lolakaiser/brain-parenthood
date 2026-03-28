@@ -24,7 +24,7 @@ export default function Home() {
           {/* Logo */}
           <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/BPlogo.png" alt="Brain Parenthood Logo" style={{ width: '36px', height: '36px', borderRadius: '8px', objectFit: 'cover', objectPosition: 'center top' }} />
+            <img src="/BPlogo2.png" alt="Brain Parenthood Logo" style={{ width: '36px', height: '36px', borderRadius: '8px', objectFit: 'cover', objectPosition: "center" }} />
             <span style={{ fontSize: '18px', fontWeight: 'bold', color: '#111827' }}>Brain Parenthood</span>
           </div>
 
@@ -73,7 +73,7 @@ export default function Home() {
         }}>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
             {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img src="/BPlogo.png" alt="Brain Parenthood Logo" style={{ width: '80px', height: '80px', borderRadius: '16px', objectFit: 'cover', objectPosition: 'center top' }} />
+            <img src="/BPlogo2.png" alt="Brain Parenthood Logo" style={{ width: '80px', height: '80px', borderRadius: '16px', objectFit: 'cover', objectPosition: "center" }} />
           </div>
           <h1 style={{ fontSize: '48px', fontWeight: 'bold', color: 'white', marginBottom: '16px' }}>
             Brain Parenthood
@@ -368,7 +368,7 @@ export default function Home() {
             <div>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '12px' }}>
                 {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src="/BPlogo.png" alt="Brain Parenthood Logo" style={{ width: '36px', height: '36px', borderRadius: '8px', objectFit: 'cover', objectPosition: 'center top' }} />
+                <img src="/BPlogo2.png" alt="Brain Parenthood Logo" style={{ width: '36px', height: '36px', borderRadius: '8px', objectFit: 'cover', objectPosition: "center" }} />
                 <span style={{ fontSize: '18px', fontWeight: 'bold' }}>Brain Parenthood</span>
               </div>
               <p style={{ color: '#9CA3AF', fontSize: '14px', maxWidth: '300px', lineHeight: '1.6' }}>
