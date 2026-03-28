@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import bcrypt from 'bcryptjs';
 import { connectDB } from '@/lib/mongodb';
 import User from '@/lib/models/User';
+import { generateToken } from '@/lib/auth';
 
 export async function POST(request: Request) {
   try {
@@ -30,7 +31,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const token = Buffer.from(`${user._id}:${user.email}:${Date.now()}`).toString('base64');
+    const token = generateToken(user._id.toString(), user.email);
 
     return NextResponse.json({
       access_token: token,

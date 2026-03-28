@@ -1,14 +1,7 @@
 import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import User from '@/lib/models/User';
-
-function getEmailFromToken(authHeader: string | null): string | null {
-  if (!authHeader || !authHeader.startsWith('Bearer ')) return null;
-  const token = authHeader.substring(7);
-  const decoded = Buffer.from(token, 'base64').toString('utf-8');
-  const [, email] = decoded.split(':');
-  return email || null;
-}
+import { getEmailFromToken } from '@/lib/auth';
 
 export async function GET(request: Request) {
   try {

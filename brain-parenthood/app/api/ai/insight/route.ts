@@ -1,10 +1,16 @@
 import { NextResponse } from 'next/server';
 import Anthropic from '@anthropic-ai/sdk';
+import { getEmailFromToken } from '@/lib/auth';
 
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 export async function POST(request: Request) {
   try {
+    const email = getEmailFromToken(request.headers.get('Authorization'));
+    if (!email) {
+      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+    }
+
     const { type, userData } = await request.json();
 
     if (!process.env.ANTHROPIC_API_KEY) {

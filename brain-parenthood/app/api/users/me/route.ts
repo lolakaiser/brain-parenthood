@@ -1,21 +1,14 @@
 import { NextResponse } from 'next/server';
 import { connectDB } from '@/lib/mongodb';
 import User from '@/lib/models/User';
+import { getEmailFromToken } from '@/lib/auth';
 
 export async function GET(request: Request) {
   try {
-    const authHeader = request.headers.get('Authorization');
-
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return NextResponse.json({ detail: 'Unauthorized' }, { status: 401 });
-    }
-
-    const token = authHeader.substring(7);
-    const decoded = Buffer.from(token, 'base64').toString('utf-8');
-    const [, email] = decoded.split(':');
+    const email = getEmailFromToken(request.headers.get('Authorization'));
 
     if (!email) {
-      return NextResponse.json({ detail: 'Invalid token' }, { status: 401 });
+      return NextResponse.json({ detail: 'Unauthorized' }, { status: 401 });
     }
 
     await connectDB();

@@ -6,8 +6,6 @@ declare global {
 
 if (!global.usersStore) {
   global.usersStore = new Map();
-  global.usersStore.set('test@test.com', { id: 1, email: 'test@test.com', password: 'test', name: 'Test User', isAdmin: false });
-  global.usersStore.set('admin@sensym.com', { id: 2, email: 'admin@sensym.com', password: 'admin123', name: 'Admin', isAdmin: true });
 }
 if (!global.nextUserId) {
   global.nextUserId = 3;

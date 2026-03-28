@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { Resend } from 'resend';
 import { connectDB } from '@/lib/mongodb';
 import User from '@/lib/models/User';
+import { hashResetToken } from '@/lib/auth';
 
 const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -20,11 +21,12 @@ export async function POST(request: Request) {
     }
 
     // Generate a secure random token valid for 1 hour
+    // Store only the hash — plain token travels in the email link only
     const token = crypto.randomBytes(32).toString('hex');
     const expiry = new Date(Date.now() + 60 * 60 * 1000);
 
     await User.findByIdAndUpdate(user._id, {
-      resetPasswordToken: token,
+      resetPasswordToken: hashResetToken(token),
       resetPasswordExpiry: expiry,
     });
 
