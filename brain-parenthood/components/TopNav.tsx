@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { useState } from "react";
@@ -45,12 +44,11 @@ export default function TopNav() {
         }}>
           {/* Logo */}
           <Link href="/dashboard" style={{ display: 'flex', alignItems: 'center', gap: '12px', textDecoration: 'none' }}>
-            <Image
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img
               src="/BPlogo.png"
               alt="Brain Parenthood Logo"
-              width={40}
-              height={40}
-              style={{ borderRadius: '8px', objectFit: 'cover', objectPosition: 'center top' }}
+              style={{ width: '40px', height: '40px', borderRadius: '8px', objectFit: 'cover', objectPosition: 'center top' }}
             />
             <span style={{ fontWeight: '600', color: '#4F46E5', fontSize: '18px' }}>Brain Parenthood</span>
           </Link>
