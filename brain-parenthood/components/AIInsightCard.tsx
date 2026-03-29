@@ -20,9 +20,13 @@ export default function AIInsightCard({ type, userData, title = 'Your Personaliz
       try {
         setLoading(true);
         setError(false);
+        const token = localStorage.getItem('authToken');
         const res = await fetch('/api/ai/insight', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            ...(token ? { 'Authorization': `Bearer ${token}` } : {}),
+          },
           body: JSON.stringify({ type, userData }),
         });
         if (!res.ok) throw new Error('Failed');
