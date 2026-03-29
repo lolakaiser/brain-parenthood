@@ -1,86 +1,110 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import PaymentForm from '@/app/components/PaymentForm';
 import { useRouter } from 'next/navigation';
 
 export default function BuyMeACoffeePage() {
   const router = useRouter();
+  const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
 
-  const handleSuccess = (payment: any) => {
-    console.log('Payment successful:', payment);
-    // You can add additional success handling here, such as:
-    // - Sending a thank you email
-    // - Logging the donation
-    // - Showing a custom thank you message
+  const handleSuccess = () => {
+    setTimeout(() => router.back(), 3000);
   };
 
   const handleError = (error: Error) => {
     console.error('Payment failed:', error);
-    // You can add additional error handling here
   };
 
+  const suggestedAmounts = [
+    { amount: 5, label: 'One Coffee', icon: '☕' },
+    { amount: 10, label: 'Two Coffees', icon: '☕☕' },
+    { amount: 25, label: 'Generous', icon: '💜' },
+  ];
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-orange-50 py-12 px-4">
-      <div className="max-w-2xl mx-auto">
-        {/* Header Section */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-800 mb-4">
-            ☕ Buy Me a Coffee
-          </h1>
-          <p className="text-lg text-gray-600 mb-2">
-            Support the Brain Parenthood project
-          </p>
-          <p className="text-gray-500">
-            Your contribution helps us continue building resources for startup founders and their mental health.
-          </p>
-        </div>
+    <div style={{ minHeight: '100vh', backgroundColor: '#F5F7FA', display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '40px 20px' }}>
+      <div style={{ width: '100%', maxWidth: '460px' }}>
 
-        {/* Suggested Amounts */}
-        <div className="bg-white rounded-lg shadow-md p-6 mb-8">
-          <h2 className="text-xl font-semibold text-gray-800 mb-4">
-            Suggested Amounts
-          </h2>
-          <div className="grid grid-cols-3 gap-4 mb-4">
-            <div className="text-center p-4 bg-purple-50 rounded-lg border-2 border-purple-200">
-              <div className="text-2xl mb-1">☕</div>
-              <div className="font-semibold text-gray-800">$5</div>
-              <div className="text-sm text-gray-600">One Coffee</div>
-            </div>
-            <div className="text-center p-4 bg-pink-50 rounded-lg border-2 border-pink-200">
-              <div className="text-2xl mb-1">☕☕</div>
-              <div className="font-semibold text-gray-800">$10</div>
-              <div className="text-sm text-gray-600">Two Coffees</div>
-            </div>
-            <div className="text-center p-4 bg-orange-50 rounded-lg border-2 border-orange-200">
-              <div className="text-2xl mb-1">☕☕☕</div>
-              <div className="font-semibold text-gray-800">$25</div>
-              <div className="text-sm text-gray-600">Generous Support</div>
-            </div>
+        {/* Back Button */}
+        <button
+          onClick={() => router.back()}
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            background: 'none',
+            border: 'none',
+            color: '#6B7280',
+            fontSize: '14px',
+            fontWeight: '500',
+            cursor: 'pointer',
+            marginBottom: '24px',
+            padding: 0,
+          }}
+        >
+          ← Back
+        </button>
+
+        {/* Card */}
+        <div style={{
+          backgroundColor: 'white',
+          borderRadius: '16px',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.08)',
+          border: '1px solid #F0F0F0',
+          padding: '40px',
+        }}>
+          {/* Logo */}
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '20px' }}>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/BPlogo2.png" alt="Brain Parenthood Logo" style={{ width: '48px', height: '48px', borderRadius: '10px', objectFit: 'cover', objectPosition: 'center' }} />
           </div>
-          <p className="text-sm text-gray-500 text-center">
-            Or enter any amount below that feels right to you
-          </p>
-        </div>
 
-        {/* Payment Form */}
-        <PaymentForm
-          mode="input"
-          onSuccess={handleSuccess}
-          onError={handleError}
-        />
+          {/* Header */}
+          <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+            <h1 style={{ fontSize: '22px', fontWeight: 'bold', color: '#111827', marginBottom: '8px' }}>Buy Me a Coffee</h1>
+            <p style={{ color: '#6B7280', fontSize: '14px', lineHeight: '1.6' }}>
+              Support Brain Parenthood and help us keep building tools for startup teams.
+            </p>
+          </div>
 
-        {/* Footer Note */}
-        <div className="mt-8 text-center">
-          <p className="text-sm text-gray-500">
-            All donations are processed securely through Square. Your support is greatly appreciated! 💜
+          {/* Suggested Amounts */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '12px', marginBottom: '28px' }}>
+            {suggestedAmounts.map(({ amount, label, icon }) => (
+              <button
+                key={amount}
+                onClick={() => setSelectedAmount(amount)}
+                style={{
+                  padding: '16px 8px',
+                  borderRadius: '12px',
+                  textAlign: 'center',
+                  cursor: 'pointer',
+                  border: selectedAmount === amount ? '2px solid #4F46E5' : '2px solid #E5E7EB',
+                  background: selectedAmount === amount ? '#EEF2FF' : 'white',
+                  transition: 'all 0.15s',
+                }}
+              >
+                <div style={{ fontSize: '22px', marginBottom: '6px' }}>{icon}</div>
+                <div style={{ fontWeight: '700', fontSize: '16px', color: '#111827' }}>${amount}</div>
+                <div style={{ fontSize: '11px', color: '#6B7280', marginTop: '2px' }}>{label}</div>
+              </button>
+            ))}
+          </div>
+
+          {/* Payment Form */}
+          <div style={{ borderTop: '1px solid #F3F4F6', paddingTop: '24px' }}>
+            <PaymentForm
+              mode="input"
+              amount={selectedAmount || undefined}
+              onSuccess={handleSuccess}
+              onError={handleError}
+            />
+          </div>
+
+          {/* Footer */}
+          <p style={{ textAlign: 'center', fontSize: '12px', color: '#9CA3AF', marginTop: '20px' }}>
+            🔒 Secure payments via Square
           </p>
-          <button
-            onClick={() => router.push('/')}
-            className="mt-4 text-purple-600 hover:text-purple-800 font-medium"
-          >
-            ← Back to Home
-          </button>
         </div>
       </div>
     </div>
