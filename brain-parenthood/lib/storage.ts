@@ -211,6 +211,24 @@ export function isModuleCompleted(moduleId: number): boolean {
   return progress.completedModules.includes(moduleId);
 }
 
+export async function loadModuleAnswersFromDB(
+  moduleId: number,
+  step: 'assessment' | 'goals'
+): Promise<Record<string, unknown> | null> {
+  const token = getAuthToken();
+  if (!token) return null;
+  try {
+    const res = await fetch(`/api/answers?moduleId=${moduleId}&step=${step}`, {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.answers || null;
+  } catch {
+    return null;
+  }
+}
+
 // Clear all data (useful for testing)
 export function clearAllData(): void {
   localStorage.removeItem(STORAGE_KEYS.BASELINE);

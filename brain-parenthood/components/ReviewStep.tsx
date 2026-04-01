@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { getModuleAnswers, getBaseline, getGoals } from "@/lib/storage";
+import { getModuleAnswers, getBaseline, getGoals, loadModuleAnswersFromDB } from "@/lib/storage";
 
 interface LabeledAnswer {
   title: string;
@@ -40,35 +40,64 @@ export default function ReviewStep({ moduleId, onConfirm, onBack, isReadOnly, on
   const [goalsLabeled, setGoalsLabeled] = useState<LabeledAnswer[]>([]);
 
   useEffect(() => {
-    const assessmentSaved = getModuleAnswers(moduleId, 'assessment');
-    const goalsSaved = getModuleAnswers(moduleId, 'goals');
+    async function loadAnswers() {
+      const assessmentSaved = getModuleAnswers(moduleId, 'assessment');
+      const goalsSaved = getModuleAnswers(moduleId, 'goals');
 
-    // Use _labeled if present, otherwise fall back to raw baseline/goals data
-    let aLabeled: LabeledAnswer[] = (assessmentSaved?._labeled as LabeledAnswer[]) || [];
-    let gLabeled: LabeledAnswer[] = (goalsSaved?._labeled as LabeledAnswer[]) || [];
+      let aLabeled: LabeledAnswer[] = (assessmentSaved?._labeled as LabeledAnswer[]) || [];
+      let gLabeled: LabeledAnswer[] = (goalsSaved?._labeled as LabeledAnswer[]) || [];
 
-    if (aLabeled.length === 0 && moduleId === 1) {
-      const baseline = getBaseline();
-      if (baseline) {
-        aLabeled = ASSESSMENT_FIELDS.map(f => ({
-          title: f.title,
-          answer: (baseline as unknown as Record<string, string | number>)[f.id] ?? '—',
-        }));
+      // Module 1 fallback: use raw baseline/goals keys
+      if (aLabeled.length === 0 && moduleId === 1) {
+        const baseline = getBaseline();
+        if (baseline) {
+          aLabeled = ASSESSMENT_FIELDS.map(f => ({
+            title: f.title,
+            answer: (baseline as unknown as Record<string, string | number>)[f.id] ?? '—',
+          }));
+        }
       }
+
+      if (gLabeled.length === 0 && moduleId === 1) {
+        const goals = getGoals();
+        if (goals) {
+          gLabeled = GOALS_FIELDS.map(f => ({
+            title: f.title,
+            answer: (goals as unknown as Record<string, string | number>)[f.id] ?? '—',
+          }));
+        }
+      }
+
+      // DB fallback if localStorage has no data
+      if (aLabeled.length === 0) {
+        const dbData = await loadModuleAnswersFromDB(moduleId, 'assessment');
+        if (dbData?._labeled) {
+          aLabeled = dbData._labeled as LabeledAnswer[];
+        } else if (dbData && moduleId === 1) {
+          aLabeled = ASSESSMENT_FIELDS.map(f => ({
+            title: f.title,
+            answer: (dbData as Record<string, string | number>)[f.id] ?? '—',
+          }));
+        }
+      }
+
+      if (gLabeled.length === 0) {
+        const dbData = await loadModuleAnswersFromDB(moduleId, 'goals');
+        if (dbData?._labeled) {
+          gLabeled = dbData._labeled as LabeledAnswer[];
+        } else if (dbData && moduleId === 1) {
+          gLabeled = GOALS_FIELDS.map(f => ({
+            title: f.title,
+            answer: (dbData as Record<string, string | number>)[f.id] ?? '—',
+          }));
+        }
+      }
+
+      setAssessmentLabeled(aLabeled);
+      setGoalsLabeled(gLabeled);
     }
 
-    if (gLabeled.length === 0 && moduleId === 1) {
-      const goals = getGoals();
-      if (goals) {
-        gLabeled = GOALS_FIELDS.map(f => ({
-          title: f.title,
-          answer: (goals as unknown as Record<string, string | number>)[f.id] ?? '—',
-        }));
-      }
-    }
-
-    setAssessmentLabeled(aLabeled);
-    setGoalsLabeled(gLabeled);
+    loadAnswers();
   }, [moduleId]);
 
   const editButtonStyle = {

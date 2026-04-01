@@ -139,8 +139,14 @@ export default function Module3Page() {
 
 const OverviewStep = memo(function OverviewStep({ onNext, isCompleted }: { onNext: () => void; isCompleted?: boolean }) {
   const { user } = useAuth();
-  const baseline = getBaseline();
-  const goals = getGoals();
+  const [baseline, setBaseline] = useState<ReturnType<typeof getBaseline>>(null);
+  const [goals, setGoals] = useState<ReturnType<typeof getGoals>>(null);
+
+  useEffect(() => {
+    setBaseline(getBaseline());
+    setGoals(getGoals());
+  }, []);
+
   return (
     <div style={{ maxWidth: '800px', margin: '0 auto' }}>
       <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '40px', border: '1px solid #E5E7EB', marginBottom: '40px', boxShadow: '0 1px 3px rgba(0,0,0,0.04)' }}>
