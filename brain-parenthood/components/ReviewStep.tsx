@@ -35,9 +35,21 @@ const GOALS_FIELDS = [
   { id: 'successMetrics', title: 'Success Metrics' },
 ];
 
+const METADATA_FIELDS = new Set(['_labeled', 'savedAt', '__v', '_id', 'completedAt']);
+
+function buildLabeledFromRaw(data: Record<string, unknown>): LabeledAnswer[] {
+  return Object.entries(data)
+    .filter(([k]) => !METADATA_FIELDS.has(k))
+    .map(([k, v]) => ({
+      title: k.replace(/([A-Z])/g, ' $1').replace(/^./, s => s.toUpperCase()),
+      answer: (v as string | number) ?? '—',
+    }));
+}
+
 export default function ReviewStep({ moduleId, onConfirm, onBack, isReadOnly, onEdit }: ReviewStepProps) {
   const [assessmentLabeled, setAssessmentLabeled] = useState<LabeledAnswer[]>([]);
   const [goalsLabeled, setGoalsLabeled] = useState<LabeledAnswer[]>([]);
+  const [loadingFromDB, setLoadingFromDB] = useState(false);
 
   useEffect(() => {
     async function loadAnswers() {
@@ -46,6 +58,29 @@ export default function ReviewStep({ moduleId, onConfirm, onBack, isReadOnly, on
 
       let aLabeled: LabeledAnswer[] = (assessmentSaved?._labeled as LabeledAnswer[]) || [];
       let gLabeled: LabeledAnswer[] = (goalsSaved?._labeled as LabeledAnswer[]) || [];
+
+      // If localStorage has raw data but no _labeled, build it
+      if (aLabeled.length === 0 && assessmentSaved) {
+        if (moduleId === 1) {
+          aLabeled = ASSESSMENT_FIELDS.map(f => ({
+            title: f.title,
+            answer: (assessmentSaved as Record<string, string | number>)[f.id] ?? '—',
+          }));
+        } else {
+          aLabeled = buildLabeledFromRaw(assessmentSaved as Record<string, unknown>);
+        }
+      }
+
+      if (gLabeled.length === 0 && goalsSaved) {
+        if (moduleId === 1) {
+          gLabeled = GOALS_FIELDS.map(f => ({
+            title: f.title,
+            answer: (goalsSaved as Record<string, string | number>)[f.id] ?? '—',
+          }));
+        } else {
+          gLabeled = buildLabeledFromRaw(goalsSaved as Record<string, unknown>);
+        }
+      }
 
       // Module 1 fallback: use raw baseline/goals keys
       if (aLabeled.length === 0 && moduleId === 1) {
@@ -69,15 +104,23 @@ export default function ReviewStep({ moduleId, onConfirm, onBack, isReadOnly, on
       }
 
       // DB fallback if localStorage has no data
+      if (aLabeled.length === 0 || gLabeled.length === 0) {
+        setLoadingFromDB(true);
+      }
+
       if (aLabeled.length === 0) {
         const dbData = await loadModuleAnswersFromDB(moduleId, 'assessment');
         if (dbData?._labeled) {
           aLabeled = dbData._labeled as LabeledAnswer[];
-        } else if (dbData && moduleId === 1) {
-          aLabeled = ASSESSMENT_FIELDS.map(f => ({
-            title: f.title,
-            answer: (dbData as Record<string, string | number>)[f.id] ?? '—',
-          }));
+        } else if (dbData) {
+          if (moduleId === 1) {
+            aLabeled = ASSESSMENT_FIELDS.map(f => ({
+              title: f.title,
+              answer: (dbData as Record<string, string | number>)[f.id] ?? '—',
+            }));
+          } else {
+            aLabeled = buildLabeledFromRaw(dbData as Record<string, unknown>);
+          }
         }
       }
 
@@ -85,14 +128,19 @@ export default function ReviewStep({ moduleId, onConfirm, onBack, isReadOnly, on
         const dbData = await loadModuleAnswersFromDB(moduleId, 'goals');
         if (dbData?._labeled) {
           gLabeled = dbData._labeled as LabeledAnswer[];
-        } else if (dbData && moduleId === 1) {
-          gLabeled = GOALS_FIELDS.map(f => ({
-            title: f.title,
-            answer: (dbData as Record<string, string | number>)[f.id] ?? '—',
-          }));
+        } else if (dbData) {
+          if (moduleId === 1) {
+            gLabeled = GOALS_FIELDS.map(f => ({
+              title: f.title,
+              answer: (dbData as Record<string, string | number>)[f.id] ?? '—',
+            }));
+          } else {
+            gLabeled = buildLabeledFromRaw(dbData as Record<string, unknown>);
+          }
         }
       }
 
+      setLoadingFromDB(false);
       setAssessmentLabeled(aLabeled);
       setGoalsLabeled(gLabeled);
     }
@@ -111,6 +159,14 @@ export default function ReviewStep({ moduleId, onConfirm, onBack, isReadOnly, on
     cursor: 'pointer',
   };
 
+  if (loadingFromDB) {
+    return (
+      <div style={{ maxWidth: '700px', margin: '0 auto', padding: '60px 0', textAlign: 'center' }}>
+        <p style={{ color: '#6B7280', fontSize: '15px' }}>Loading your answers...</p>
+      </div>
+    );
+  }
+
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto' }}>
       {/* Header */}
@@ -124,6 +180,13 @@ export default function ReviewStep({ moduleId, onConfirm, onBack, isReadOnly, on
             : 'Please review everything carefully. Once confirmed, your answers cannot be changed.'}
         </p>
       </div>
+
+      {/* No data message */}
+      {assessmentLabeled.length === 0 && goalsLabeled.length === 0 && (
+        <div style={{ backgroundColor: 'white', borderRadius: '16px', padding: '32px 40px', border: '1px solid #E5E7EB', marginBottom: '24px', textAlign: 'center' }}>
+          <p style={{ color: '#6B7280', fontSize: '15px' }}>No answers saved yet. Complete the assessment and goals steps first.</p>
+        </div>
+      )}
 
       {/* Assessment Answers */}
       {assessmentLabeled.length > 0 && (

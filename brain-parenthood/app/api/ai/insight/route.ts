@@ -20,7 +20,7 @@ export async function POST(request: Request) {
     let prompt = '';
 
     if (type === 'dashboard') {
-      const { assessment, goals, userName, completedModules, moduleHistory } = userData;
+      const { assessment, goals, userName, completedModules, moduleHistory, savedInsights } = userData;
       const modulesCount = completedModules?.length ?? 0;
 
       // Build a brief summary of completed module goals if available
@@ -29,6 +29,15 @@ export async function POST(request: Request) {
         moduleSummary = '\n\nWhat they\'ve worked on in completed modules:\n' +
           Object.entries(moduleHistory as Record<string, Record<string, string>>)
             .map(([id, data]) => `- Module ${id}: ${Object.values(data).filter(Boolean).slice(0, 2).join('; ')}`)
+            .join('\n');
+      }
+
+      // Include past AI coaching messages for continuity
+      let insightHistory = '';
+      if (savedInsights && Object.keys(savedInsights as object).length > 0) {
+        insightHistory = '\n\nPast coaching messages from completed modules:\n' +
+          Object.entries(savedInsights as Record<string, { insight: string }>)
+            .map(([key, val]) => `- ${key.replace('_', ' ')}: "${val.insight}"`)
             .join('\n');
       }
 
@@ -47,12 +56,13 @@ Their 12-week goals:
 - Stress reduction: ${goals?.stressReduction ?? 'N/A'}
 - Personal goal: ${goals?.personalGoal ?? 'N/A'}
 - Team goal: ${goals?.teamGoal ?? 'N/A'}
-- Success metrics: ${goals?.successMetrics ?? 'N/A'}${moduleSummary}
+- Success metrics: ${goals?.successMetrics ?? 'N/A'}${moduleSummary}${insightHistory}
 
 Write a short, personalized insight (3-4 sentences) for their dashboard that reflects where they are RIGHT NOW in their journey.
 - If they've completed multiple modules, acknowledge their progress and point to what's ahead
 - Reference their specific scores or challenges — make it feel personal
 - Give one concrete focus or action for this week based on their data
+- If past coaching messages are provided, build on them — don't repeat the same advice
 - Do NOT use bullet points, headers, or markdown — just plain flowing text
 - Do NOT start with "Great job" or similar generic openers`;
     }

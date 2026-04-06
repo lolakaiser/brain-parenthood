@@ -12,6 +12,8 @@ export default function AIInsightCard({ type, userData, title = 'Your Personaliz
   const [insight, setInsight] = useState<string>('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
+  // Stable key so effect re-runs when meaningful userData changes
+  const userDataKey = `${type}:${(userData.moduleId as number | undefined) ?? ''}:${(userData.userName as string | undefined) ?? ''}:${((userData.completedModules as number[] | undefined) ?? []).length}`;
 
   useEffect(() => {
     let cancelled = false;
@@ -31,7 +33,20 @@ export default function AIInsightCard({ type, userData, title = 'Your Personaliz
         });
         if (!res.ok) throw new Error('Failed');
         const data = await res.json();
-        if (!cancelled) setInsight(data.insight || '');
+        if (!cancelled) {
+          setInsight(data.insight || '');
+          // Auto-save module_complete insights to DB for future coaching context
+          if (type === 'module_complete' && data.insight && userData.moduleId && token) {
+            fetch('/api/ai/insights', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+              },
+              body: JSON.stringify({ moduleId: userData.moduleId, insight: data.insight }),
+            }).catch(() => {});
+          }
+        }
       } catch {
         if (!cancelled) setError(true);
       } finally {
@@ -42,7 +57,7 @@ export default function AIInsightCard({ type, userData, title = 'Your Personaliz
     fetchInsight();
     return () => { cancelled = true; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [type]);
+  }, [userDataKey]);
 
   if (error) return null;
 

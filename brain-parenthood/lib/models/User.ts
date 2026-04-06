@@ -12,6 +12,11 @@ export interface IModuleAnswerEntry {
   savedAt?: Date;
 }
 
+export interface IAIInsightEntry {
+  insight: string;
+  savedAt: Date;
+}
+
 export interface IUser extends Document {
   email: string;
   password: string;
@@ -21,6 +26,7 @@ export interface IUser extends Document {
   createdAt: Date;
   moduleProgress: IModuleProgress;
   moduleAnswers: Map<string, IModuleAnswerEntry>;
+  aiInsights: Map<string, IAIInsightEntry>;
   resetPasswordToken?: string;
   resetPasswordExpiry?: Date;
 }
@@ -45,6 +51,14 @@ const UserSchema = new Schema<IUser>({
       assessment: { type: Schema.Types.Mixed },
       goals:      { type: Schema.Types.Mixed },
       savedAt:    { type: Date },
+    }, { _id: false }),
+    default: {},
+  },
+  aiInsights: {
+    type: Map,
+    of: new Schema({
+      insight: { type: String },
+      savedAt: { type: Date },
     }, { _id: false }),
     default: {},
   },

@@ -5,7 +5,7 @@ import { useEffect, useState } from "react";
 import AppLayout from "@/components/AppLayout";
 import AIInsightCard from "@/components/AIInsightCard";
 import { useAuth } from "@/context/AuthContext";
-import { getProgress, getBaseline, getGoals, getModuleAnswers } from "@/lib/storage";
+import { getProgress, getBaseline, getGoals, getModuleAnswers, loadModuleAnswersFromDB, loadAIInsightsFromDB } from "@/lib/storage";
 
 export default function DashboardPage() {
   const { user } = useAuth();
@@ -13,31 +13,49 @@ export default function DashboardPage() {
   const [aiData, setAiData] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
-    const progress = getProgress();
-    const completed = progress?.completedModules || [];
-    setCompletedModules(completed);
+    async function loadData() {
+      const progress = getProgress();
+      const completed = progress?.completedModules || [];
+      setCompletedModules(completed);
 
-    const assessment = getBaseline();
-    if (assessment) {
-      const goals = getGoals();
+      // Try localStorage first, fall back to DB for baseline/goals
+      let assessment: Record<string, unknown> | null = getBaseline() as Record<string, unknown> | null;
+      if (!assessment) {
+        assessment = await loadModuleAnswersFromDB(1, 'assessment');
+      }
 
-      // Collect goal answers from each completed module for richer AI context
-      const moduleHistory: Record<string, Record<string, unknown>> = {};
-      completed.forEach((moduleId: number) => {
-        const moduleGoals = getModuleAnswers(moduleId, 'goals');
-        if (moduleGoals) {
-          moduleHistory[moduleId] = moduleGoals;
+      if (assessment) {
+        let goals: Record<string, unknown> | null = getGoals() as Record<string, unknown> | null;
+        if (!goals) {
+          goals = await loadModuleAnswersFromDB(1, 'goals');
         }
-      });
 
-      setAiData({
-        userName: user?.name,
-        assessment,
-        goals,
-        completedModules: completed,
-        moduleHistory,
-      });
+        // Collect goal answers from each completed module for richer AI context
+        const moduleHistory: Record<string, Record<string, unknown>> = {};
+        for (const moduleId of completed) {
+          const moduleGoals = getModuleAnswers(moduleId, 'goals');
+          if (moduleGoals) {
+            moduleHistory[moduleId] = moduleGoals;
+          } else {
+            const dbGoals = await loadModuleAnswersFromDB(moduleId, 'goals');
+            if (dbGoals) moduleHistory[moduleId] = dbGoals;
+          }
+        }
+
+        // Load saved AI insights from DB for richer coaching context
+        const savedInsights = await loadAIInsightsFromDB();
+
+        setAiData({
+          userName: user?.name,
+          assessment,
+          goals,
+          completedModules: completed,
+          moduleHistory,
+          savedInsights: savedInsights || {},
+        });
+      }
     }
+    loadData();
   }, [user?.name]);
 
   const totalModules = 12;

@@ -229,6 +229,21 @@ export async function loadModuleAnswersFromDB(
   }
 }
 
+export async function loadAIInsightsFromDB(): Promise<Record<string, { insight: string; savedAt: string }> | null> {
+  const token = getAuthToken();
+  if (!token) return null;
+  try {
+    const res = await fetch('/api/ai/insights', {
+      headers: { 'Authorization': `Bearer ${token}` },
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    return data.insights || null;
+  } catch {
+    return null;
+  }
+}
+
 // Clear all data (useful for testing)
 export function clearAllData(): void {
   localStorage.removeItem(STORAGE_KEYS.BASELINE);
