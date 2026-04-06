@@ -81,7 +81,7 @@ export default function DashboardPage() {
       {/* Content Area */}
       <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '60px 80px' }}>
 
-        {/* AI Insight Card — re-mounts (and re-fetches) each time a module is completed */}
+        {/* AI Insight Card — uses cached insight for current completion level, only regenerates after a new module is finished */}
         {aiData && (
           <div style={{ marginBottom: '48px' }}>
             <AIInsightCard
@@ -89,6 +89,7 @@ export default function DashboardPage() {
               type="dashboard"
               userData={aiData}
               title="Your AI Coach"
+              cachedInsight={(aiData.savedInsights as Record<string, { insight: string }>)?.[`dashboard_${modulesCompleted}`]?.insight}
             />
           </div>
         )}

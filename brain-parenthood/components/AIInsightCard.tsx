@@ -6,16 +6,24 @@ interface AIInsightCardProps {
   type: 'dashboard' | 'module_intro' | 'module_complete';
   userData: Record<string, unknown>;
   title?: string;
+  cachedInsight?: string;
 }
 
-export default function AIInsightCard({ type, userData, title = 'Your Personalized Insight' }: AIInsightCardProps) {
-  const [insight, setInsight] = useState<string>('');
-  const [loading, setLoading] = useState(true);
+export default function AIInsightCard({ type, userData, title = 'Your Personalized Insight', cachedInsight }: AIInsightCardProps) {
+  const [insight, setInsight] = useState<string>(cachedInsight || '');
+  const [loading, setLoading] = useState(!cachedInsight);
   const [error, setError] = useState(false);
-  // Stable key so effect re-runs when meaningful userData changes
+
   const userDataKey = `${type}:${(userData.moduleId as number | undefined) ?? ''}:${(userData.userName as string | undefined) ?? ''}:${((userData.completedModules as number[] | undefined) ?? []).length}`;
 
   useEffect(() => {
+    // If we already have a cached insight, skip the API call entirely
+    if (cachedInsight) {
+      setInsight(cachedInsight);
+      setLoading(false);
+      return;
+    }
+
     let cancelled = false;
 
     async function fetchInsight() {
@@ -35,16 +43,22 @@ export default function AIInsightCard({ type, userData, title = 'Your Personaliz
         const data = await res.json();
         if (!cancelled) {
           setInsight(data.insight || '');
-          // Auto-save module_complete insights to DB for future coaching context
-          if (type === 'module_complete' && data.insight && userData.moduleId && token) {
-            fetch('/api/ai/insights', {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-              },
-              body: JSON.stringify({ moduleId: userData.moduleId, insight: data.insight }),
-            }).catch(() => {});
+          // Save to DB so the same insight is reused next visit
+          if (data.insight && token) {
+            let saveKey: string | null = null;
+            if (type === 'module_complete' && userData.moduleId) {
+              saveKey = `module_${userData.moduleId}`;
+            } else if (type === 'dashboard') {
+              const count = (userData.completedModules as number[] | undefined)?.length ?? 0;
+              saveKey = `dashboard_${count}`;
+            }
+            if (saveKey) {
+              fetch('/api/ai/insights', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+                body: JSON.stringify({ key: saveKey, insight: data.insight }),
+              }).catch(() => {});
+            }
           }
         }
       } catch {
@@ -57,7 +71,7 @@ export default function AIInsightCard({ type, userData, title = 'Your Personaliz
     fetchInsight();
     return () => { cancelled = true; };
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userDataKey]);
+  }, [userDataKey, cachedInsight]);
 
   if (error) return null;
 

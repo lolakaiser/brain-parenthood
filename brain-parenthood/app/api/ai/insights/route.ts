@@ -29,13 +29,12 @@ export async function POST(request: Request) {
     const email = getEmailFromToken(request.headers.get('Authorization'));
     if (!email) return NextResponse.json({ detail: 'Unauthorized' }, { status: 401 });
 
-    const { moduleId, insight } = await request.json();
-    if (!moduleId || !insight) {
-      return NextResponse.json({ detail: 'Missing moduleId or insight' }, { status: 400 });
+    const { key, insight } = await request.json();
+    if (!key || !insight) {
+      return NextResponse.json({ detail: 'Missing key or insight' }, { status: 400 });
     }
 
     await connectDB();
-    const key = `module_${moduleId}`;
     await User.findOneAndUpdate(
       { email: email.toLowerCase() },
       {
@@ -43,7 +42,8 @@ export async function POST(request: Request) {
           [`aiInsights.${key}.insight`]: insight,
           [`aiInsights.${key}.savedAt`]: new Date(),
         },
-      }
+      },
+      { upsert: false }
     );
 
     return NextResponse.json({ success: true });
