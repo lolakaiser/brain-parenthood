@@ -5,7 +5,7 @@ import { useState, useEffect, useCallback, memo } from "react";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import AppLayout from "@/components/AppLayout";
-import { completeModule, saveModuleAnswers, getModuleAnswers, isModuleCompleted, getBaseline, getGoals } from "@/lib/storage";
+import { completeModule, saveModuleAnswers, getModuleAnswers, isModuleCompleted, getBaseline, getGoals, loadModuleAnswersFromDB } from "@/lib/storage";
 import AIInsightCard from "@/components/AIInsightCard";
 import ReviewStep from "@/components/ReviewStep";
 
@@ -163,12 +163,19 @@ export default function Module2Page() {
 
 const OverviewStep = memo(function OverviewStep({ onNext, isCompleted }: { onNext: () => void; isCompleted?: boolean }) {
   const { user } = useAuth();
-  const [baseline, setBaseline] = useState<ReturnType<typeof getBaseline>>(null);
-  const [goals, setGoals] = useState<ReturnType<typeof getGoals>>(null);
+  const [baseline, setBaseline] = useState<Record<string, unknown> | null>(null);
+  const [goals, setGoals] = useState<Record<string, unknown> | null>(null);
 
   useEffect(() => {
-    setBaseline(getBaseline());
-    setGoals(getGoals());
+    async function loadData() {
+      let b: Record<string, unknown> | null = getBaseline() as Record<string, unknown> | null;
+      if (!b) b = await loadModuleAnswersFromDB(1, 'assessment');
+      let g: Record<string, unknown> | null = getGoals() as Record<string, unknown> | null;
+      if (!g) g = await loadModuleAnswersFromDB(1, 'goals');
+      setBaseline(b);
+      setGoals(g);
+    }
+    loadData();
   }, []);
 
   return (
@@ -753,15 +760,35 @@ function GoalsStep({ onNext, onBack, moduleId, initialQuestion = 0 }: { onNext: 
 
 function CompleteStep({ moduleId, nextModuleId }: { moduleId: number; nextModuleId: number }) {
   const { user } = useAuth();
-  const moduleAnswers = getModuleAnswers(moduleId, 'assessment');
-  const baseline = getBaseline();
-  const userGoals = getGoals();
-  // Collect goal answers from all prior modules for context
-  const priorModuleGoals: Record<number, Record<string, unknown>> = {};
-  for (let i = 1; i < moduleId; i++) {
-    const g = getModuleAnswers(i, 'goals');
-    if (g) priorModuleGoals[i] = g;
-  }
+  const [moduleAnswers, setModuleAnswers] = useState<Record<string, unknown> | null>(null);
+  const [baseline, setBaseline] = useState<Record<string, unknown> | null>(null);
+  const [userGoals, setUserGoals] = useState<Record<string, unknown> | null>(null);
+  const [priorModuleGoals, setPriorModuleGoals] = useState<Record<number, Record<string, unknown>>>({});
+
+  useEffect(() => {
+    async function loadData() {
+      let answers = getModuleAnswers(moduleId, 'assessment');
+      if (!answers) answers = await loadModuleAnswersFromDB(moduleId, 'assessment');
+      setModuleAnswers(answers);
+
+      let b: Record<string, unknown> | null = getBaseline() as Record<string, unknown> | null;
+      if (!b) b = await loadModuleAnswersFromDB(1, 'assessment');
+      setBaseline(b);
+
+      let g: Record<string, unknown> | null = getGoals() as Record<string, unknown> | null;
+      if (!g) g = await loadModuleAnswersFromDB(1, 'goals');
+      setUserGoals(g);
+
+      const prior: Record<number, Record<string, unknown>> = {};
+      for (let i = 1; i < moduleId; i++) {
+        const pg = getModuleAnswers(i, 'goals') || await loadModuleAnswersFromDB(i, 'goals');
+        if (pg) prior[i] = pg;
+      }
+      setPriorModuleGoals(prior);
+    }
+    loadData();
+  }, [moduleId]);
+
   return (
     <div style={{ maxWidth: '700px', margin: '0 auto' }}>
       <div style={{
