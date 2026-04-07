@@ -86,7 +86,7 @@ export default function TopNav() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '40px' }}>
           {/* Coffee Link */}
           <Link
-            href="/buy-me-a-coffee"
+            href={`/buy-me-a-coffee?from=${encodeURIComponent(pathname)}`}
             style={{
               fontSize: '14px',
               color: '#6B7280',

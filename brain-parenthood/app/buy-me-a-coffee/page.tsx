@@ -1,15 +1,17 @@
 'use client';
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import PaymentForm from '@/app/components/PaymentForm';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 export default function BuyMeACoffeePage() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const returnTo = searchParams.get('from') || '/dashboard';
   const [selectedAmount, setSelectedAmount] = useState<number | null>(null);
 
   const handleSuccess = () => {
-    setTimeout(() => router.back(), 3000);
+    setTimeout(() => router.push(returnTo), 3000);
   };
 
   const handleError = (error: Error) => {
@@ -28,7 +30,7 @@ export default function BuyMeACoffeePage() {
 
         {/* Back Button */}
         <button
-          onClick={() => router.back()}
+          onClick={() => router.push(returnTo)}
           style={{
             display: 'flex',
             alignItems: 'center',
