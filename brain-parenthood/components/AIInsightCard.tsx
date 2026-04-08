@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/context/AuthContext';
 
 interface AIInsightCardProps {
   type: 'dashboard' | 'module_intro' | 'module_complete';
@@ -10,6 +11,7 @@ interface AIInsightCardProps {
 }
 
 export default function AIInsightCard({ type, userData, title = 'Your Personalized Insight', cachedInsight }: AIInsightCardProps) {
+  const { user } = useAuth();
   const [insight, setInsight] = useState<string>(cachedInsight || '');
   const [loading, setLoading] = useState(!cachedInsight);
   const [error, setError] = useState(false);
@@ -73,7 +75,7 @@ export default function AIInsightCard({ type, userData, title = 'Your Personaliz
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userDataKey, cachedInsight]);
 
-  if (error) return null;
+  if (error || user?.isAdmin) return null;
 
   return (
     <div style={{
