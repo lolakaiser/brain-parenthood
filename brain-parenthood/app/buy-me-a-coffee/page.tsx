@@ -100,6 +100,7 @@ export default function BuyMeACoffeePage() {
               amount={selectedAmount || undefined}
               onSuccess={handleSuccess}
               onError={handleError}
+              onClose={() => router.push(returnTo)}
             />
           </div>
 

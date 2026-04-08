@@ -8,6 +8,7 @@ interface PaymentFormProps {
   mode?: 'button' | 'input';
   onSuccess?: (payment: any) => void;
   onError?: (error: Error) => void;
+  onClose?: () => void;
   apiUrl?: string;
   squareAppId?: string;
   squareLocationId?: string;
@@ -37,6 +38,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
   mode = 'button',
   onSuccess,
   onError,
+  onClose,
   apiUrl = process.env.NEXT_PUBLIC_API_URL || '',
   squareAppId = process.env.NEXT_PUBLIC_SQUARE_APPLICATION_ID,
   squareLocationId = process.env.NEXT_PUBLIC_SQUARE_LOCATION_ID,
@@ -259,7 +261,7 @@ const PaymentForm: React.FC<PaymentFormProps> = ({
         <div className="payment-form">
         <button
           className="modal-close-button"
-          onClick={() => window.location.href = '/'}
+          onClick={() => onClose ? onClose() : window.history.back()}
           aria-label="Close"
         >
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor">
